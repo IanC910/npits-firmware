@@ -12,7 +12,7 @@ from time import sleep
 def ultrasonic_test():
     print("Ultrasonic Test")
 
-    SPEED_OF_SOUND_CM_PER_US = 0.0343
+    SPEED_OF_SOUND_CM_PER_S = 34300
 
     trig_gpio = 24
     echo_gpio = 23
@@ -35,11 +35,11 @@ def ultrasonic_test():
             pulse_end = time.time()
 
         pulse_duration = pulse_end - pulse_start
-        distance_cm = pulse_duration * 17150
+        distance_cm = pulse_duration * SPEED_OF_SOUND_CM_PER_S / 2
 
         print(distance_cm)
 
-        sleep(1)
+        sleep(0.1)
 
 if(__name__ == "__main__"):
     ultrasonic_test()
