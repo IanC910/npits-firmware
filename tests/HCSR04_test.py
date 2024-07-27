@@ -7,8 +7,8 @@ sys.path.append('../')
 import pin_defines
 from devices.HCSR04 import HCSR04
 
-def ultrasonic_test():
-    print("Ultrasonic Test")
+def HCSR04_test():
+    print("HC-SR04 Test")
 
     ultrasonic = HCSR04(pin_defines.HCSR04_TRIG_GPIO, pin_defines.HCSR04_ECHO_GPIO)
 
@@ -20,4 +20,4 @@ def ultrasonic_test():
         time.sleep(0.2)
 
 if(__name__ == "__main__"):
-    ultrasonic_test()
+    HCSR04_test()
