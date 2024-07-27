@@ -9,8 +9,8 @@ import RPi.GPIO as gpio
 import time
 from time import sleep
 
-def ultrasonic_test():
-    print("Ultrasonic Test")
+def ultrasonic_test_basic():
+    print("Ultrasonic Test Basic")
 
     SPEED_OF_SOUND_CM_PER_S = 34300
 
@@ -42,4 +42,4 @@ def ultrasonic_test():
         sleep(0.1)
 
 if(__name__ == "__main__"):
-    ultrasonic_test()
+    ultrasonic_test_basic()
