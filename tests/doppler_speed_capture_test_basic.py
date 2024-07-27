@@ -5,8 +5,8 @@
 import serial
 from time import sleep
 
-def doppler_speed_capture_test():
-    print("Doppler Speed Capture Test")
+def doppler_speed_capture_test_basic():
+    print("Doppler Speed Capture Test Basic")
 
     doppler_serial = serial.Serial("/dev/ttyS0", 38400)
 
@@ -35,4 +35,4 @@ def doppler_speed_capture_test():
         sleep(0.1)
 
 if(__name__ == "__main__"):
-    doppler_speed_capture_test()
+    doppler_speed_capture_test_basic()

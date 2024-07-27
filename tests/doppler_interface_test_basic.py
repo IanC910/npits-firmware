@@ -5,8 +5,8 @@
 import serial
 from time import sleep
 
-def doppler_interface_test():
-    print("Doppler Interface Test")
+def doppler_interface_test_basic():
+    print("Doppler Interface Test Basic")
 
     doppler_serial = serial.Serial("/dev/ttyS0", 38400)
 
@@ -27,5 +27,5 @@ def doppler_interface_test():
 
 
 if(__name__ == "__main__"):
-    doppler_interface_test()
+    doppler_interface_test_basic()
 
