@@ -10,16 +10,20 @@ def doppler_interface_test():
 
     doppler_serial = serial.Serial("/dev/ttyS0", 38400)
 
-    doppler_serial.write(b'$S06\x0D')
-    # Should return '@S0601\r\n' by default
+    while True:
 
-    sleep(0.1)
+        doppler_serial.write(b'$S06\x0D')
+        # Should return '@S0601\r\n' by default
 
-    num_received_bytes = doppler_serial.inWaiting()
+        sleep(0.1)
 
-    received_data = doppler_serial.read(num_received_bytes)
+        num_received_bytes = doppler_serial.inWaiting()
 
-    print(received_data)
+        received_data = doppler_serial.read(num_received_bytes)
+
+        print(received_data)
+
+        sleep(0.2)
 
 
 if(__name__ == "__main__"):
