@@ -1,5 +1,5 @@
 
-# This module provides interfacing functions for the HCSR04 ultrasonic sensor
+# This module provides interfacing methods for the HC-SR04 ultrasonic sensor
 
 import RPi.GPIO as gpio
 import time
