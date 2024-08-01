@@ -4,7 +4,7 @@
 import RPi.GPIO as gpio
 import time
 
-SPEEF_OF_SOUND_CM_PER_S = 34300
+SPEED_OF_SOUND_CM_PER_S = 34300
 
 class HCSR04:
     def __init__(self, trig_gpio, echo_gpio):
@@ -30,6 +30,6 @@ class HCSR04:
             pulse_end_s = time.time()
 
         pulse_duration_s = pulse_end_s - pulse_start_s
-        distance_cm = pulse_duration_s / 2 * SPEEF_OF_SOUND_CM_PER_S
+        distance_cm = pulse_duration_s / 2 * SPEED_OF_SOUND_CM_PER_S
 
         return distance_cm
