@@ -59,20 +59,17 @@ class KLD2:
     def __init__(self, uart_device):
         self.serial = serial.Serial(uart_device, KLD2.DEFAULT_BAUD_RATE)
 
-        status = KLD2_Status.ERROR
-        counter = 0
-        while(status != KLD2_Status.OK):
-            if(counter % 10 == 0):
-                print('Initializing K-LD2...')
+        print('Initializing K-LD2...')
 
+        status = KLD2_Status.ERROR
+        while(status != KLD2_Status.OK):
             status, self.sampling_rate_Hz = self.get_sampling_rate_Hz()
-            counter += 1
 
         print('Done Initializing K-LD2')
 
 
 
-    def decode_response(self, response):
+    def _decode_response(self, response):
         try:
             decoded_response = response.decode('utf-8')
         except UnicodeDecodeError:
@@ -90,7 +87,7 @@ class KLD2:
         self.serial.write(command.encode('utf-8'))
         response = self.serial.readline()
 
-        status, decoded_response = self.decode_response(response)
+        status, decoded_response = self._decode_response(response)
         if(status != KLD2_Status.OK):
             return status, response
 
@@ -100,6 +97,33 @@ class KLD2:
                 return KLD2_Status.ERROR, decoded_response
 
             return status, decoded_response
+
+        if(decoded_response[0] != KLD2.RESPONSE_PREFIX):
+            return KLD2_Status.ERROR, decoded_response
+
+        if(decoded_response[1] == KLD2_Param_Class.ERROR.value):
+            return KLD2_Status.ERROR, decoded_response
+
+        return_val = int(decoded_response[4:6])
+        return KLD2_Status.OK, return_val
+
+
+
+    def set_param(self, param, value):
+        if(not param in KLD2_Param):
+            return KLD2_Status.ARGUMENT_ERROR, None
+
+        value_as_hex_str = hex(value)[2:]
+        if(len(value_as_hex_str) < 2):
+            value_as_hex_str = '0' + value_as_hex_str
+
+        command = self.COMMAND_PREFIX + param.value + value_as_hex_str + self.COMMAND_SUFFIX
+        self.serial.write(command.encode('utf-8'))
+        response = self.serial.readline()
+
+        status, decoded_response = self._decode_response(response)
+        if(status != KLD2_Status.OK):
+            return status, response
 
         if(decoded_response[0] != KLD2.RESPONSE_PREFIX):
             return KLD2_Status.ERROR, decoded_response

@@ -7,8 +7,8 @@ sys.path.append('../')
 import pin_defines
 from devices.KLD2 import KLD2, KLD2_Status, KLD2_Param
 
-def KLD2_interface_test():
-    print("K-LD2 Interface Test")
+def KLD2_sensitivity_pot_test():
+    print("K-LD2 Sensitivity Pot Test")
 
     doppler = KLD2(pin_defines.KLD2_UART_DEVICE)
 
@@ -20,4 +20,4 @@ def KLD2_interface_test():
             print(status.name)
 
 if(__name__ == "__main__"):
-    KLD2_interface_test()
+    KLD2_sensitivity_pot_test()
