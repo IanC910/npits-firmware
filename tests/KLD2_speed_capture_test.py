@@ -15,7 +15,8 @@ def KLD2_speed_capture_test():
     while True:
         status, target_list = doppler.get_target_list()
         if(status == KLD2_Status.OK):
-            inbound_speed_kmph, outbound_speed_kmph = doppler.extract_speeds_kmph(target_list)
+            inbound_speed_kmph = target_list[0]
+            outbound_speed_kmph = target_list[1]
             print("Inbound: %8.1f   kmph, Outbound: %8.1f   kmph" % (inbound_speed_kmph, outbound_speed_kmph))
         else:
             print(status.name)

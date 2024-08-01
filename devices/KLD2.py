@@ -96,13 +96,16 @@ class KLD2:
 
         # C class responses don't require a response prefix
         if(param.value[0] == KLD2_Param_Class.COMPLEX_READ.value):
-            return status, response
+            if(decoded_response[0] == KLD2.RESPONSE_PREFIX):
+                return KLD2_Status.ERROR, decoded_response
+
+            return status, decoded_response
 
         if(decoded_response[0] != KLD2.RESPONSE_PREFIX):
-            return KLD2_Status.ERROR, response
+            return KLD2_Status.ERROR, decoded_response
 
         if(decoded_response[1] == KLD2_Param_Class.ERROR.value):
-            return KLD2_Status.ERROR, response
+            return KLD2_Status.ERROR, decoded_response
 
         return_val = int(decoded_response[4:6])
         return KLD2_Status.OK, return_val
@@ -143,11 +146,4 @@ class KLD2:
         ]
 
         return KLD2_Status.OK, target_list
-
-
-
-    def extract_speeds_kmph(self, target_list):
-        inbound_speed_kmph = target_list[0]
-        outbound_speed_kmph = target_list[1]
-        return inbound_speed_kmph, outbound_speed_kmph
 
