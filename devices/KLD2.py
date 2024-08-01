@@ -6,8 +6,9 @@ from enum import Enum
 
 class KLD2_Status(Enum):
     OK = 0
-    DECODE_ERROR = 1
-    ERROR = 2
+    ARGUMENT_ERROR = 1
+    DECODE_ERROR = 2
+    ERROR = 3
 
 class KLD2_Param_Class(Enum):
     SYSTEM                  = 'S'
@@ -59,8 +60,15 @@ class KLD2:
         self.serial = serial.Serial(uart_device, KLD2.DEFAULT_BAUD_RATE)
 
         status = KLD2_Status.ERROR
+        counter = 0
         while(status != KLD2_Status.OK):
+            if(counter % 10 == 0):
+                print('Initializing K-LD2...')
+
             status, self.sampling_rate_Hz = self.get_sampling_rate_Hz()
+            counter += 1
+
+        print('Done Initializing K-LD2')
 
 
 
@@ -75,7 +83,10 @@ class KLD2:
 
 
     def get_param(self, param):
-        command = self.COMMAND_PREFIX + param + self.COMMAND_SUFFIX
+        if(not param in KLD2_Param):
+            return KLD2_Status.ARGUMENT_ERROR, None
+
+        command = self.COMMAND_PREFIX + param.value + self.COMMAND_SUFFIX
         self.serial.write(command.encode('utf-8'))
         response = self.serial.readline()
 
@@ -84,13 +95,13 @@ class KLD2:
             return status, response
 
         # C class responses don't require a response prefix
-        if(param[0] == KLD2_Param_Class.COMPLEX_READ):
+        if(param.value[0] == KLD2_Param_Class.COMPLEX_READ.value):
             return status, response
 
         if(decoded_response[0] != KLD2.RESPONSE_PREFIX):
             return KLD2_Status.ERROR, response
 
-        if(decoded_response[1] == KLD2_Param_Class.ERROR):
+        if(decoded_response[1] == KLD2_Param_Class.ERROR.value):
             return KLD2_Status.ERROR, response
 
         return_val = int(decoded_response[4:6])
