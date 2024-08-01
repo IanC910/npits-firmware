@@ -9,39 +9,41 @@ class KLD2_Status(Enum):
     DECODE_ERROR = 1
     ERROR = 2
 
+class KLD2_Param_Class(Enum):
+    SYSTEM                  = 'S'
+    DETECTION               = 'D'
+    ARRAY                   = 'A'
+    FLASH_READ              = 'F'
+    REAL_TIME_READ          = 'R'
+    BASIC_WRITE             = 'W'
+    COMPLEX_READ            = 'C'
+    TESTING                 = 'T'
+    ERROR                   = 'E'
+
 class KLD2_Param(Enum):
     # S: System Params
-    SYSTEM_ID               = 'S'
     SAMPLING_RATE           = 'S04'
     USE_SENSITIVITY_POT     = 'S0B'
 
     # D: Detection Params
-    DETECTION_ID            = 'D'
     SENSITIVITY             = 'D01'
 
     # A: Array Params
-    ARRAY_ID                = 'A'
 
     # F: Flash Read Params
-    FLASH_READ_ID           = 'F'
 
     # R: Real-time Read Params
-    REAL_TIME_READ_ID       = 'R'
     OPERATION_STATE         = 'R04'
     SENSITIVITY_POT_INDEX   = 'R06'
 
     # W: Basic Write Params
-    BASIC_WRITE_ID          = 'W'
 
     # C: Complex Read Params
-    COMPLEX_READ_ID         = 'C'
     TARGET_STRING           = 'C01'
 
     # T: Testing Params
-    TESTING_ID              = 'T'
 
     # E: Error Messages
-    ERROR_ID                = 'E'
 
 
 class KLD2:
@@ -77,13 +79,13 @@ class KLD2:
             return status, response
 
         # C class responses don't require a response prefix
-        if(param[0] == KLD2_Param.COMPLEX_READ_ID):
+        if(param[0] == KLD2_Param_Class.COMPLEX_READ):
             return status, response
 
         if(decoded_response[0] != KLD2.RESPONSE_PREFIX):
             return KLD2_Status.ERROR, response
 
-        if(decoded_response[1] == KLD2_Param.ERROR_ID):
+        if(decoded_response[1] == KLD2_Param_Class.ERROR):
             return KLD2_Status.ERROR, response
 
         return_val = int(decoded_response[4:6])
