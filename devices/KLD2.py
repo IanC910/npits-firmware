@@ -48,7 +48,12 @@ class KLD2_Param(Enum):
 
 class KLD2:
     DEFAULT_BAUD_RATE = 38400
-    RESPONSE_PREFIX = '@'
+
+    COMMAND_PREFIX      = '$'
+    COMMAND_SUFFIX      = '\r'
+
+    RESPONSE_PREFIX     = '@'
+    RESPONSE_SUFFIX     = '\r\n'
 
     def __init__(self, uart_device):
         self.serial = serial.Serial(uart_device, KLD2.DEFAULT_BAUD_RATE)
@@ -70,7 +75,7 @@ class KLD2:
 
 
     def get_param(self, param):
-        command = '$' + param + '\r'
+        command = self.COMMAND_PREFIX + param + self.COMMAND_SUFFIX
         self.serial.write(command.encode('utf-8'))
         response = self.serial.readline()
 
