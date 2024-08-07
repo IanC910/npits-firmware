@@ -13,7 +13,7 @@ def KLD2_sensitivity_pot_test():
     doppler = KLD2(pin_defines.KLD2_UART_DEVICE)
 
     while True:
-        status, pot_index = doppler.get_param(KLD2_Param.SENSITIVITY_POT_INDEX)
+        status, pot_index = doppler.try_get_param(KLD2_Param.SENSITIVITY_POT_INDEX)
         if(status == KLD2_Status.OK):
             print(pot_index)
         else:

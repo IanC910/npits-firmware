@@ -56,8 +56,10 @@ class KLD2:
     RESPONSE_PREFIX     = '@'
     RESPONSE_SUFFIX     = '\r\n'
 
+    UART_TIMEOUT        = 0.2
+
     def __init__(self, uart_device):
-        self.serial = serial.Serial(uart_device, KLD2.DEFAULT_BAUD_RATE)
+        self.serial = serial.Serial(uart_device, KLD2.DEFAULT_BAUD_RATE, timeout = self.UART_TIMEOUT)
 
         print('Initializing K-LD2...')
 
@@ -79,17 +81,20 @@ class KLD2:
 
 
 
-    def get_param(self, param):
+    def try_get_param(self, param, response_length = 8):
         if(not param in KLD2_Param):
             return KLD2_Status.ARGUMENT_ERROR, None
 
         command = self.COMMAND_PREFIX + param.value + self.COMMAND_SUFFIX
         self.serial.write(command.encode('utf-8'))
-        response = self.serial.readline()
+        response = self.serial.read(response_length)
 
         status, decoded_response = self._decode_response(response)
         if(status != KLD2_Status.OK):
             return status, response
+
+        if(len(decoded_response) != response_length):
+            return KLD2_Status.ERROR, decoded_response
 
         # C class responses don't require a response prefix
         if(param.value[0] == KLD2_Param_Class.COMPLEX_READ.value):
@@ -109,7 +114,7 @@ class KLD2:
 
 
 
-    def set_param(self, param, value):
+    def try_set_param(self, param, value, response_length = 8):
         if(not param in KLD2_Param):
             return KLD2_Status.ARGUMENT_ERROR, None
 
@@ -119,7 +124,7 @@ class KLD2:
 
         command = self.COMMAND_PREFIX + param.value + value_as_hex_str + self.COMMAND_SUFFIX
         self.serial.write(command.encode('utf-8'))
-        response = self.serial.readline()
+        response = self.serial.read(response_length)
 
         status, decoded_response = self._decode_response(response)
         if(status != KLD2_Status.OK):
@@ -136,8 +141,24 @@ class KLD2:
 
 
 
+    def guarantee_get_param(self, param, response_length = 8):
+        status = KLD2_Status.ERROR
+        while(status != KLD2_Status.OK):
+            status, response = self.try_get_param(param, response_length)
+        return status, response
+
+
+
+    def guarantee_set_param(self, param, value, response_length = 8):
+        status = KLD2_Status.ERROR
+        while(status != KLD2_Status.OK):
+            status, response = self.try_set_param(param, value, response_length)
+        return status, response
+
+
+
     def get_sampling_rate_Hz(self):
-        status, sampling_rate = self.get_param(KLD2_Param.SAMPLING_RATE)
+        status, sampling_rate = self.try_get_param(KLD2_Param.SAMPLING_RATE)
 
         if(status != KLD2_Status.OK):
             return status, sampling_rate
@@ -147,8 +168,9 @@ class KLD2:
 
 
 
-    def get_target_list(self):
-        status, target_string = self.get_param(KLD2_Param.TARGET_STRING)
+    def try_get_target_list(self):
+        TARGET_LIST_LENGTH = 18
+        status, target_string = self.try_get_param(KLD2_Param.TARGET_STRING, TARGET_LIST_LENGTH)
         if(status != KLD2_Status.OK):
             return status, target_string
 

@@ -15,7 +15,7 @@ def KLD2_set_sensitivity_test():
     SENSITIVITY_MAX = 9
     counter = 0
     while True:
-        status, sensitivity = doppler.set_param(KLD2_Param.SENSITIVITY, counter)
+        status, sensitivity = doppler.try_set_param(KLD2_Param.SENSITIVITY, counter)
         if(status == KLD2_Status.OK):
             print(sensitivity)
         else:
