@@ -1,7 +1,7 @@
 import btfpy
 import asyncio
 import random
-import multiprocessing as mp
+import multiprocessing
 
 def callback(clientnode, operation, cticn):
     if operation == btfpy.LE_CONNECT:
@@ -34,38 +34,38 @@ def init_bluetooth():
     btfpy.Set_le_wait(5000)
     btfpy.Le_pair(btfpy.Localnode(), btfpy.JUST_WORKS, 0)
 
-def run_le_server(conn):
+def run_le_server(update_queue):
     init_bluetooth()
     print("Starting LE server")
 
     def server_callback(clientnode, operation, cticn):
         result = callback(clientnode, operation, cticn)
-        if conn.poll():
-            temp_update = conn.recv()
+        if not update_queue.empty():
+            temp_update = update_queue.get()
             btfpy.Write_ctic(btfpy.Localnode(), 2, temp_update, 0)
         return result
 
-    btfpy.Le_server(server_callback, 1)
+    btfpy.Le_server(server_callback, 0)
     print("LE server stopped")
 
-async def update_ctic(conn):
+async def update_ctic(update_queue):
     print("Ctic update started")
     while True:
         out = "Random Value: " + str(random.randint(1, 10000))
         print(out)
-        conn.send(out)
+        update_queue.put(out)
         await asyncio.sleep(5)
 
 async def main():
-    conn1, conn2 = mp.Pipe()
+    update_queue = multiprocessing.Queue()
 
     # Start the LE server in a separate process
-    le_server_process = mp.Process(target=run_le_server, args=(conn1,))
-    # le_server_process.start()
+    le_server_process = multiprocessing.Process(target=run_le_server, args=(update_queue,))
+    le_server_process.start()
 
     try:
         # Start the temperature update coroutine
-        await update_ctic(conn2)
+        await update_ctic(update_queue)
     finally:
         # Ensure the LE server process is terminated
         le_server_process.terminate()
