@@ -1,6 +1,6 @@
 import btfpy
 import asyncio
-import random
+from gpiozero import CPUTemperature
 import multiprocessing
 
 def callback(clientnode, operation, cticn):
@@ -42,16 +42,17 @@ def run_le_server(update_queue):
         result = callback(clientnode, operation, cticn)
         if not update_queue.empty():
             temp_update = update_queue.get()
+            print("writing " + str(temp_update))
             btfpy.Write_ctic(btfpy.Localnode(), 2, temp_update, 0)
         return result
 
-    btfpy.Le_server(server_callback, 0)
+    btfpy.Le_server(server_callback, 10)
     print("LE server stopped")
 
-async def update_ctic(update_queue):
-    print("Ctic update started")
+async def update_temp(update_queue):
+    print("Temp update started")
     while True:
-        out = "Random Value: " + str(random.randint(1, 10000))
+        out = "CPU TEMP: " + str(CPUTemperature().temperature)
         print(out)
         update_queue.put(out)
         await asyncio.sleep(5)
@@ -65,7 +66,7 @@ async def main():
 
     try:
         # Start the temperature update coroutine
-        await update_ctic(update_queue)
+        await update_temp(update_queue)
     finally:
         # Ensure the LE server process is terminated
         le_server_process.terminate()
