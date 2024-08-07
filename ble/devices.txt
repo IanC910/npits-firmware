@@ -1,0 +1,12 @@
+     ; semicolon is comment char
+     ; This file must list all network devices - here are some examples
+     ; Set the local device's address on the first line below
+
+DEVICE = My Pi         TYPE=MESH    NODE=1  ADDRESS = B8:27:EB:36:C5:9E
+  PRIMARY_SERVICE = 1800
+    LECHAR = Device name  PERMIT=40  SIZE=16  UUID=2A00   ; index 0
+  PRIMARY_SERVICE = 0000222200001000800000805F9B34FB
+    LECHAR = My data  PERMIT=40  SIZE=16 UUID=ABCD        ; index 1
+    LECHAR = Info     PERMIT=0A  SIZE=16 UUID=0000111100001000800000805F9B34FB
+
+DEVICE=MOTO TYPE=classic node=7 ADDRESS = A0:46:5A:0B:9F:86
