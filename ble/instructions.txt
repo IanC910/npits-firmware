@@ -1,0 +1,13 @@
+to get bluetooth working, run the following commands in this directory:
+
+sudo apt-get install python3-setuptools
+sudo apt-get install python3-dev
+python3 btfpy.py build
+
+change the mac address on the first line in base_devices.txt to the mac address of the Pi
+rename (or copy and paste) base_devices.txt to devices.txt
+
+then, run the server with sudo python3 le_server.py
+(must use sudo)
+
+you might need to pip install gpiozero for the cpu temerature demo
