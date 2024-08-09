@@ -34,46 +34,26 @@ def init_bluetooth():
     btfpy.Set_le_wait(5000)
     btfpy.Le_pair(btfpy.Localnode(), btfpy.JUST_WORKS, 0)
 
-def run_le_server(update_queue):
+def run_le_server(write_queue, read_req_queue, read_resp_queue):
     init_bluetooth()
     print("Starting LE server")
 
     def server_callback(clientnode, operation, cticn):
-        result = callback(clientnode, operation, cticn)
-        if not update_queue.empty():
-            temp_update = update_queue.get()
-            print("writing " + str(temp_update))
-            btfpy.Write_ctic(btfpy.Localnode(), 0, temp_update, 0)
-        return result
+        cb_result = callback(clientnode, operation, cticn)
 
-    btfpy.Le_server(server_callback, 10)
+        if(not read_req_queue.empty()):
+            char_index = read_req_queue.get()
+            print("reading index " + str(char_index))
+            data = btfpy.Read_ctic(btfpy.Localnode(), char_index)
+            read_resp_queue.put((char_index, data))
+
+        elif(not write_queue.empty()):
+            char_index, data = write_queue.get()
+            print("writing " + str(data))
+            btfpy.Write_ctic(btfpy.Localnode(), char_index, data, 0)
+
+        return cb_result
+
+    LE_SERVER_CALLBACK_PERIOD_DS = 5
+    btfpy.Le_server(server_callback, LE_SERVER_CALLBACK_PERIOD_DS)
     print("LE server stopped")
-
-async def update_temp(update_queue):
-    print("Temp update started")
-    while True:
-        out = "CPU TEMP: " + str(CPUTemperature().temperature)
-        print(out)
-        update_queue.put(out)
-        await asyncio.sleep(5)
-
-async def main():
-    update_queue = multiprocessing.Queue()
-
-    # Start the LE server in a separate process
-    le_server_process = multiprocessing.Process(target=run_le_server, args=(update_queue,))
-    le_server_process.start()
-
-    try:
-        # Start the temperature update coroutine
-        await update_temp(update_queue)
-    finally:
-        # Ensure the LE server process is terminated
-        le_server_process.terminate()
-        le_server_process.join()
-
-if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    finally:
-        btfpy.Close_all()
