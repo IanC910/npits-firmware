@@ -10,7 +10,8 @@ from ble.BLE_Interface import BLE_Interface
 def ble_interface_test():
     print("BLE Interface Test")
 
-    phone_ble = BLE_Interface()
+    devices_file = "../ble/devices.txt"
+    phone_ble = BLE_Interface(devices_file)
 
     print("Temp update started")
     while True:
