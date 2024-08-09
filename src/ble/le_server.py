@@ -57,3 +57,5 @@ def run_le_server(write_queue, read_req_queue, read_resp_queue):
     LE_SERVER_CALLBACK_PERIOD_DS = 5
     btfpy.Le_server(server_callback, LE_SERVER_CALLBACK_PERIOD_DS)
     print("LE server stopped")
+
+    btfpy.Close_all()

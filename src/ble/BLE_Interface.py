@@ -1,5 +1,4 @@
 
-import btfpy
 import multiprocessing
 
 import le_server
@@ -21,7 +20,6 @@ class BLE_Interface:
         # Ensure the LE server process is terminated
         self._le_server_process.terminate()
         self._le_server_process.join()
-        btfpy.Close_all()
 
     def write(self, char_index, data):
         self._write_queue.put((char_index, data))
