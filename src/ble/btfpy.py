@@ -3,7 +3,7 @@ import os
 from setuptools import setup, Extension
 
 print("Removing any existing module")
-os.system('rm build/lib*/btfpy*.so')
+os.system('rm -f build/lib*/btfpy*.so')
 module1 = Extension(name='btfpy',sources=['btlib.c'],extra_compile_args=['-D BTFPYTHON'])
 ret = setup(name = 'BtfpyPackage',
              version = '1.0',
