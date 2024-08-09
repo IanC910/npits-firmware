@@ -27,7 +27,7 @@ def init_bluetooth():
     print("(My Pi) that defines the LE characteristics")
     print("Connection/pairing problems? See notes in le_server.py")
 
-    btfpy.Write_ctic(btfpy.Localnode(), 2, "Hello world PI", 0)
+    btfpy.Write_ctic(btfpy.Localnode(), 0, "Hello world PI", 0)
 
     randadd = [0xD3, 0x56, 0xDB, 0x24, 0x32, 0xA0]
     btfpy.Set_le_random_address(randadd)
@@ -43,7 +43,7 @@ def run_le_server(update_queue):
         if not update_queue.empty():
             temp_update = update_queue.get()
             print("writing " + str(temp_update))
-            btfpy.Write_ctic(btfpy.Localnode(), 2, temp_update, 0)
+            btfpy.Write_ctic(btfpy.Localnode(), 0, temp_update, 0)
         return result
 
     btfpy.Le_server(server_callback, 10)
