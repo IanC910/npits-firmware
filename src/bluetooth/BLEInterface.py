@@ -1,19 +1,18 @@
 
 import multiprocessing
 
-import ble.le_server
+import bluetooth.le_server
 
 class BLEInterface:
-    def __init__(self, devices_file):
+    def __init__(self):
         self._write_queue = multiprocessing.Queue()
         self._read_req_queue = multiprocessing.Queue()
         self._read_resp_queue = multiprocessing.Queue()
 
         # Start the LE server in a separate process
         self._le_server_process = multiprocessing.Process(
-            target = ble.le_server.run_le_server,
+            target = bluetooth.le_server.run_le_server,
             args = (
-                devices_file,
                 self._write_queue,
                 self._read_req_queue,
                 self._read_resp_queue

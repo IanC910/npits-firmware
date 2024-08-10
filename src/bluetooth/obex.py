@@ -1,20 +1,16 @@
-import btfpy
+
+from bluetooth import btfpy
 import os
+
+import bluetooth.init_bluetooth
 
 # must hard-code the phone's MAC in devices.txt and set it to node 4
 # for example:
 # DEVICE=MOTO TYPE=classic node=4 ADDRESS = A0:46:5A:0B:9F:86
 
-def init_bluetooth():
-    if btfpy.Init_blue("devices.txt") == 0:
-        exit(0)
+OBEX_NODE = 4
 
-    randadd = [0xD3, 0x56, 0xDB, 0x24, 0x32, 0xA0]
-    btfpy.Set_le_random_address(randadd)
-    btfpy.Set_le_wait(5000)
-    btfpy.Le_pair(btfpy.Localnode(), btfpy.JUST_WORKS, 0)
-
-def sendfileobex(node,filname):
+def obex_send_file(node, filname):
   connect = [0x80,0x00,0x07,0x10,0x00,0x01,0x90]
   disconnect = [0x81,0x00,0x03]
 
@@ -57,7 +53,7 @@ def sendfileobex(node,filname):
   btfpy.Write_node(node,connect,0)
 
   # wait for Success reply 0x0A
-  inbuf = btfpy.Read_node_endchar(node,btfpy.PACKET_ENDCHAR,btfpy.EXIT_TIMEOUT,5000)
+  inbuf = btfpy.Read_node_endchar(node, btfpy.PACKET_ENDCHAR, btfpy.EXIT_TIMEOUT, 5000)
   if(len(inbuf) == 0 or inbuf[0] != 0xA0):
     print("OBEX Connect failed")
     file.close()
@@ -117,7 +113,7 @@ def sendfileobex(node,filname):
       send[2] = k & 0xFF
       btfpy.Write_node(node,send,k)  # send k bytes
       # wait for Success reply 0x0A
-      inbuf = btfpy.Read_node_endchar(node,btfpy.PACKET_ENDCHAR,btfpy.EXIT_TIMEOUT,5000)
+      inbuf = btfpy.Read_node_endchar(node, btfpy.PACKET_ENDCHAR, btfpy.EXIT_TIMEOUT, 5000)
       if(len(inbuf) == 0 or (inbuf[0] != 0xA0 and inbuf[0] != 0x90)):
         print("Send failed")
         err = 1
@@ -127,26 +123,30 @@ def sendfileobex(node,filname):
 
   file.close()
 
-  btfpy.Write_node(node,disconnect,0)
+  btfpy.Write_node(node, disconnect, 0)
   # wait for Success reply 0x0A
-  inbuf = btfpy.Read_node_endchar(node,btfpy.PACKET_ENDCHAR,btfpy.EXIT_TIMEOUT,5000)
+  inbuf = btfpy.Read_node_endchar(node, btfpy.PACKET_ENDCHAR, btfpy.EXIT_TIMEOUT, 5000)
   if(len(inbuf) == 0 or inbuf[0] != 0xA0):
     print("OBEX Disconnect failed")
 
   return(1)
   # end sendfileobex
 
+def obex_connect_channel():
+    channel = btfpy.Find_channel(OBEX_NODE, btfpy.UUID_2, btfpy.Strtohex("1105"))
+    if(channel <= 0):
+        channel = btfpy.Find_channel(OBEX_NODE, btfpy.UUID_16, btfpy.Strtohex("00001105-0000-1000-8000-00805F9B34FB"))
+    if(channel <= 0):
+        print("\nERROR: OBEX service not found\n")
 
-init_bluetooth()
+    btfpy.Connect_node(OBEX_NODE, btfpy.CHANNEL_NEW, channel)
 
-channel = btfpy.Find_channel(4,btfpy.UUID_2,btfpy.Strtohex("1105"))
-if(channel <= 0):
-  channel = btfpy.Find_channel(4,btfpy.UUID_16,btfpy.Strtohex("00001105-0000-1000-8000-00805F9B34FB"))
-if(channel <= 0):
-  print("OBEX service not found")
-  btfpy.Close_all()
-  exit(0)
+def obex_init():
+    obex_connect_channel()
 
-btfpy.Connect_node(4,btfpy.CHANNEL_NEW,channel)
+if(__name__ == "__main__"):
+    bluetooth.init_bluetooth.init_bluetooth_and_pair('devices.txt')
 
-sendfileobex(4, "devices.txt")
+    obex_init()
+
+    obex_send_file(OBEX_NODE, "devices.txt")
