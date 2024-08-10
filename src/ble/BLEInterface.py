@@ -3,7 +3,7 @@ import multiprocessing
 
 import ble.le_server
 
-class BLE_Interface:
+class BLEInterface:
     def __init__(self, devices_file):
         self._write_queue = multiprocessing.Queue()
         self._read_req_queue = multiprocessing.Queue()

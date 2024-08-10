@@ -50,13 +50,16 @@ class KLD2_Param(Enum):
 class KLD2:
     DEFAULT_BAUD_RATE = 38400
 
-    COMMAND_PREFIX      = '$'
-    COMMAND_SUFFIX      = '\r'
+    COMMAND_PREFIX = '$'
+    COMMAND_SUFFIX = '\r'
 
-    RESPONSE_PREFIX     = '@'
-    RESPONSE_SUFFIX     = '\r\n'
+    RESPONSE_PREFIX = '@'
+    RESPONSE_SUFFIX = '\r\n'
 
-    UART_TIMEOUT        = 0.2
+    UART_TIMEOUT = 0.2
+
+    STANDARD_RESPONSE_LENGTH = 8
+    TARGET_LIST_LENGTH = 18
 
     def __init__(self, uart_device):
         self.serial = serial.Serial(uart_device, KLD2.DEFAULT_BAUD_RATE, timeout = self.UART_TIMEOUT)
@@ -81,7 +84,7 @@ class KLD2:
 
 
 
-    def try_get_param(self, param, response_length = 8):
+    def try_get_param(self, param, response_length = STANDARD_RESPONSE_LENGTH):
         if(not param in KLD2_Param):
             return KLD2_Status.ARGUMENT_ERROR, None
 
@@ -114,7 +117,7 @@ class KLD2:
 
 
 
-    def try_set_param(self, param, value, response_length = 8):
+    def try_set_param(self, param, value, response_length = STANDARD_RESPONSE_LENGTH):
         if(not param in KLD2_Param):
             return KLD2_Status.ARGUMENT_ERROR, None
 
@@ -141,7 +144,7 @@ class KLD2:
 
 
 
-    def guarantee_get_param(self, param, response_length = 8):
+    def guarantee_get_param(self, param, response_length = STANDARD_RESPONSE_LENGTH):
         status = KLD2_Status.ERROR
         while(status != KLD2_Status.OK):
             status, response = self.try_get_param(param, response_length)
@@ -149,7 +152,7 @@ class KLD2:
 
 
 
-    def guarantee_set_param(self, param, value, response_length = 8):
+    def guarantee_set_param(self, param, value, response_length = STANDARD_RESPONSE_LENGTH):
         status = KLD2_Status.ERROR
         while(status != KLD2_Status.OK):
             status, response = self.try_set_param(param, value, response_length)
@@ -169,7 +172,6 @@ class KLD2:
 
 
     def try_get_target_list(self):
-        TARGET_LIST_LENGTH = 18
         status, target_string = self.try_get_param(KLD2_Param.TARGET_STRING, TARGET_LIST_LENGTH)
         if(status != KLD2_Status.OK):
             return status, target_string

@@ -5,13 +5,13 @@ from gpiozero import CPUTemperature
 
 sys.path.append('../')
 
-from ble.BLE_Interface import BLE_Interface
+from ble.BLEInterface import BLEInterface
 
 def ble_interface_test():
     print("BLE Interface Test")
 
     devices_file = "../ble/devices.txt"
-    phone_ble = BLE_Interface(devices_file)
+    phone_ble = BLEInterface(devices_file)
 
     print("Temp update started")
     while True:
