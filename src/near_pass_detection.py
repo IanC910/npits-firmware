@@ -8,6 +8,7 @@ from devices.HCSR04 import HCSR04
 from devices.KLD2 import KLD2, KLD2_Param, KLD2_Status
 
 from bluetooth.BLEInterface import BLEInterface
+from bluetooth.Characteristic import Characteristic
 
 def init_doppler(doppler_radar: KLD2):
     doppler_radar.guarantee_set_param(KLD2_Param.SAMPLING_RATE, 6)
@@ -36,6 +37,7 @@ def run_near_pass_detector():
     NEAR_PASS_THRESHOLD_cm = 150 + HYSTERESIS_THRESHOLD_cm
 
     max_inbound_speed_kmph = 0
+    pass_distance_cm = NEAR_PASS_THRESHOLD_cm
 
     frame = 0
 
@@ -66,6 +68,10 @@ def run_near_pass_detector():
                     print('Avg D: %8.0f cm' % avg_distance_cm)
 
             case NearPassState.IN_NEAR_PASS:
+                # Get pass distance as min distance while in this state
+                if(avg_distance_cm < pass_distance_cm):
+                    pass_distance_cm = avg_distance_cm
+
                 if(avg_distance_cm > NEAR_PASS_THRESHOLD_cm + HYSTERESIS_THRESHOLD_cm):
                     curr_near_pass_state = NearPassState.NO_NEAR_PASS
                     print('Near Pass Over')
@@ -75,7 +81,11 @@ def run_near_pass_detector():
 
         if(prev_near_pass_state == NearPassState.IN_NEAR_PASS and curr_near_pass_state == NearPassState.NO_NEAR_PASS):
             print('Logging near pass')
-            phone_ble.write(0, '1')
+            phone_ble.write(Characteristic.SPEED, str(max_inbound_speed_kmph))
+            phone_ble.write(Characteristic.DISTANCE, str(pass_distance_cm))
+            phone_ble.write(Characteristic.NEAR_PASS_FLAG, '1')
+
             max_inbound_speed_kmph = 0
+            pass_distance_cm = NEAR_PASS_THRESHOLD_cm
 
         frame += 1
