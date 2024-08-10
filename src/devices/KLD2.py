@@ -172,7 +172,7 @@ class KLD2:
 
 
     def try_get_target_list(self):
-        status, target_string = self.try_get_param(KLD2_Param.TARGET_STRING, TARGET_LIST_LENGTH)
+        status, target_string = self.try_get_param(KLD2_Param.TARGET_STRING, self.TARGET_LIST_LENGTH)
         if(status != KLD2_Status.OK):
             return status, target_string
 
