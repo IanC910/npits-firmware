@@ -15,8 +15,9 @@ def init_doppler(doppler_radar: KLD2):
     doppler_radar.guarantee_set_param(KLD2_Param.USE_SENSITIVITY_POT, 0)
     doppler_radar.guarantee_set_param(KLD2_Param.SENSITIVITY, 7)
 
-def run_near_pass_detector():
+def run_near_pass_detector(near_pass_id_queue):
     print('Near Pass Detection Process Starting...')
+    near_pass_id = 1
 
     ble_interface = BLEInterface()
 
@@ -36,7 +37,7 @@ def run_near_pass_detector():
     HYSTERESIS_THRESHOLD_cm = 5
     NEAR_PASS_THRESHOLD_cm = 150 + HYSTERESIS_THRESHOLD_cm
 
-    max_inbound_speed_kmph = 0
+    pass_speed_kmph = 0
     pass_distance_cm = NEAR_PASS_THRESHOLD_cm
 
     frame = 0
@@ -53,8 +54,10 @@ def run_near_pass_detector():
         status, target_list = doppler.try_get_target_list()
         if(status == KLD2_Status.OK):
             inbound_speed_kmph = target_list[0]
-            if(inbound_speed_kmph > max_inbound_speed_kmph):
-                max_inbound_speed_kmph = inbound_speed_kmph
+
+            # Take the passing speed as the max inbound speed since the last pass (TODO: find a better way to do this)
+            if(inbound_speed_kmph > pass_speed_kmph):
+                pass_speed_kmph = inbound_speed_kmph
         else:
             print('K-LD2 Error: ' + status.name)
 
@@ -82,22 +85,24 @@ def run_near_pass_detector():
             case (NearPassState.IN_NEAR_PASS, NearPassState.NO_NEAR_PASS):
                 print('Near Pass Over')
                 print("Pass distance: %8.0f cm" % pass_distance_cm)
-                print("Inbound speed: %8.0f kmph" % max_inbound_speed_kmph)
+                print("Inbound speed: %8.0f kmph" % pass_speed_kmph)
 
                 # Send near pass data to phone
-                max_inbound_speed_kmph_as_str16 = "%16.0f" % max_inbound_speed_kmph
+                max_inbound_speed_kmph_as_str16 = "%16.0f" % pass_speed_kmph
                 pass_distance_cm_as_str16 = "%16.0f" % pass_distance_cm
                 near_pass_flag_as_str16  = "%16d" % 1
+                video_id_as_str16 = "%16d" % 0
 
                 ble_interface.write(Characteristic.SPEED, max_inbound_speed_kmph_as_str16)
                 ble_interface.write(Characteristic.DISTANCE, pass_distance_cm_as_str16)
                 ble_interface.write(Characteristic.NEAR_PASS_FLAG, near_pass_flag_as_str16)
+                ble_interface.write(Characteristic.VIDEO_ID, video_id_as_str16)
 
-                # TODO phone_ble.write(Characteristic.NEAR_PASS_ID, near_pass_id)
+                # Notifty other process of near pass
+                near_pass_id_queue.put(near_pass_id)
 
-                # near_pass_id_queue.put(near_pass_id)
-
-                max_inbound_speed_kmph = 0
+                # Reset near pass params
+                pass_speed_kmph = 0
                 pass_distance_cm = NEAR_PASS_THRESHOLD_cm
 
         time.sleep(0.01)

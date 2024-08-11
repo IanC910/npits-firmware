@@ -1,3 +1,5 @@
 
 __pycache__
 devices.txt
+bluetooth/build/*
+bluetooth/btfpy.so
