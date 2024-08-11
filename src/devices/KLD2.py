@@ -6,9 +6,11 @@ from enum import Enum
 
 class KLD2_Status(Enum):
     OK = 0
-    ARGUMENT_ERROR = 1
+    ERROR_CLASS_RESPONSE = 1
     DECODE_ERROR = 2
-    ERROR = 3
+    RESPONSE_LENGTH_MISMATCH = 3
+    BAD_RESPONSE = 4
+    ERROR = 20
 
 class KLD2_Param_Class(Enum):
     SYSTEM                  = 'S'
@@ -87,20 +89,20 @@ class KLD2:
             return status, response
 
         if(len(decoded_response) != response_length):
-            return KLD2_Status.ERROR, decoded_response
+            return KLD2_Status.RESPONSE_LENGTH_MISMATCH, decoded_response
 
         # C class responses don't require a response prefix
         if(param.value[0] == KLD2_Param_Class.COMPLEX_READ.value):
             if(decoded_response[0] == KLD2.RESPONSE_PREFIX):
-                return KLD2_Status.ERROR, decoded_response
+                return KLD2_Status.BAD_RESPONSE, decoded_response
 
             return status, decoded_response
 
         if(decoded_response[0] != KLD2.RESPONSE_PREFIX):
-            return KLD2_Status.ERROR, decoded_response
+            return KLD2_Status.BAD_RESPONSE, decoded_response
 
         if(decoded_response[1] == KLD2_Param_Class.ERROR.value):
-            return KLD2_Status.ERROR, decoded_response
+            return KLD2_Status.ERROR_CLASS_RESPONSE, decoded_response
 
         return_val = int(decoded_response[4:6])
         return KLD2_Status.OK, return_val
@@ -121,13 +123,13 @@ class KLD2:
             return status, response
 
         if(len(decoded_response) != response_length):
-            return KLD2_Status.ERROR, decoded_response
+            return KLD2_Status.RESPONSE_LENGTH_MISMATCH, decoded_response
 
         if(decoded_response[0] != KLD2.RESPONSE_PREFIX):
-            return KLD2_Status.ERROR, decoded_response
+            return KLD2_Status.BAD_RESPONSE, decoded_response
 
         if(decoded_response[1] == KLD2_Param_Class.ERROR.value):
-            return KLD2_Status.ERROR, decoded_response
+            return KLD2_Status.ERROR_CLASS_RESPONSE, decoded_response
 
         return_val = int(decoded_response[4:6])
         return KLD2_Status.OK, return_val
@@ -168,7 +170,7 @@ class KLD2:
             return status, target_string
 
         if not (target_string[3] == ';' and target_string[7] == ';' and target_string[11] == ';' and target_string[15] == ';'):
-            return KLD2_Status.ERROR, None
+            return KLD2_Status.BAD_RESPONSE, target_string
 
         try:
             inbound_speed_bin       = int(target_string[0:3])
@@ -176,7 +178,7 @@ class KLD2:
             inbound_magnitude_dB    = int(target_string[8:11])
             outbound_magnitude_dB   = int(target_string[12:15])
         except:
-            return KLD2_Status.ERROR, None
+            return KLD2_Status.BAD_RESPONSE, target_string
 
         # See 'Speed Measurement' (page 11/15) in K-LD2 Datasheet
         conversion_factor = self.sampling_rate_Hz / (256 * 44.7)
