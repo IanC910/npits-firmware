@@ -1,19 +1,18 @@
-import os
-import shutil
-import threading
-from time import sleep
-from picamera2 import Picamera2
-from picamera2.encoders import H264Encoder
+from contextlib import contextmanager
+
+@contextmanager
+def camera_context(output_folder, queue_size=10):
+    camera = Picamera2()
+    encoder = H264Encoder()
+    try:
+        yield camera, encoder
+    finally:
+        camera.close()
+        print("Camera closed.")
 
 class RearCameraModule:
     def __init__(self, output_folder, queue_size=10):
         self.output_folder = output_folder
-        general_folder = os.path.join(output_folder, "general")
-        if not os.path.exists(general_folder):
-            os.makedirs(general_folder)
-
-        self.camera = Picamera2()
-        self.encoder = H264Encoder()
         self.queue_size = queue_size
         self.current_index = 1  # Start with video1
         self.recording_length = 10  # Length of each video recording (in seconds)
@@ -22,19 +21,20 @@ class RearCameraModule:
         self.trigger_flag = threading.Event()  # Use threading.Event for flagging
 
     def start_recording_loop(self):
-        while True:
-            output_file = os.path.join(self.output_folder, f"general/video{self.current_index}.h264")
-            self.camera.configure(self.camera.create_video_configuration())
-            self.camera.start_recording(self.encoder, output_file)
-            print(f"Recording started: {output_file}")
-            sleep(self.recording_length)
-            self.camera.stop_recording()
-            print(f"Recording stopped and saved as {output_file}")
+        with camera_context(self.output_folder, self.queue_size) as (camera, encoder):
+            while True:
+                output_file = os.path.join(self.output_folder, f"general/video{self.current_index}.h264")
+                camera.configure(camera.create_video_configuration())
+                camera.start_recording(encoder, output_file)
+                print(f"Recording started: {output_file}")
+                sleep(self.recording_length)
+                camera.stop_recording()
+                print(f"Recording stopped and saved as {output_file}")
 
-            # Increment the index, and wrap around if it exceeds queue_size
-            self.current_index += 1
-            if self.current_index > self.queue_size:
-                self.current_index = 1  # Reset to video1
+                # Increment the index, and wrap around if it exceeds queue_size
+                self.current_index += 1
+                if self.current_index > self.queue_size:
+                    self.current_index = 1  # Reset to video1
 
     def flag_recording(self):
         while True:
