@@ -24,8 +24,6 @@ class RearCameraModule:
         self.current_index = 1  # Start with video1
         self.recording_length = 10  # Length of each video recording (in seconds)
         self.number_of_saved_recordings = 3  # Number of recordings to save
-        self.incident_number = 1  # Current incident number
-        self.trigger_flag = False  # Use threading.Event for flagging
 
     def start_recording_loop(self):
         with camera_context(self.output_folder, self.queue_size) as (camera, encoder):
@@ -43,39 +41,37 @@ class RearCameraModule:
                 if self.current_index > self.queue_size:
                     self.current_index = 1  # Reset to video1
 
-    def flag_recording(self):
+    def flag_recording(self, near_pass_id_queue):
         while True:
-            # Wait until the trigger flag is set
-
-            while not self.trigger_flag:
-                continue
-
-            index = self.current_index
-
-            print("Made it past the trigger_flag")
-            incident_folder = os.path.join(self.output_folder, f"recording_{self.incident_number}")
-            if not os.path.exists(incident_folder):
-                os.makedirs(incident_folder)
-
-            for i in range(self.number_of_saved_recordings):
-                source = os.path.join(self.output_folder, f"general/video{index}.h264")
-                destination = os.path.join(incident_folder, f"incident_number_{self.incident_number}_video{index}.h264")
-
-                # Move the file if it exists
-                if os.path.exists(source):
-                    shutil.move(source, destination)
-                    print(f"Moved video from {source} to {destination}")
+            if not near_pass_id_queue.empty():
+                near_pass_id = near_pass_id_queue.get()
+                if near_pass_id is None:
+                    print(f"Near pass is not legit!")
+                    continue
                 else:
-                    print(f"File not found: {source}")
+                    print(f"Near pass is detected with ID: {near_pass_id}")
 
-                index = index - 1
-                if index == 0:
-                    index = self.queue_size
+                    index = self.current_index
 
-            # Reset the trigger flag
-            self.trigger_flag = False
+                    incident_folder = os.path.join(self.output_folder, f"recording_{near_pass_id}")
+                    if not os.path.exists(incident_folder):
+                        os.makedirs(incident_folder)
 
-    def trigger_flagging(self):
-        # Set the trigger flag to start flagging recordings
-        self.trigger_flag = True
-        print("trigger flag gets set")
+                    for i in range(self.number_of_saved_recordings):
+                        source = os.path.join(self.output_folder, f"general/video{index}.h264")
+                        destination = os.path.join(incident_folder, f"incident_number_{near_pass_id}_video{index}.h264")
+
+                        # Move the file if it exists
+                        if os.path.exists(source):
+                            shutil.move(source, destination)
+                            print(f"Moved video from {source} to {destination}")
+                        else:
+                            print(f"File not found: {source}")
+
+                        index = index - 1
+                        if index == 0:
+                            index = self.queue_size
+                    
+            else:
+                continue
+                
