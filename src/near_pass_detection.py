@@ -59,7 +59,7 @@ def run_near_pass_detector(near_pass_id_queue: multiprocessing.Queue):
             if(inbound_speed_kmph > pass_speed_kmph):
                 pass_speed_kmph = inbound_speed_kmph
         else:
-            print('K-LD2 Error: ' + status.name)
+            print('K-LD2 Error: ' + status.name + ', ' + target_list)
 
         prev_near_pass_state = curr_near_pass_state
 
