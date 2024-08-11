@@ -44,9 +44,6 @@ def run_near_pass_detector(near_pass_id_queue: multiprocessing.Queue):
     frame = 0
 
     while True:
-        if(frame % 10 == 0):
-            print('---')
-
         distance_cm = ultrasonic.get_distance_cm()
         distance_cm_running_avg.sample(distance_cm)
         avg_distance_cm = distance_cm_running_avg.get()
@@ -89,13 +86,14 @@ def run_near_pass_detector(near_pass_id_queue: multiprocessing.Queue):
                 print("Inbound speed: %8.0f kmph" % pass_speed_kmph)
 
                 # Send near pass data to phone
-                max_inbound_speed_kmph_as_str16 = ("%16.0f" % pass_speed_kmph)
-                pass_distance_cm_as_str16 = ("%16.0f") % pass_distance_cm
-                near_pass_flag_as_str16  = ("%16d" % 1)
-                video_id_as_str16 = ("%16d" % 0)
+                time_stamp_as_str16         = "%16d" % 0
+                pass_speed_kmph_as_str16    = "%16.0f" % pass_speed_kmph
+                pass_distance_cm_as_str16   = "%16.0f" % pass_distance_cm
+                video_id_as_str16           = "%16d" % 0
+                near_pass_flag_as_str16     = "%16d" % 1
 
-                # TODO ble_interface.write(Characteristic.TIME_STAMP.value, time_stamp)
-                ble_interface.write(Characteristic.SPEED.value,             max_inbound_speed_kmph_as_str16)
+                ble_interface.write(Characteristic.TIME_STAMP.value,        time_stamp_as_str16)
+                ble_interface.write(Characteristic.SPEED.value,             pass_speed_kmph_as_str16)
                 ble_interface.write(Characteristic.DISTANCE.value,          pass_distance_cm_as_str16)
                 ble_interface.write(Characteristic.VIDEO_ID.value,          video_id_as_str16)
                 ble_interface.write(Characteristic.NEAR_PASS_FLAG.value,    near_pass_flag_as_str16)
