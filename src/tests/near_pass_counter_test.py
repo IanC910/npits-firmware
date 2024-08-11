@@ -23,6 +23,9 @@ def near_pass_counter_test():
 
     ultrasonic = HCSR04(pin_defines.HCSR04_TRIG_GPIO, pin_defines.HCSR04_ECHO_GPIO)
     doppler = KLD2(pin_defines.KLD2_UART_DEVICE)
+    doppler.guarantee_set_param(KLD2_Param.SAMPLING_RATE, 6)
+    doppler.guarantee_set_param(KLD2_Param.USE_SENSITIVITY_POT, 0)
+    doppler.guarantee_set_param(KLD2_Param.SENSITIVITY, 7)
 
     curr_near_pass_state = NearPassState.NO_NEAR_PASS
 
