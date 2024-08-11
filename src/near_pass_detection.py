@@ -89,15 +89,16 @@ def run_near_pass_detector(near_pass_id_queue: multiprocessing.Queue):
                 print("Inbound speed: %8.0f kmph" % pass_speed_kmph)
 
                 # Send near pass data to phone
-                max_inbound_speed_kmph_as_str16 = "%16.0f" % pass_speed_kmph
-                pass_distance_cm_as_str16 = "%16.0f" % pass_distance_cm
-                near_pass_flag_as_str16  = "%16d" % 1
-                video_id_as_str16 = "%16d" % 0
+                max_inbound_speed_kmph_as_str16 = ("%16.0f" % pass_speed_kmph)
+                pass_distance_cm_as_str16 = ("%16.0f") % pass_distance_cm
+                near_pass_flag_as_str16  = ("%16d" % 1)
+                video_id_as_str16 = ("%16d" % 0)
 
-                ble_interface.write(Characteristic.SPEED, max_inbound_speed_kmph_as_str16)
-                ble_interface.write(Characteristic.DISTANCE, pass_distance_cm_as_str16)
-                ble_interface.write(Characteristic.NEAR_PASS_FLAG, near_pass_flag_as_str16)
-                ble_interface.write(Characteristic.VIDEO_ID, video_id_as_str16)
+                # TODO ble_interface.write(Characteristic.TIME_STAMP.value, time_stamp)
+                ble_interface.write(Characteristic.SPEED.value,             max_inbound_speed_kmph_as_str16)
+                ble_interface.write(Characteristic.DISTANCE.value,          pass_distance_cm_as_str16)
+                ble_interface.write(Characteristic.VIDEO_ID.value,          video_id_as_str16)
+                ble_interface.write(Characteristic.NEAR_PASS_FLAG.value,    near_pass_flag_as_str16)
 
                 # Notifty other process of near pass
                 near_pass_id_queue.put(near_pass_id)
