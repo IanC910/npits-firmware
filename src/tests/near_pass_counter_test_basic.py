@@ -15,8 +15,8 @@ class NearPassState(Enum):
     NEAR_PASS_CLOSE = 1
     NEAR_PASS_FAR = 2
 
-def near_pass_counter_test():
-    print('Near Pass Counter Test')
+def near_pass_counter_test_basic():
+    print('Near Pass Counter Test Basic')
 
     new_sample_weight = 0.65
     distance_cm_running_avg = RunningAvg(new_sample_weight, 1000)
@@ -95,4 +95,4 @@ def near_pass_counter_test():
         frame += 1
 
 if(__name__ == "__main__"):
-    near_pass_counter_test()
+    near_pass_counter_test_basic()
