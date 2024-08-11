@@ -5,11 +5,9 @@ from gpiozero import LED # Import LED from gpiozero
 
 import pin_defines
 import bluetooth.init_bluetooth
-import bluetooth.obex
-from recording import run_recording_process
 
+from recording import run_recording_process
 from near_pass_detection import run_near_pass_detector
-from devices import RearCameraModule
 
 class NPITS():
 
@@ -24,20 +22,30 @@ class NPITS():
 
         # Start bluetooth and pair with phone
         bluetooth.init_bluetooth.init_bluetooth_and_pair(self.DEVICES_FILE)
-
-        # Connect the obex channel
-        # bluetooth.obex.obex_init()
-
+   
     def run(self):
 
         near_pass_id_queue = multiprocessing.Queue()
 
         # Start recording process
-        # recording_process = multiprocessing.Process(target=run_recording_process, args=(near_pass_id_queue,))
-        # recording_process.start()
+        recording_process = multiprocessing.Process(target=run_recording_process, args=(near_pass_id_queue,))
+        near_pass_process = multiprocessing.Process(target=run_near_pass_detector, args=(near_pass_id_queue,))
+        
+        try:
+            recording_process.start()
+            near_pass_process.start()
 
-        run_near_pass_detector(near_pass_id_queue)
+            recording_process.join()
+            near_pass_process.join()
+        except KeyboardInterrupt:
+            print("Main process interrupted with keyboard")
+            print("Terminating all child processes")
+            recording_process.terminate()
+            near_pass_process.terminate()
+            
+            recording_process.join()
+            near_pass_process.join()
+        finally:
+            print("All processes have been terminated")
 
-        # Cleanup
-        #  recording_process.join()
 

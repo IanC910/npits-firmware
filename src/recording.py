@@ -23,16 +23,5 @@ def recording_thread(camera_module):
     camera_module.start_recording_loop()
 
 def flagging_thread(camera_module, near_pass_id_queue):
-    while True:
-        if not near_pass_id_queue.empty():
-            near_pass_id = near_pass_id_queue.get()
-            if near_pass_id is not None:
-                print(f"Near pass detected with ID: {near_pass_id}")
-                camera_module.near_pass_id = near_pass_id
-                camera_module.trigger_flagging()
-            else:
-                continue
-
-        sleep(0.1)  # Polling interval
-
+    camera_module.flag_recording(near_pass_id_queue)
 

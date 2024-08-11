@@ -12,13 +12,14 @@ from bluetooth.BLEInterface import BLEInterface
 from bluetooth.Characteristic import Characteristic
 
 def init_doppler(doppler_radar: KLD2):
+    print('Configuring K-LD2...')
     doppler_radar.guarantee_set_param(KLD2_Param.SAMPLING_RATE, 6)
     doppler_radar.guarantee_set_param(KLD2_Param.USE_SENSITIVITY_POT, 0)
     doppler_radar.guarantee_set_param(KLD2_Param.SENSITIVITY, 7)
+    print('Done Configuring K-LD2')
 
 def run_near_pass_detector(near_pass_id_queue: multiprocessing.Queue):
     print('Near Pass Detection Process Starting...')
-    near_pass_id = 1
 
     ble_interface = BLEInterface()
 
@@ -34,6 +35,7 @@ def run_near_pass_detector(near_pass_id_queue: multiprocessing.Queue):
         IN_NEAR_PASS = 1
 
     curr_near_pass_state = NearPassState.NO_NEAR_PASS
+    near_pass_id = 0
 
     HYSTERESIS_THRESHOLD_cm = 5
     NEAR_PASS_THRESHOLD_cm = 150 + HYSTERESIS_THRESHOLD_cm
@@ -44,9 +46,6 @@ def run_near_pass_detector(near_pass_id_queue: multiprocessing.Queue):
     frame = 0
 
     while True:
-        if(frame % 10 == 0):
-            print('---')
-
         distance_cm = ultrasonic.get_distance_cm()
         distance_cm_running_avg.sample(distance_cm)
         avg_distance_cm = distance_cm_running_avg.get()
@@ -61,7 +60,7 @@ def run_near_pass_detector(near_pass_id_queue: multiprocessing.Queue):
                 pass_speed_kmph = inbound_speed_kmph
         else:
             print('K-LD2 Error: ' + status.name)
-
+            print(target_list)
         prev_near_pass_state = curr_near_pass_state
 
         # State Machine
@@ -89,13 +88,14 @@ def run_near_pass_detector(near_pass_id_queue: multiprocessing.Queue):
                 print("Inbound speed: %8.0f kmph" % pass_speed_kmph)
 
                 # Send near pass data to phone
-                max_inbound_speed_kmph_as_str16 = ("%16.0f" % pass_speed_kmph)
-                pass_distance_cm_as_str16 = ("%16.0f") % pass_distance_cm
-                near_pass_flag_as_str16  = ("%16d" % 1)
-                video_id_as_str16 = ("%16d" % 0)
+                time_stamp_as_str16         = "%16d" % 0
+                pass_speed_kmph_as_str16    = "%16.0f" % pass_speed_kmph
+                pass_distance_cm_as_str16   = "%16.0f" % pass_distance_cm
+                video_id_as_str16           = "%16d" % 0
+                near_pass_flag_as_str16     = "%16d" % 1
 
-                # TODO ble_interface.write(Characteristic.TIME_STAMP.value, time_stamp)
-                ble_interface.write(Characteristic.SPEED.value,             max_inbound_speed_kmph_as_str16)
+                ble_interface.write(Characteristic.TIME_STAMP.value,        time_stamp_as_str16)
+                ble_interface.write(Characteristic.SPEED.value,             pass_speed_kmph_as_str16)
                 ble_interface.write(Characteristic.DISTANCE.value,          pass_distance_cm_as_str16)
                 ble_interface.write(Characteristic.VIDEO_ID.value,          video_id_as_str16)
                 ble_interface.write(Characteristic.NEAR_PASS_FLAG.value,    near_pass_flag_as_str16)
@@ -106,7 +106,6 @@ def run_near_pass_detector(near_pass_id_queue: multiprocessing.Queue):
                 # Reset near pass params
                 pass_speed_kmph = 0
                 pass_distance_cm = NEAR_PASS_THRESHOLD_cm
-
-        time.sleep(0.01)
+                near_pass_id += 1
 
         frame += 1
