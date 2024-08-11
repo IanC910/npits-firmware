@@ -85,7 +85,7 @@ def run_near_pass_detector(near_pass_id_queue):
             phone_ble.write(Characteristic.SPEED, str(max_inbound_speed_kmph))
             phone_ble.write(Characteristic.DISTANCE, str(pass_distance_cm))
             phone_ble.write(Characteristic.NEAR_PASS_FLAG, '1')
-            near_pass_id_queue.queue.put(near_pass_id)
+            near_pass_id_queue.put(near_pass_id)
             
             near_pass_id+=1
             max_inbound_speed_kmph = 0
