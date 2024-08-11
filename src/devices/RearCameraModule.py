@@ -1,3 +1,10 @@
+import os
+import shutil
+import threading
+from time import sleep
+from picamera2 import Picamera2
+from picamera2.encoders import H264Encoder
+
 from contextlib import contextmanager
 
 @contextmanager
@@ -18,7 +25,7 @@ class RearCameraModule:
         self.recording_length = 10  # Length of each video recording (in seconds)
         self.number_of_saved_recordings = 3  # Number of recordings to save
         self.incident_number = 1  # Current incident number
-        self.trigger_flag = threading.Event()  # Use threading.Event for flagging
+        self.trigger_flag = False  # Use threading.Event for flagging
 
     def start_recording_loop(self):
         with camera_context(self.output_folder, self.queue_size) as (camera, encoder):
@@ -39,10 +46,13 @@ class RearCameraModule:
     def flag_recording(self):
         while True:
             # Wait until the trigger flag is set
-            self.trigger_flag.wait()
+
+            while not self.trigger_flag:
+                continue
 
             index = self.current_index
 
+            print("Made it past the trigger_flag")
             incident_folder = os.path.join(self.output_folder, f"recording_{self.incident_number}")
             if not os.path.exists(incident_folder):
                 os.makedirs(incident_folder)
@@ -63,8 +73,9 @@ class RearCameraModule:
                     index = self.queue_size
 
             # Reset the trigger flag
-            self.trigger_flag.clear()
+            self.trigger_flag = False
 
     def trigger_flagging(self):
         # Set the trigger flag to start flagging recordings
-        self.trigger_flag.set()
+        self.trigger_flag = True
+        print("trigger flag gets set")
