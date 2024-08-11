@@ -131,6 +131,9 @@ class KLD2:
         if(status != KLD2_Status.OK):
             return status, response
 
+        if(len(decoded_response) != response_length):
+            return KLD2_Status.ERROR, decoded_response
+
         if(decoded_response[0] != KLD2.RESPONSE_PREFIX):
             return KLD2_Status.ERROR, decoded_response
 
