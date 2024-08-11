@@ -48,7 +48,7 @@ def run_near_pass_detector():
         distance_cm = ultrasonic.get_distance_cm()
         distance_cm_running_avg.sample(distance_cm)
         avg_distance_cm = distance_cm_running_avg.get()
-        print("%8.0f" % avg_distance_cm)
+        print("    %8.0f" % avg_distance_cm)
 
         status, target_list = doppler.try_get_target_list()
         if(status == KLD2_Status.OK):
@@ -60,12 +60,11 @@ def run_near_pass_detector():
 
         prev_near_pass_state = curr_near_pass_state
 
+        # State Machine
         match curr_near_pass_state:
             case NearPassState.NO_NEAR_PASS:
                 if(avg_distance_cm < NEAR_PASS_THRESHOLD_cm - HYSTERESIS_THRESHOLD_cm):
                     curr_near_pass_state = NearPassState.IN_NEAR_PASS
-                    print('In Near Pass')
-                    print('Avg D: %8.0f cm' % avg_distance_cm)
 
             case NearPassState.IN_NEAR_PASS:
                 # Get pass distance as min distance while in this state
@@ -74,21 +73,28 @@ def run_near_pass_detector():
 
                 if(avg_distance_cm > NEAR_PASS_THRESHOLD_cm + HYSTERESIS_THRESHOLD_cm):
                     curr_near_pass_state = NearPassState.NO_NEAR_PASS
-                    print('Near Pass Over')
-                    print('Avg D: %8.0f cm' % avg_distance_cm)
-                    print("Inbound speed: %8.0f kmph" % max_inbound_speed_kmph)
-                    print('')
 
-        if(prev_near_pass_state == NearPassState.IN_NEAR_PASS and curr_near_pass_state == NearPassState.NO_NEAR_PASS):
-            print('Logging near pass')
-            phone_ble.write(Characteristic.SPEED, str(max_inbound_speed_kmph))
-            phone_ble.write(Characteristic.DISTANCE, str(pass_distance_cm))
-            phone_ble.write(Characteristic.NEAR_PASS_FLAG, '1')
-            # queue.put(near_pass_id)
+        # On state transition
+        match (prev_near_pass_state, curr_near_pass_state):
+            case (NearPassState.NO_NEAR_PASS, NearPassState.IN_NEAR_PASS):
+                print('Near Pass started')
 
-            # TODO: get video ID? send video?
+            case (NearPassState.IN_NEAR_PASS, NearPassState.NO_NEAR_PASS):
+                print('Near Pass Over')
+                print("Pass distance: %8.0f cm" % pass_distance_cm)
+                print("Inbound speed: %8.0f kmph" % max_inbound_speed_kmph)
 
-            max_inbound_speed_kmph = 0
-            pass_distance_cm = NEAR_PASS_THRESHOLD_cm
+                # Send near pass data to phone
+                phone_ble.write(Characteristic.SPEED, str(max_inbound_speed_kmph))
+                phone_ble.write(Characteristic.DISTANCE, str(pass_distance_cm))
+                phone_ble.write(Characteristic.NEAR_PASS_FLAG, '1')
+                # TODO phone_ble.write(Characteristic.NEAR_PASS_ID, near_pass_id)
+
+                # near_pass_id_queue.put(near_pass_id)
+
+                max_inbound_speed_kmph = 0
+                pass_distance_cm = NEAR_PASS_THRESHOLD_cm
+
+        time.sleep(0.01)
 
         frame += 1

@@ -22,16 +22,16 @@ class NPITS():
 
         # Init GPIO
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(pin_defines.POWER_LED_GPIO, GPIO.OUT)
+        # GPIO.setup(pin_defines.POWER_LED_GPIO, GPIO.OUT)
 
         # Turn power LED on
-        GPIO.output(pin_defines.POWER_LED_GPIO, GPIO.HIGH)
+        # GPIO.output(pin_defines.POWER_LED_GPIO, GPIO.HIGH)
 
         # Start bluetooth and pair with phone
-        bluetooth.init_bluetooth.init_bluetooth_and_pair(self.DEVICES_FILE)
+        # bluetooth.init_bluetooth.init_bluetooth_and_pair(self.DEVICES_FILE)
 
         # Connect the obex channel
-        bluetooth.obex.obex_init()
+        # bluetooth.obex.obex_init()
 
 
 
