@@ -30,7 +30,7 @@ class RearCameraModule:
             sleep(self.recording_length)
             self.camera.stop_recording()
             print(f"Recording stopped and saved as {output_file}")
-                
+
             # Increment the index, and wrap around if it exceeds queue_size
             self.current_index += 1
             if self.current_index > self.queue_size:
@@ -39,7 +39,12 @@ class RearCameraModule:
     def flag_recording(self):
         while True:
             # Wait until the trigger flag is set
-            self.trigger_flag.wait()
+            # self.trigger_flag.wait()
+
+            while True:
+                # if not queue.empty()
+                #   break
+                # sleep for a bit
 
             index = self.current_index - 1
             if index == 0:
@@ -85,7 +90,7 @@ if __name__ == "__main__":
     # Example of triggering the flagging process after some time
     sleep(60)  # Wait for 60 seconds before triggering flagging
     camera_module.trigger_flagging()
-    
+
     # Wait for threads to complete (they run indefinitely in this case)
     recording_thread.join()
     flagging_thread.join()

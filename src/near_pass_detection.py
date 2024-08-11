@@ -84,6 +84,9 @@ def run_near_pass_detector():
             phone_ble.write(Characteristic.SPEED, str(max_inbound_speed_kmph))
             phone_ble.write(Characteristic.DISTANCE, str(pass_distance_cm))
             phone_ble.write(Characteristic.NEAR_PASS_FLAG, '1')
+            # queue.put(near_pass_id)
+
+            # TODO: get video ID? send video?
 
             max_inbound_speed_kmph = 0
             pass_distance_cm = NEAR_PASS_THRESHOLD_cm

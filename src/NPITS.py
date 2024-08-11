@@ -37,7 +37,11 @@ class NPITS():
 
     def run(self):
 
+        # Start recording process
+
         run_near_pass_detector()
+
+        # Start
 
         # # Initialize the camera module and BLE interface
         # camera_module = RearCameraModule(output_folder="/home/pi/output_folder", queue_size=10)
