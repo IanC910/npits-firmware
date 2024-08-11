@@ -1,7 +1,6 @@
-
 import os
 import shutil
-import RPi.GPIO as GPIO # TODO change to gpiozero (RPI.GPIO doesn't work on pi5)
+from gpiozero import LED # Import LED from gpiozero
 
 import pin_defines
 import bluetooth.init_bluetooth
@@ -16,12 +15,11 @@ class NPITS():
 
     def __init__(self):
         
-        # Init GPIO
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(pin_defines.POWER_LED_GPIO, GPIO.OUT)
+        # Initialize the power LED using gpiozero
+        self.power_led = LED(pin_defines.POWER_LED_GPIO)
 
         # Turn power LED on
-        GPIO.output(pin_defines.POWER_LED_GPIO, GPIO.HIGH)
+        self.power_led.on()
 
         # Start bluetooth and pair with phone
         bluetooth.init_bluetooth.init_bluetooth_and_pair(self.DEVICES_FILE)
