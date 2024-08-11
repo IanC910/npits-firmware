@@ -25,14 +25,14 @@ def run_le_server(write_queue, read_req_queue, read_resp_queue):
 
         if(not read_req_queue.empty()):
             char_index = read_req_queue.get()
-            print("reading index " + str(char_index))
             data = btfpy.Read_ctic(btfpy.Localnode(), char_index)
             read_resp_queue.put((char_index, data))
+            print("le server read: " + str(char_index) + ", " + str(data))
 
         elif(not write_queue.empty()):
             char_index, data = write_queue.get()
-            print("writing " + str(data))
             btfpy.Write_ctic(btfpy.Localnode(), char_index, data, 0)
+            print("le server write: " + str(char_index) + ", " + str(data))
 
         return cb_result
 
