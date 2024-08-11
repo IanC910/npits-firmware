@@ -1,17 +1,20 @@
 
 import time
 import sys
+import bluetooth.init_bluetooth
+import bluetooth.BLEInterface
 from gpiozero import CPUTemperature
 
 sys.path.append('../')
 
-from ble.BLEInterface import BLEInterface
+import bluetooth
 
 def ble_interface_test():
     print("BLE Interface Test")
 
     devices_file = "../ble/devices.txt"
-    phone_ble = BLEInterface(devices_file)
+    bluetooth.init_bluetooth.init_bluetooth_and_pair(devices_file)
+    phone_ble = bluetooth.BLEInterface.BLEInterface()
 
     print("Temp update started")
     while True:

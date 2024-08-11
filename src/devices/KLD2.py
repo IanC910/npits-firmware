@@ -66,9 +66,7 @@ class KLD2:
 
         print('Initializing K-LD2...')
 
-        status = KLD2_Status.ERROR
-        while(status != KLD2_Status.OK):
-            status, self.sampling_rate_Hz = self.get_sampling_rate_Hz()
+        self.guarantee_set_param(KLD2_Param.SAMPLING_RATE, 2)
 
         print('Done Initializing K-LD2')
 
@@ -133,6 +131,9 @@ class KLD2:
         if(status != KLD2_Status.OK):
             return status, response
 
+        if(len(decoded_response) != response_length):
+            return KLD2_Status.ERROR, decoded_response
+
         if(decoded_response[0] != KLD2.RESPONSE_PREFIX):
             return KLD2_Status.ERROR, decoded_response
 
@@ -156,18 +157,12 @@ class KLD2:
         status = KLD2_Status.ERROR
         while(status != KLD2_Status.OK):
             status, response = self.try_set_param(param, value, response_length)
+
+        match(param):
+            case KLD2_Param.SAMPLING_RATE:
+                self.sampling_rate_Hz = 1280 * response
+
         return status, response
-
-
-
-    def get_sampling_rate_Hz(self):
-        status, sampling_rate = self.try_get_param(KLD2_Param.SAMPLING_RATE)
-
-        if(status != KLD2_Status.OK):
-            return status, sampling_rate
-
-        self.sampling_rate_Hz = 1280 * sampling_rate
-        return KLD2_Status.OK, self.sampling_rate_Hz
 
 
 

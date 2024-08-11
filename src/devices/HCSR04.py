@@ -1,32 +1,30 @@
-
 # This module provides interfacing methods for the HC-SR04 ultrasonic sensor
 
-import RPi.GPIO as gpio
+from gpiozero import DigitalInputDevice, DigitalOutputDevice
 import time
 
 SPEED_OF_SOUND_CM_PER_S = 34300
 
 class HCSR04:
     def __init__(self, trig_gpio, echo_gpio):
-        self.trig_gpio = trig_gpio
-        self.echo_gpio = echo_gpio
-
-        gpio.setmode(gpio.BCM)
-        gpio.setup(trig_gpio, gpio.OUT)
-        gpio.setup(echo_gpio, gpio.IN)
+        self.trig_gpio = DigitalOutputDevice(trig_gpio)
+        self.echo_gpio = DigitalInputDevice(echo_gpio)
 
     def get_distance_cm(self):
-        # 10 us pulse on trig pin
-        gpio.output(self.trig_gpio, gpio.HIGH)
+        # 10 µs pulse on trig pin
+        self.trig_gpio.on()
         ten_us_in_s = 0.00001
         time.sleep(ten_us_in_s)
-        gpio.output(self.trig_gpio, gpio.LOW)
+        self.trig_gpio.off()
 
         # Measure duration of pulse on echo pin
-        while(gpio.input(self.echo_gpio) == 0):
+        pulse_start_s = None
+        pulse_end_s = None
+
+        while not self.echo_gpio.is_active:
             pulse_start_s = time.time()
 
-        while(gpio.input(self.echo_gpio) == 1):
+        while self.echo_gpio.is_active:
             pulse_end_s = time.time()
 
         pulse_duration_s = pulse_end_s - pulse_start_s

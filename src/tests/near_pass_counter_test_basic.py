@@ -15,14 +15,17 @@ class NearPassState(Enum):
     NEAR_PASS_CLOSE = 1
     NEAR_PASS_FAR = 2
 
-def near_pass_counter_test():
-    print('Near Pass Counter Test')
+def near_pass_counter_test_basic():
+    print('Near Pass Counter Test Basic')
 
     new_sample_weight = 0.65
     distance_cm_running_avg = RunningAvg(new_sample_weight, 1000)
 
     ultrasonic = HCSR04(pin_defines.HCSR04_TRIG_GPIO, pin_defines.HCSR04_ECHO_GPIO)
     doppler = KLD2(pin_defines.KLD2_UART_DEVICE)
+    doppler.guarantee_set_param(KLD2_Param.SAMPLING_RATE, 6)
+    doppler.guarantee_set_param(KLD2_Param.USE_SENSITIVITY_POT, 0)
+    doppler.guarantee_set_param(KLD2_Param.SENSITIVITY, 7)
 
     curr_near_pass_state = NearPassState.NO_NEAR_PASS
 
@@ -92,4 +95,4 @@ def near_pass_counter_test():
         frame += 1
 
 if(__name__ == "__main__"):
-    near_pass_counter_test()
+    near_pass_counter_test_basic()
