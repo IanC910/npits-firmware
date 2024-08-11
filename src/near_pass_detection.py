@@ -12,13 +12,14 @@ from bluetooth.BLEInterface import BLEInterface
 from bluetooth.Characteristic import Characteristic
 
 def init_doppler(doppler_radar: KLD2):
+    print('Configuring K-LD2...')
     doppler_radar.guarantee_set_param(KLD2_Param.SAMPLING_RATE, 6)
     doppler_radar.guarantee_set_param(KLD2_Param.USE_SENSITIVITY_POT, 0)
     doppler_radar.guarantee_set_param(KLD2_Param.SENSITIVITY, 7)
+    print('Done Configuring K-LD2')
 
 def run_near_pass_detector(near_pass_id_queue: multiprocessing.Queue):
     print('Near Pass Detection Process Starting...')
-    near_pass_id = 1
 
     ble_interface = BLEInterface()
 
@@ -34,6 +35,7 @@ def run_near_pass_detector(near_pass_id_queue: multiprocessing.Queue):
         IN_NEAR_PASS = 1
 
     curr_near_pass_state = NearPassState.NO_NEAR_PASS
+    near_pass_id = 0
 
     HYSTERESIS_THRESHOLD_cm = 5
     NEAR_PASS_THRESHOLD_cm = 150 + HYSTERESIS_THRESHOLD_cm
@@ -104,7 +106,6 @@ def run_near_pass_detector(near_pass_id_queue: multiprocessing.Queue):
                 # Reset near pass params
                 pass_speed_kmph = 0
                 pass_distance_cm = NEAR_PASS_THRESHOLD_cm
-
-        time.sleep(0.01)
+                near_pass_id += 1
 
         frame += 1

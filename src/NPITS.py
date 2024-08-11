@@ -5,11 +5,9 @@ from gpiozero import LED # Import LED from gpiozero
 
 import pin_defines
 import bluetooth.init_bluetooth
-import bluetooth.obex
-from recording import run_recording_process
 
+from recording import run_recording_process
 from near_pass_detection import run_near_pass_detector
-from devices import RearCameraModule
 
 class NPITS():
 
@@ -25,7 +23,6 @@ class NPITS():
         # Start bluetooth and pair with phone
         bluetooth.init_bluetooth.init_bluetooth_and_pair(self.DEVICES_FILE)
    
-
     def run(self):
 
         near_pass_id_queue = multiprocessing.Queue()

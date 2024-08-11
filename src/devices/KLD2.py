@@ -167,10 +167,16 @@ class KLD2:
         if(status != KLD2_Status.OK):
             return status, target_string
 
-        inbound_speed_bin       = int(target_string[0:3])
-        outbound_speed_bin      = int(target_string[4:7])
-        inbound_magnitude_dB    = int(target_string[8:11])
-        outbound_magnitude_dB   = int(target_string[12:15])
+        if not (target_string[3] == ';' and target_string[7] == ';' and target_string[11] == ';' and target_string[15] == ';'):
+            return KLD2_Status.ERROR, None
+
+        try:
+            inbound_speed_bin       = int(target_string[0:3])
+            outbound_speed_bin      = int(target_string[4:7])
+            inbound_magnitude_dB    = int(target_string[8:11])
+            outbound_magnitude_dB   = int(target_string[12:15])
+        except:
+            return KLD2_Status.ERROR, None
 
         # See 'Speed Measurement' (page 11/15) in K-LD2 Datasheet
         conversion_factor = self.sampling_rate_Hz / (256 * 44.7)
