@@ -1,6 +1,7 @@
 
 import time
 from enum import Enum
+import multiprocessing
 
 import pin_defines
 from util.RunningAvg import RunningAvg
@@ -15,7 +16,7 @@ def init_doppler(doppler_radar: KLD2):
     doppler_radar.guarantee_set_param(KLD2_Param.USE_SENSITIVITY_POT, 0)
     doppler_radar.guarantee_set_param(KLD2_Param.SENSITIVITY, 7)
 
-def run_near_pass_detector(near_pass_id_queue):
+def run_near_pass_detector(near_pass_id_queue: multiprocessing.Queue):
     print('Near Pass Detection Process Starting...')
     near_pass_id = 1
 
