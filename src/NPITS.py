@@ -26,7 +26,7 @@ class NPITS():
 
         # Connect the obex channel
         bluetooth.obex.obex_init()
-        
+       
 
     def run(self):
         camera_module = RearCameraModule.RearCameraModule(output_folder="/home/pi/output_folder", queue_size=10)
@@ -37,11 +37,9 @@ class NPITS():
         recording_process = multiprocessing.Process(target=run_recording_process, args=(camera_module, near_pass_id_queue,))
         recording_process.start()
 
-        # run_near_pass_detector()
+        near_pass_detector(near_pass_id_queue)
 
         # Cleanup
         recording_process.join()
+        detection_process.join()
 
-if __name__ == "__main__":
-    passer = NPITS()
-    passer.run()

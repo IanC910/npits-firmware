@@ -15,8 +15,9 @@ def init_doppler(doppler_radar: KLD2):
     doppler_radar.guarantee_set_param(KLD2_Param.USE_SENSITIVITY_POT, 0)
     doppler_radar.guarantee_set_param(KLD2_Param.SENSITIVITY, 7)
 
-def run_near_pass_detector():
+def run_near_pass_detector(near_pass_id_queue):
     print('Near Pass Detection Process Starting...')
+    near_pass_id = 1
 
     ultrasonic = HCSR04(pin_defines.HCSR04_TRIG_GPIO, pin_defines.HCSR04_ECHO_GPIO)
     doppler = KLD2(pin_defines.KLD2_UART_DEVICE)
@@ -84,10 +85,9 @@ def run_near_pass_detector():
             phone_ble.write(Characteristic.SPEED, str(max_inbound_speed_kmph))
             phone_ble.write(Characteristic.DISTANCE, str(pass_distance_cm))
             phone_ble.write(Characteristic.NEAR_PASS_FLAG, '1')
-            # queue.put(near_pass_id)
-
-            # TODO: get video ID? send video?
-
+            near_pass_id_queue.queue.put(near_pass_id)
+            
+            near_pass_id+=1
             max_inbound_speed_kmph = 0
             pass_distance_cm = NEAR_PASS_THRESHOLD_cm
 
