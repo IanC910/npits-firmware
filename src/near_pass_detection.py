@@ -18,11 +18,11 @@ def init_doppler(doppler_radar: KLD2):
 def run_near_pass_detector():
     print('Near Pass Detection Process Starting...')
 
+    ble_interface = BLEInterface()
+
     ultrasonic = HCSR04(pin_defines.HCSR04_TRIG_GPIO, pin_defines.HCSR04_ECHO_GPIO)
     doppler = KLD2(pin_defines.KLD2_UART_DEVICE)
     init_doppler(doppler)
-
-    phone_ble = BLEInterface()
 
     new_sample_weight = 0.65
     distance_cm_running_avg = RunningAvg(new_sample_weight, 1000)
@@ -85,9 +85,14 @@ def run_near_pass_detector():
                 print("Inbound speed: %8.0f kmph" % max_inbound_speed_kmph)
 
                 # Send near pass data to phone
-                phone_ble.write(Characteristic.SPEED, str(max_inbound_speed_kmph))
-                phone_ble.write(Characteristic.DISTANCE, str(pass_distance_cm))
-                phone_ble.write(Characteristic.NEAR_PASS_FLAG, '1')
+                max_inbound_speed_kmph_as_str16 = "%16.0f" % max_inbound_speed_kmph
+                pass_distance_cm_as_str16 = "%16.0f" % pass_distance_cm
+                near_pass_flag_as_str16  = "%16d" % 1
+
+                ble_interface.write(Characteristic.SPEED, max_inbound_speed_kmph_as_str16)
+                ble_interface.write(Characteristic.DISTANCE, pass_distance_cm_as_str16)
+                ble_interface.write(Characteristic.NEAR_PASS_FLAG, near_pass_flag_as_str16)
+
                 # TODO phone_ble.write(Characteristic.NEAR_PASS_ID, near_pass_id)
 
                 # near_pass_id_queue.put(near_pass_id)
