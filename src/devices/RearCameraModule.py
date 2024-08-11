@@ -19,7 +19,7 @@ class RearCameraModule:
         self.recording_length = 10  # Length of each video recording (in seconds)
         self.number_of_saved_recordings = 3  # Number of recordings to save
         self.incident_number = 1  # Current incident number
-        self.trigger_flag = False # Event to signal when to flag recordings
+        self.trigger_flag = threading.Event()  # Use threading.Event for flagging
 
     def start_recording_loop(self):
         while True:
@@ -48,7 +48,6 @@ class RearCameraModule:
                 os.makedirs(incident_folder)
 
             for i in range(self.number_of_saved_recordings):
-
                 source = os.path.join(self.output_folder, f"general/video{index}.h264")
                 destination = os.path.join(incident_folder, f"incident_number_{self.incident_number}_video{index}.h264")
 
