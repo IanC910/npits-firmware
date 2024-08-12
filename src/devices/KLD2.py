@@ -82,14 +82,14 @@ class KLD2:
     def try_get_param(self, param: KLD2_Param, response_length = STANDARD_RESPONSE_LENGTH):
         command = self.COMMAND_PREFIX + param.value + self.COMMAND_SUFFIX
         self.serial.write(command.encode('utf-8'))
-        response = self.serial.read(response_length)
+        response = self.serial.readline()
 
         status, decoded_response = self._decode_response(response)
         if(status != KLD2_Status.OK):
             return status, response
 
-        if(len(decoded_response) != response_length):
-            return KLD2_Status.RESPONSE_LENGTH_MISMATCH, decoded_response
+        # if(len(decoded_response) != response_length):
+        #     return KLD2_Status.RESPONSE_LENGTH_MISMATCH, decoded_response
 
         # C class responses don't require a response prefix
         if(param.value[0] == KLD2_Param_Class.COMPLEX_READ.value):
@@ -116,14 +116,14 @@ class KLD2:
 
         command = self.COMMAND_PREFIX + param.value + value_as_hex_str + self.COMMAND_SUFFIX
         self.serial.write(command.encode('utf-8'))
-        response = self.serial.read(response_length)
+        response = self.serial.readline()
 
         status, decoded_response = self._decode_response(response)
         if(status != KLD2_Status.OK):
             return status, response
 
-        if(len(decoded_response) != response_length):
-            return KLD2_Status.RESPONSE_LENGTH_MISMATCH, decoded_response
+        # if(len(decoded_response) != response_length):
+        #     return KLD2_Status.RESPONSE_LENGTH_MISMATCH, decoded_response
 
         if(decoded_response[0] != KLD2.RESPONSE_PREFIX):
             return KLD2_Status.BAD_RESPONSE, decoded_response
