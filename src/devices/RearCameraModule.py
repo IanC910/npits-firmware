@@ -10,7 +10,7 @@ from contextlib import contextmanager
 @contextmanager
 def camera_context(output_folder, queue_size=10):
     camera = Picamera2()
-    encoder = H264Encoder()
+    encoder = H264Encoder(framerate=30)
     try:
         yield camera, encoder
     finally:
@@ -22,18 +22,26 @@ class RearCameraModule:
         self.output_folder = output_folder
         self.queue_size = queue_size
         self.current_index = 1  # Start with video1
-        self.recording_length = 10  # Length of each video recording (in seconds)
-        self.number_of_saved_recordings = 3  # Number of recordings to save
+        self.recording_length = 15  # Length of each video recording (in seconds)
+        self.number_of_saved_recordings = 2  # Number of recordings to save
+        self.done_recording = True
 
     def start_recording_loop(self):
         with camera_context(self.output_folder, self.queue_size) as (camera, encoder):
             while True:
                 output_file = os.path.join(self.output_folder, f"general/video{self.current_index}.h264")
                 camera.configure(camera.create_video_configuration())
+                
+                self.done_recording = False
+                
                 camera.start_recording(encoder, output_file)
                 print(f"Recording started: {output_file}")
                 sleep(self.recording_length)
                 camera.stop_recording()
+
+                self.done_recording = True
+                
+                sleep(.1)
                 print(f"Recording stopped and saved as {output_file}")
 
                 # Increment the index, and wrap around if it exceeds queue_size
@@ -49,11 +57,12 @@ class RearCameraModule:
                     print(f"Near pass is not legit!")
                     continue
                 else:
+
                     print(f"Near pass is detected with ID: {near_pass_id}")
 
-                    index = self.current_index
+                    index = self.current_index-1
 
-                    incident_folder = os.path.join(self.output_folder, f"recording_{near_pass_id}")
+                    incident_folder = os.path.join(self.output_folder, f"recording_incident_{near_pass_id}")
                     if not os.path.exists(incident_folder):
                         os.makedirs(incident_folder)
 
@@ -63,7 +72,7 @@ class RearCameraModule:
 
                         # Move the file if it exists
                         if os.path.exists(source):
-                            shutil.move(source, destination)
+                            shutil.copy(source, destination)
                             print(f"Moved video from {source} to {destination}")
                         else:
                             print(f"File not found: {source}")
@@ -72,6 +81,19 @@ class RearCameraModule:
                         if index == 0:
                             index = self.queue_size
                     
+                    
+                    while not self.done_recording:
+                        continue
+
+                    last_recording = os.path.join(self.output_folder, f"general/video{self.current_index}.h264")
+                    destination = os.path.join(incident_folder, f"incident_number_{near_pass_id}_video{self.current_index}.h264")
+
+                    if os.path.exists(last_recording):
+                        shutil.copy(last_recording, destination)
+                        print(f"Moved video from {last_recording} to {destination}")
+                    else:
+                        print(f"File not found: {last_recording}")
+
             else:
                 continue
                 
