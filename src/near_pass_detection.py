@@ -2,6 +2,7 @@
 import time
 from enum import Enum
 import multiprocessing
+from gpiozero import LED
 
 import pin_defines
 from util.RunningAvg import RunningAvg
@@ -11,7 +12,7 @@ from devices.KLD2 import KLD2, KLD2_Param, KLD2_Status
 from bluetooth.BLEInterface import BLEInterface
 from bluetooth.Characteristic import Characteristic
 
-def init_doppler(doppler_radar: KLD2):
+def config_doppler(doppler_radar: KLD2):
     print('Configuring K-LD2...')
     doppler_radar.guarantee_set_param(KLD2_Param.SAMPLING_RATE, 6)
     doppler_radar.guarantee_set_param(KLD2_Param.USE_SENSITIVITY_POT, 0)
@@ -25,7 +26,11 @@ def run_near_pass_detector(near_pass_id_queue: multiprocessing.Queue):
 
     ultrasonic = HCSR04(pin_defines.HCSR04_TRIG_GPIO, pin_defines.HCSR04_ECHO_GPIO)
     doppler = KLD2(pin_defines.KLD2_UART_DEVICE)
-    init_doppler(doppler)
+    config_doppler(doppler)
+    indicator_led = LED(pin_defines.NEAR_PASS_INDICATOR_GPIO)
+    indicator_status = 0
+    indicator_start_time_s = 0
+    INDICATOR_PULSE_DURATION_S = 1
 
     new_sample_weight = 0.65
     distance_cm_running_avg = RunningAvg(new_sample_weight, 1000)
@@ -103,9 +108,18 @@ def run_near_pass_detector(near_pass_id_queue: multiprocessing.Queue):
                 # Notifty other process of near pass
                 near_pass_id_queue.put(near_pass_id)
 
+                # Indicate to cyclist
+                indicator_led.on()
+                indicator_start_time_s = time.time()
+                indicator_status = 1
+
                 # Reset near pass params
                 pass_speed_kmph = 0
                 pass_distance_cm = NEAR_PASS_THRESHOLD_cm
                 near_pass_id += 1
+
+        if(indicator_status == 1):
+            if(time.time() - indicator_start_time_s > INDICATOR_PULSE_DURATION_S):
+                indicator_led.off()
 
         frame += 1

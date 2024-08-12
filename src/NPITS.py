@@ -1,7 +1,7 @@
 import os
 import shutil
 import multiprocessing
-from gpiozero import LED # Import LED from gpiozero
+from gpiozero import LED
 
 import pin_defines
 import bluetooth.init_bluetooth
@@ -22,7 +22,7 @@ class NPITS():
 
         # Start bluetooth and pair with phone
         bluetooth.init_bluetooth.init_bluetooth_and_pair(self.DEVICES_FILE)
-   
+
     def run(self):
 
         near_pass_id_queue = multiprocessing.Queue()
@@ -30,7 +30,7 @@ class NPITS():
         # Start recording process
         recording_process = multiprocessing.Process(target=run_recording_process, args=(near_pass_id_queue,))
         near_pass_process = multiprocessing.Process(target=run_near_pass_detector, args=(near_pass_id_queue,))
-        
+
         try:
             recording_process.start()
             near_pass_process.start()
@@ -42,7 +42,7 @@ class NPITS():
             print("Terminating all child processes")
             recording_process.terminate()
             near_pass_process.terminate()
-            
+
             recording_process.join()
             near_pass_process.join()
         finally:
