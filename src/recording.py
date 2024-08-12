@@ -10,7 +10,7 @@ def run_recording_process(near_pass_id_queue : multiprocessing.Queue):
 
     camera_module = RearCameraModule(output_folder="/home/pi/output_folder", queue_size=10)
 
-    recording = threading.Thread(target=recording_thread, args=(camera_module,))
+    recording = multiprocessing.Process(target=recording_thread, args=(camera_module,))
     flagging = threading.Thread(target=flagging_thread, args=(camera_module, near_pass_id_queue,))
 
     recording.start()
