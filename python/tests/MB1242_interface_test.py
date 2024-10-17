@@ -6,7 +6,7 @@ import sys
 
 sys.path.append('../')
 
-import smbus
+import smbus2
 from gpiozero import DigitalInputDevice
 
 import pin_defines
@@ -14,7 +14,7 @@ import pin_defines
 address = 0x70
 
 i2c_channel = 1
-i2c_bus = smbus.SMBus(i2c_channel)
+i2c_bus = smbus2.SMBus(i2c_channel)
 
 status_gpio = DigitalInputDevice(17)
 
