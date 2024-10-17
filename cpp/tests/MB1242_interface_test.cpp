@@ -58,13 +58,15 @@ int main() {
     }
 
     while(1) {
-        int res = write(file, &addr, sizeof(addr));
-        if(res != sizeof(addr)) {
+        unsigned char buf[2];
+        buf[0] = addr;
+        buf[1] = 81;
+        int res = write(file, buf, 2);
+        if(res != 2) {
             printf("Error writing\n");
         }
         sleep(2);
 
-        int buf[2];
         res = read(file, &buf, 2);
         if(res != 2) {
             printf("Error reading");
