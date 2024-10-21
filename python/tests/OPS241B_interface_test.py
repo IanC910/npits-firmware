@@ -6,6 +6,8 @@ from time import *
 from decimal import *
 import serial
 
+SERIAL_PORT = '/dev/ttyACM0'
+
 # Ops241B module settings:  ftps, dir off, 5Ksps, min -9dB pwr, squelch 5000
 Ops241B_Output_Units_OFF = 'Ou'
 Ops241B_Output_Magnitude_ON = 'OM'
@@ -37,7 +39,7 @@ def send_serial_cmd(print_prefix, command) :
 
 # Initialize the USB port to read from the OPS-241B module
 ser = serial.Serial(
-    port = 'COM5',
+    port = SERIAL_PORT,
     baudrate = 115200,
     parity = serial.PARITY_NONE,
     stopbits = serial.STOPBITS_ONE,
