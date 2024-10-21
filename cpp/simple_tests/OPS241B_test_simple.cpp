@@ -55,11 +55,16 @@ int main() {
         return 1;
     }
 
-    while(1) {
-        unsigned char cmd[] = "??";
-        write(serial_port, cmd, sizeof(cmd));
+    unsigned char cmd[] = "??";
+    write(serial_port, cmd, sizeof(cmd));
 
-        char read_buf[256];
+    char read_buf[256];
+    memset(&read_buf, '\0', sizeof(read_buf));
+    int num_bytes = read(serial_port, &read_buf, sizeof(read_buf));
+
+    printf(read_buf);
+
+    while(1) {
         memset(&read_buf, '\0', sizeof(read_buf));
         int num_bytes = read(serial_port, &read_buf, sizeof(read_buf));
 
