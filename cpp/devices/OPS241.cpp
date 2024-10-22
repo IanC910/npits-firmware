@@ -59,16 +59,6 @@ OPS241::~OPS241() {
     close(serial_file);
 }
 
-int OPS241::get_module_info(char* module_info, int length) {
-    char cmd[] = "??";
-    write(serial_file, cmd, sizeof(cmd));
-
-    memset(module_info, '\0', length);
-    int num_bytes = read(serial_file, module_info, length);
-
-    return num_bytes;
-}
-
 int OPS241::read_buffer(char* read_buf, int length) {
     memset(read_buf, '\0', length);
     int num_bytes = read(serial_file, read_buf, length);
@@ -81,6 +71,27 @@ void OPS241::clear_buffer() {
     while(num_bytes != 0) {
         num_bytes = read(serial_file, read_buf, sizeof(read_buf));
     }
+}
+
+int OPS241::get_module_info(char* module_info, int length) {
+    clear_buffer();
+
+    char cmd[] = "??";
+    write(serial_file, cmd, sizeof(cmd));
+
+    int total_bytes = 0;
+
+    while(length > 0) {
+        int num_bytes = read_buffer(module_info, length);
+        if(num_bytes == 0) {
+            return total_bytes;
+        }
+        total_bytes += num_bytes;
+        module_info += num_bytes;
+        length -= num_bytes;
+    }
+
+    return total_bytes;
 }
 
 void OPS241::start_reporting_distance() {

@@ -9,7 +9,6 @@ int main() {
     OPS241 radar(SERIAL_PORT);
 
     radar.stop_reporting_distance();
-    radar.clear_buffer();
 
     char module_info[512];
     int num_bytes = radar.get_module_info(module_info, sizeof(module_info));
