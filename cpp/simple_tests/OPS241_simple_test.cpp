@@ -60,13 +60,13 @@ int main() {
 
     char read_buf[256];
     memset(&read_buf, '\0', sizeof(read_buf));
-    int num_bytes = read(serial_port, &read_buf, sizeof(read_buf));
+    read(serial_port, &read_buf, sizeof(read_buf));
 
     printf(read_buf);
 
     while(1) {
         memset(&read_buf, '\0', sizeof(read_buf));
-        int num_bytes = read(serial_port, &read_buf, sizeof(read_buf));
+        read(serial_port, &read_buf, sizeof(read_buf));
 
         printf(read_buf);
     }
