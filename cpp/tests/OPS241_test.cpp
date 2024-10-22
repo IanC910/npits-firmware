@@ -1,6 +1,5 @@
 
 #include <stdio.h>
-#include <unistd.h>
 
 #include "../devices/OPS241.h"
 

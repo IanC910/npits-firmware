@@ -66,7 +66,7 @@ int OPS241::read_buffer(char* read_buf, int length) {
 }
 
 void OPS241::clear_buffer() {
-    char read_buf[256];
+    char read_buf[64];
     int num_bytes = 1;
     while(num_bytes != 0) {
         num_bytes = read(serial_file, read_buf, sizeof(read_buf));
@@ -79,10 +79,11 @@ int OPS241::get_module_info(char* module_info, int length) {
     char cmd[] = "??";
     write(serial_file, cmd, sizeof(cmd));
 
+    memset(module_info, '\0', length);
     int total_bytes = 0;
 
     while(length > 0) {
-        int num_bytes = read_buffer(module_info, length);
+        int num_bytes = read(serial_file, module_info, length);
         if(num_bytes == 0) {
             return total_bytes;
         }
