@@ -7,38 +7,23 @@
 #include <linux/i2c.h>
 #include <linux/i2c-dev.h>
 
+#include "I2C_Peripheral.h"
 #include "GPIO.h"
 
 #include "MB1242.h"
 
-MB1242::MB1242(const char* i2c_device, int status_gpio_num) {
-    // I2C
-    i2c_file = open(i2c_device, O_RDWR);
-    if(i2c_file < 0) {
-        printf("MB1242 Error: Opening i2c port file\n");
-        exit(i2c_file);
-    }
-    int status = ioctl(i2c_file, I2C_SLAVE, MB1242_I2C_ADDRESS);
-    if(status < 0) {
-        printf("MB1242 Error: Configuring i2c port\n");
-        exit(status);
-    }
-
+MB1242::MB1242(const char* i2c_device, int status_gpio_num)
+    : I2C_Peripheral(i2c_device, MB1242_I2C_ADDRESS)
+{
     // GPIO
     GPIO_initialize();
     status_line = GPIO_get_input_line(status_gpio_num);
 }
 
-MB1242::~MB1242() {
-    close(i2c_file);
-}
-
 int MB1242::start_distance_reading() {
-    char tx_buf[2];
-    tx_buf[0] = MB1242_I2C_ADDRESS;
-    tx_buf[1] = MB1242_TAKE_READING_CMD_ID;
-    int num_bytes = write(i2c_file, tx_buf, sizeof(tx_buf));
-    return (num_bytes != sizeof(tx_buf));
+    char tx_buf[] = {MB1242_TAKE_READING_CMD_ID};
+    int result = i2c_write(tx_buf, sizeof(tx_buf));
+    return result;
 }
 
 bool MB1242::is_reading_in_progress() {
@@ -51,8 +36,8 @@ int MB1242::get_distance_report_cm() {
     }
 
     char rx_buf[2];
-    int num_bytes = read(i2c_file, rx_buf, sizeof(rx_buf));
-    if(num_bytes != sizeof(rx_buf)) {
+    int result = i2c_read(rx_buf, sizeof(rx_buf));
+    if(result) {
         return -1;
     }
 
