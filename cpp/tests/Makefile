@@ -1,10 +1,6 @@
 
 CCF = g++ -Wall -Werror
 
-ROOT_DIR = ..
-
-DEVICES = $(wildcard $(ROOT_DIR)/devices/*.cpp)
-
 TEST_EXECS = $(wildcard *.test)
 
 clean:
