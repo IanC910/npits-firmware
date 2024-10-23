@@ -45,12 +45,14 @@ int main() {
 
     // Main Loop
     while(1) {
-        unsigned char buf[2];
-        buf[0] = I2C_ADDR;
-        buf[1] = 81;
+        unsigned char tx_buf[1];
+        // buf[0] = I2C_ADDR;
+        // buf[1] = 81;
 
-        int res = write(file, buf, 2);
-        if(res != 2) {
+        tx_buf[0] = 81;
+
+        int num_bytes = write(file, tx_buf, sizeof(tx_buf));
+        if(num_bytes != sizeof(tx_buf)) {
             printf("Error writing\n");
         }
 
@@ -60,12 +62,13 @@ int main() {
             ultrasonic_status = gpiod_line_get_value(ultrasonic_status_gpio_line);
         }
 
-        res = read(file, &buf, 2);
-        if(res != 2) {
+        char rx_buf[2];
+        num_bytes = read(file, rx_buf, sizeof(rx_buf));
+        if(num_bytes != sizeof(rx_buf)) {
             printf("Error reading\n");
         }
         else {
-            printf("%d, %d\n", buf[0], buf[1]);
+            printf("%d, %d\n", rx_buf[0], rx_buf[1]);
         }
 
         usleep(100000);
