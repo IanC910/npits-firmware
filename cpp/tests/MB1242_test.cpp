@@ -16,13 +16,11 @@ int main() {
             printf("Error: Bad write\n");
         }
 
-        int distance_cm = -1;
         while(ultrasonic.is_reading_in_progress()) {
-            distance_cm = ultrasonic.get_distance_report_cm();
             usleep(10000);
         }
 
-        distance_cm = ultrasonic.get_distance_report_cm();
+        int distance_cm = ultrasonic.get_distance_report_cm();
         if(distance_cm < 0) {
             printf("Error: Bad read\n");
         }
