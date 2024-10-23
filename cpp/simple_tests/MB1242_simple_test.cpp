@@ -28,14 +28,14 @@ int main() {
 
     // I2C
     const char I2C_DEVICE[] = "/dev/i2c-1";
-    int addr = 0x70;
+    const int I2C_ADDR = 0x70;
 
     int file = open(I2C_DEVICE, O_RDWR);
     if (file < 0) {
         printf("Error: Opening i2c port file\n");
         exit(file);
     }
-    int status = ioctl(file, I2C_SLAVE, addr);
+    int status = ioctl(file, I2C_SLAVE, I2C_ADDR);
     if (status < 0) {
         printf("Error: Configuring i2c port");
         exit(status);
@@ -46,8 +46,9 @@ int main() {
     // Main Loop
     while(1) {
         unsigned char buf[2];
-        buf[0] = addr;
+        buf[0] = I2C_ADDR;
         buf[1] = 81;
+
         int res = write(file, buf, 2);
         if(res != 2) {
             printf("Error writing\n");
