@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include <unistd.h>
 
 #include "../devices/OPS241.h"
 
@@ -17,8 +18,14 @@ int main() {
     radar.start_reporting_distance();
 
     while(1) {
-        char reading[32];
-        radar.read_buffer(reading, sizeof(reading));
-        printf(reading);
+        // char reading[16];
+        // radar.read_buffer(reading, sizeof(reading));
+        // printf(reading);
+
+        float distance_m = radar.read_distance_m();
+        if(distance_m != 0) {
+            printf("%f\n", distance_m);
+        }
+        usleep(20000);
     }
 }
