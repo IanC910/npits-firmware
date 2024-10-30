@@ -22,14 +22,14 @@ int main() {
     printf("Module Info Size: %d B\n", num_bytes);
     printf(module_info);
 
-    radar.set_num_digits(3);
+    radar.set_num_digits(2);
     radar.start_reporting_distance();
 
     std::queue<distance_sample_t> distance_sample_queue;
     distance_sample_queue.push({0, 0});
     const int AVG_SAMPLE_COUNT = 4;
 
-    const int SLEEP_PERIOD_us = 20000;
+    const int SLEEP_PERIOD_us = 65000;
 
     double time_asleep_since_prev_sample_s = 0;
     double prev_avg_speed_mps = 0;
