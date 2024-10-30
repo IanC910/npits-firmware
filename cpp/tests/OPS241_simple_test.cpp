@@ -12,12 +12,12 @@
 #define OPS241B_BAUD_RATE B115200
 
 int main() {
-    int serial_port = open(SERIAL_PORT, O_RDWR);
+    int serial_file = open(SERIAL_PORT, O_RDWR);
 
     struct termios tty;
 
     // Read in existing settings, and handle any error
-    if(tcgetattr(serial_port, &tty) != 0) {
+    if(tcgetattr(serial_file, &tty) != 0) {
         printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
         return 1;
     }
@@ -50,22 +50,30 @@ int main() {
     cfsetospeed(&tty, OPS241B_BAUD_RATE);
 
     // Save tty settings, also checking for error
-    if (tcsetattr(serial_port, TCSANOW, &tty) != 0) {
+    if (tcsetattr(serial_file, TCSANOW, &tty) != 0) {
         printf("Error %i from tcsetattr: %s\n", errno, strerror(errno));
         return 1;
     }
 
-    unsigned char cmd[] = "??";
-    write(serial_port, cmd, sizeof(cmd));
+    // Get module info
+    char cmd[] = "??";
+    write(serial_file, cmd, sizeof(cmd));
 
-    char read_buf[256];
-    memset(read_buf, '\0', sizeof(read_buf));
-    read(serial_port, read_buf, sizeof(read_buf));
-    printf(read_buf);
+    // Report magnitude
+    cmd[0] = 'o'; cmd[1] = 'M';
+    write(serial_file, cmd, sizeof(cmd));
+
+    // Read chirp bandwidth
+    cmd[0] = 't'; cmd[1] = '?';
+    write(serial_file, cmd, sizeof(cmd));
 
     while(1) {
+        char read_buf[64];
         memset(read_buf, '\0', sizeof(read_buf));
-        read(serial_port, read_buf, sizeof(read_buf));
+        read(serial_file, read_buf, sizeof(read_buf));
+        if(read_buf[0] == '\0') {
+            continue;
+        }
         printf(read_buf);
     }
 }
