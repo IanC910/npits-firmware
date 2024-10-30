@@ -21,6 +21,8 @@ public:
     void start_reporting_distance();
     void stop_reporting_distance();
 
+    void set_num_digits(unsigned int num_digits);
+
     float read_distance_m();
 
 private:
