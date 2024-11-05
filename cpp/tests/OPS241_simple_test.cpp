@@ -3,6 +3,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <chrono>
+
 #include <fcntl.h>
 #include <errno.h>
 #include <termios.h>
@@ -55,25 +57,29 @@ int main() {
         return 1;
     }
 
-    // Get module info
-    char cmd[] = "??";
-    write(serial_file, cmd, sizeof(cmd));
+    char num_reports_cmd[] = "o9";
+    write(serial_file, num_reports_cmd, sizeof(num_reports_cmd));
 
-    // Report magnitude
-    cmd[0] = 'o'; cmd[1] = 'M';
-    write(serial_file, cmd, sizeof(cmd));
+    char set_num_digits_cmd[] = "F2";
+    write(serial_file, set_num_digits_cmd, sizeof(set_num_digits_cmd));
 
-    // Read chirp bandwidth
-    cmd[0] = 't'; cmd[1] = '?';
-    write(serial_file, cmd, sizeof(cmd));
+    char report_mag_cmd[] = "oM";
+    write(serial_file, report_mag_cmd, sizeof(report_mag_cmd));
+
+    char min_mag_cmd[] = "m>50";
+    write(serial_file, min_mag_cmd, sizeof(min_mag_cmd));
+
+    auto start_time = std::chrono::system_clock::now();
 
     while(1) {
-        char read_buf[64];
+        char read_buf[256];
         memset(read_buf, '\0', sizeof(read_buf));
         read(serial_file, read_buf, sizeof(read_buf));
-        if(read_buf[0] == '\0') {
-            continue;
+        if(read_buf[0] != '\0') {
+            auto current_time = std::chrono::system_clock::now();
+            long long delta_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(current_time - start_time).count();
+            printf("%lld ms: %s", delta_time_ms, read_buf);
         }
-        printf(read_buf);
+        usleep(5000);
     }
 }
