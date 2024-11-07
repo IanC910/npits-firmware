@@ -10,8 +10,31 @@
 #include <termios.h>
 #include <unistd.h>
 
-#define SERIAL_PORT "/dev/ttyACM0"
+#define SERIAL_PORT "/dev/ttyACM2"
 #define OPS241B_BAUD_RATE B115200
+
+int64_t millis()
+{
+    struct timespec now;
+    timespec_get(&now, TIME_UTC);
+    return ((int64_t) now.tv_sec) * 1000 + ((int64_t) now.tv_nsec) / 1000000;
+}
+
+void format_unix_timestamp(int64_t milliseconds) {
+    // Split the milliseconds into seconds and milliseconds
+    time_t seconds = milliseconds / 1000;
+    int ms = milliseconds % 1000;
+
+    // Convert seconds to struct tm
+    struct tm *timeinfo = localtime(&seconds);
+
+    // Format the time into a human-readable format (YYYY-MM-DD HH:MM:SS)
+    char time_buffer[30];
+    strftime(time_buffer, sizeof(time_buffer), "%Y-%m-%d %H:%M:%S", timeinfo);
+
+    // Print the formatted time with millisecond precision
+    printf("Formatted timestamp: %s.%03d\n", time_buffer, ms);
+}
 
 int main() {
     int serial_file = open(SERIAL_PORT, O_RDWR);
@@ -57,29 +80,64 @@ int main() {
         return 1;
     }
 
-    char num_reports_cmd[] = "o9";
-    write(serial_file, num_reports_cmd, sizeof(num_reports_cmd));
-
-    char set_num_digits_cmd[] = "F2";
-    write(serial_file, set_num_digits_cmd, sizeof(set_num_digits_cmd));
-
-    char report_mag_cmd[] = "oM";
-    write(serial_file, report_mag_cmd, sizeof(report_mag_cmd));
-
-    char min_mag_cmd[] = "m>50";
-    write(serial_file, min_mag_cmd, sizeof(min_mag_cmd));
-
     auto start_time = std::chrono::system_clock::now();
 
-    while(1) {
-        char read_buf[256];
-        memset(read_buf, '\0', sizeof(read_buf));
-        read(serial_file, read_buf, sizeof(read_buf));
-        if(read_buf[0] != '\0') {
-            auto current_time = std::chrono::system_clock::now();
-            long long delta_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(current_time - start_time).count();
-            printf("%lld ms: %s", delta_time_ms, read_buf);
+    for(long long frame = 0; frame < 10000; frame++) {
+        switch(frame) {
+            case 5: {
+                char module_info_cmd[] = "??";
+                write(serial_file, module_info_cmd, sizeof(module_info_cmd));
+            }
+            case 10: {
+                char num_reports_cmd[] = "o9";
+                write(serial_file, num_reports_cmd, sizeof(num_reports_cmd));
+                break;
+            }
+            case 15: {
+                char set_num_digits_cmd[] = "F1";
+                write(serial_file, set_num_digits_cmd, sizeof(set_num_digits_cmd));
+                break;
+            }
+            case 20: {
+                char report_mag_cmd[] = "oM";
+                write(serial_file, report_mag_cmd, sizeof(report_mag_cmd));
+                break;
+            }
+            case 25: {
+                char min_mag_cmd[] = "m>50";
+                write(serial_file, min_mag_cmd, sizeof(min_mag_cmd));
+                break;
+            }
+            default: {
+                break;
+            }
+        } // switch (frame)
+
+        char line_buf[256];
+        memset(line_buf, 0, sizeof(line_buf));
+
+        int line_buf_index = 0;
+        while(line_buf_index < sizeof(line_buf)) {
+            int num_bytes_read = read(serial_file, line_buf + line_buf_index, 1);
+            if(line_buf[line_buf_index] == '\n') {
+                line_buf[line_buf_index] = 0;
+                break;
+            }
+
+            line_buf_index += num_bytes_read;
         }
-        usleep(5000);
+
+        struct timespec now;
+        timespec_get(&now, TIME_UTC);
+        time_t seconds = now.tv_sec;
+        int milliseconds = now.tv_nsec / 1000000;
+        struct tm *timeinfo = localtime(&seconds);
+        char time_buffer[30];
+        strftime(time_buffer, sizeof(time_buffer), "%Y-%m-%d %H:%M:%S", timeinfo);
+        printf("%s.%03d: %s\n", time_buffer, milliseconds, line_buf);
+
+        usleep(10000);
     }
+
+    close(serial_file);
 }

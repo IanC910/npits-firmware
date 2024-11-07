@@ -23,8 +23,6 @@ public:
 
     void set_num_digits(unsigned int num_digits);
 
-    float read_distance_m();
-
 private:
     int serial_file;
 };

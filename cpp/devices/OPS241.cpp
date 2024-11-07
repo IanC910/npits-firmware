@@ -114,10 +114,3 @@ void OPS241::set_num_digits(unsigned int num_digits) {
     sprintf(cmd, "F%d", num_digits);
     write(serial_file, cmd, sizeof(cmd));
 }
-
-float OPS241::read_distance_m() {
-    char reading[16];
-    this->read_buffer(reading, sizeof(reading));
-    float distance_m = atof(reading);
-    return distance_m;
-}

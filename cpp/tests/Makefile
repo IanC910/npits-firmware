@@ -1,6 +1,6 @@
 
 CC = g++
-CFLAGS = -Wall -Werror
+CFLAGS = -g -Wmaybe-uninitialized -Wall
 CCF = $(CC) $(CFLAGS)
 
 DEVICES = $(wildcard ../devices/*.cpp)
