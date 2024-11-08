@@ -1,1 +1,0 @@
-Capstone Company 10 Embedded

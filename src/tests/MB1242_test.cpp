@@ -5,10 +5,10 @@
 #include "../devices/MB1242.h"
 
 int main() {
-    const char I2C_DEVICE[] = "/dev/i2c-1";
-    const int STATUS_GPIO_NUM = 17;
+    const char ULTRASONIC_I2C_DEVICE[] = "/dev/i2c-1";
+    const int ULTRASONIC_STATUS_GPIO_NUM = 17;
 
-    MB1242 ultrasonic(I2C_DEVICE, STATUS_GPIO_NUM);
+    MB1242 ultrasonic(ULTRASONIC_I2C_DEVICE, ULTRASONIC_STATUS_GPIO_NUM);
 
     while(1) {
         int result = ultrasonic.start_distance_reading();

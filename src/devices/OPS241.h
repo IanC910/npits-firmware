@@ -6,6 +6,8 @@
 
 class OPS241 {
 public:
+    static const int REPORT_RATE_HZ = 14;
+
     OPS241(const char serial_port[]);
     ~OPS241();
 
@@ -18,6 +20,8 @@ public:
 
     void start_reporting_distance();
     void stop_reporting_distance();
+
+    void set_num_digits(unsigned int num_digits);
 
 private:
     int serial_file;

@@ -96,11 +96,21 @@ int OPS241::get_module_info(char* module_info, int length) {
 }
 
 void OPS241::start_reporting_distance() {
-    char cmd[] = "OD";
+    char cmd[] = "oD";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS241::stop_reporting_distance() {
-    char cmd[] = "Od";
+    char cmd[] = "od";
+    write(serial_file, cmd, sizeof(cmd));
+}
+
+
+void OPS241::set_num_digits(unsigned int num_digits) {
+    if(num_digits > 5) {
+        num_digits = 5;
+    }
+    char cmd[3];
+    sprintf(cmd, "F%d", num_digits);
     write(serial_file, cmd, sizeof(cmd));
 }

@@ -7,17 +7,18 @@
 #include <errno.h>
 #include <termios.h>
 #include <unistd.h>
+#include <time.h>
 
-#define SERIAL_PORT "/dev/ttyACM0"
 #define OPS241B_BAUD_RATE B115200
+const char RADAR_SERIAL_PORT[] = "/dev/ttyACM0";
 
 int main() {
-    int serial_port = open(SERIAL_PORT, O_RDWR);
+    int serial_file = open(RADAR_SERIAL_PORT, O_RDWR);
 
     struct termios tty;
 
     // Read in existing settings, and handle any error
-    if(tcgetattr(serial_port, &tty) != 0) {
+    if(tcgetattr(serial_file, &tty) != 0) {
         printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
         return 1;
     }
@@ -50,22 +51,62 @@ int main() {
     cfsetospeed(&tty, OPS241B_BAUD_RATE);
 
     // Save tty settings, also checking for error
-    if (tcsetattr(serial_port, TCSANOW, &tty) != 0) {
+    if (tcsetattr(serial_file, TCSANOW, &tty) != 0) {
         printf("Error %i from tcsetattr: %s\n", errno, strerror(errno));
         return 1;
     }
 
-    unsigned char cmd[] = "??";
-    write(serial_port, cmd, sizeof(cmd));
+    for(long long frame = 0; frame < 10000; frame++) {
+        switch(frame) {
+            case 5: {
+                char module_info_cmd[] = "??";
+                write(serial_file, module_info_cmd, sizeof(module_info_cmd));
+            }
+            case 10: {
+                char num_reports_cmd[] = "o9";
+                write(serial_file, num_reports_cmd, sizeof(num_reports_cmd));
+                break;
+            }
+            case 15: {
+                char set_num_digits_cmd[] = "F1";
+                write(serial_file, set_num_digits_cmd, sizeof(set_num_digits_cmd));
+                break;
+            }
+            case 20: {
+                char report_mag_cmd[] = "oM";
+                write(serial_file, report_mag_cmd, sizeof(report_mag_cmd));
+                break;
+            }
+            default: {
+                break;
+            }
+        } // switch (frame)
 
-    char read_buf[256];
-    memset(read_buf, '\0', sizeof(read_buf));
-    read(serial_port, read_buf, sizeof(read_buf));
-    printf(read_buf);
+        char line_buf[256];
+        memset(line_buf, 0, sizeof(line_buf));
 
-    while(1) {
-        memset(read_buf, '\0', sizeof(read_buf));
-        read(serial_port, read_buf, sizeof(read_buf));
-        printf(read_buf);
+        int line_buf_index = 0;
+        while(line_buf_index < sizeof(line_buf)) {
+            int num_bytes_read = read(serial_file, line_buf + line_buf_index, 1);
+            if(line_buf[line_buf_index] == '\n') {
+                line_buf[line_buf_index] = 0;
+                break;
+            }
+
+            line_buf_index += num_bytes_read;
+        }
+
+        struct timespec now;
+        timespec_get(&now, TIME_UTC);
+        time_t seconds = now.tv_sec;
+        int milliseconds = now.tv_nsec / 1000000;
+        struct tm *timeinfo = localtime(&seconds);
+        char time_buffer[30];
+        strftime(time_buffer, sizeof(time_buffer), "%Y-%m-%d %H:%M:%S", timeinfo);
+        printf("%s.%03d: %s\n", time_buffer, milliseconds, line_buf);
+
+        usleep(10000);
     }
+
+    close(serial_file);
 }
