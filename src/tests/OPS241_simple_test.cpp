@@ -9,11 +9,11 @@
 #include <unistd.h>
 #include <time.h>
 
-#define SERIAL_PORT "/dev/ttyACM2"
 #define OPS241B_BAUD_RATE B115200
+const char RADAR_SERIAL_PORT[] = "/dev/ttyACM0";
 
 int main() {
-    int serial_file = open(SERIAL_PORT, O_RDWR);
+    int serial_file = open(RADAR_SERIAL_PORT, O_RDWR);
 
     struct termios tty;
 
