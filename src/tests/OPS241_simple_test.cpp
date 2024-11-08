@@ -7,6 +7,7 @@
 #include <errno.h>
 #include <termios.h>
 #include <unistd.h>
+#include <time.h>
 
 #define SERIAL_PORT "/dev/ttyACM2"
 #define OPS241B_BAUD_RATE B115200
