@@ -3,8 +3,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <chrono>
-
 #include <fcntl.h>
 #include <errno.h>
 #include <termios.h>
@@ -12,29 +10,6 @@
 
 #define SERIAL_PORT "/dev/ttyACM2"
 #define OPS241B_BAUD_RATE B115200
-
-int64_t millis()
-{
-    struct timespec now;
-    timespec_get(&now, TIME_UTC);
-    return ((int64_t) now.tv_sec) * 1000 + ((int64_t) now.tv_nsec) / 1000000;
-}
-
-void format_unix_timestamp(int64_t milliseconds) {
-    // Split the milliseconds into seconds and milliseconds
-    time_t seconds = milliseconds / 1000;
-    int ms = milliseconds % 1000;
-
-    // Convert seconds to struct tm
-    struct tm *timeinfo = localtime(&seconds);
-
-    // Format the time into a human-readable format (YYYY-MM-DD HH:MM:SS)
-    char time_buffer[30];
-    strftime(time_buffer, sizeof(time_buffer), "%Y-%m-%d %H:%M:%S", timeinfo);
-
-    // Print the formatted time with millisecond precision
-    printf("Formatted timestamp: %s.%03d\n", time_buffer, ms);
-}
 
 int main() {
     int serial_file = open(SERIAL_PORT, O_RDWR);
@@ -79,8 +54,6 @@ int main() {
         printf("Error %i from tcsetattr: %s\n", errno, strerror(errno));
         return 1;
     }
-
-    auto start_time = std::chrono::system_clock::now();
 
     for(long long frame = 0; frame < 10000; frame++) {
         switch(frame) {
