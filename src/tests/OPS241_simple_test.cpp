@@ -77,11 +77,6 @@ int main() {
                 write(serial_file, report_mag_cmd, sizeof(report_mag_cmd));
                 break;
             }
-            case 25: {
-                char min_mag_cmd[] = "m>50";
-                write(serial_file, min_mag_cmd, sizeof(min_mag_cmd));
-                break;
-            }
             default: {
                 break;
             }
