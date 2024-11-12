@@ -27,7 +27,7 @@ void sleep_ms(long long sleep_time_ms) {
 }
 
 void sleep_us(long long sleep_time_us) {
-    long long sleep_time_ns = sleep_time_us * NS_PER_US;
+    long long sleep_time_ns = sleep_time_us * 1000;
     int s = sleep_time_ns / 1000000000;
     int ns = sleep_time_ns % 1000000000;
     struct timespec sleep_time = {s, ns};
