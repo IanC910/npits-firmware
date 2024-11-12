@@ -14,7 +14,7 @@ int main() {
 
     // GPIO
     struct gpiod_chip *chip;
-    const char *chipname = "gpiochip4";
+    const char *chipname = "gpiochip0";
     chip = gpiod_chip_open_by_name(chipname);
 
     printf("Opened GPIO chip\n");
@@ -46,9 +46,6 @@ int main() {
     // Main Loop
     while(1) {
         unsigned char tx_buf[1];
-        // buf[0] = I2C_ADDR;
-        // buf[1] = 81;
-
         tx_buf[0] = 81;
 
         int num_bytes = write(file, tx_buf, sizeof(tx_buf));
@@ -71,6 +68,6 @@ int main() {
             printf("%d, %d\n", rx_buf[0], rx_buf[1]);
         }
 
-        usleep(100000);
+        usleep(10000);
     }
 }
