@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include "../common/system_tools.h"
+
 #include "../devices/MB1242.h"
 
 int main() {
@@ -17,7 +19,7 @@ int main() {
         }
 
         while(ultrasonic.is_reading_in_progress()) {
-            usleep(10000);
+            sleep_ms(1);
         }
 
         int distance_cm = ultrasonic.get_distance_report_cm();
@@ -28,6 +30,6 @@ int main() {
             printf("%d cm\n", distance_cm);
         }
 
-        usleep(100000);
+        sleep_ms(1);
     }
 }
