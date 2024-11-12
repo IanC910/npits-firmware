@@ -4,6 +4,7 @@ CFLAGS = -g -Wmaybe-uninitialized -Wall
 CCF = $(CC) $(CFLAGS)
 
 DEVICES = $(wildcard ../devices/*.cpp)
+COMMON = $(wildcard ../common/*.cpp)
 TEST_EXECS = $(wildcard *.test)
 
 clean:
