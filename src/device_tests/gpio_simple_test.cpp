@@ -10,7 +10,7 @@
 int main() {
     // GPIO
     struct gpiod_chip *chip;
-    const char *chipname = "gpiochip4";
+    const char *chipname = "gpiochip0";
     chip = gpiod_chip_open_by_name(chipname);
 
     printf("Opened GPIO chip\n");
