@@ -13,8 +13,8 @@ clean:
 
 
 # Simple Tests
-GPIO_simple_test:
-	$(CCF) GPIO_simple_test.cpp -o GPIO_simple_test.test -lgpiod
+gpio_simple_test:
+	$(CCF) gpio_simple_test.cpp -o gpio_simple_test.test -lgpiod
 
 MB1242_simple_test:
 	$(CCF) MB1242_simple_test.cpp $(COMMON) -o MB1242_simple_test.test -lgpiod
