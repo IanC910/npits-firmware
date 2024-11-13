@@ -9,33 +9,36 @@
 
 #include <gpiod.h>
 
+#include "../common/system_tools.h"
+
+
+
+const char RPI3B_CHIP_NAME[] = "gpiochip0";
+
+const int ULTRASONIC_I2C_ADDR = 0x70;
+const char ULTRASONIC_I2C_DEV[] = "/dev/i2c-1";
+
+const int ULTRASONIC_STATUS_GPIO = 17;
+
+
+
 int main() {
     printf("Starting...\n");
 
     // GPIO
-    struct gpiod_chip *chip;
-    const char *chipname = "gpiochip0";
-    chip = gpiod_chip_open_by_name(chipname);
-
+    struct gpiod_chip* chip = gpiod_chip_open_by_name(RPI3B_CHIP_NAME);
     printf("Opened GPIO chip\n");
-
-    int ultrasonic_status_gpio_num = 17;
-    struct gpiod_line *ultrasonic_status_gpio_line;
-    ultrasonic_status_gpio_line = gpiod_chip_get_line(chip, ultrasonic_status_gpio_num);
+    struct gpiod_line* ultrasonic_status_gpio_line = gpiod_chip_get_line(chip, ULTRASONIC_STATUS_GPIO);
     gpiod_line_request_input(ultrasonic_status_gpio_line, "ultrasonic_status");
-
     printf("Initialised GPIO\n");
 
     // I2C
-    const char I2C_DEVICE[] = "/dev/i2c-1";
-    const int I2C_ADDR = 0x70;
-
-    int file = open(I2C_DEVICE, O_RDWR);
-    if (file < 0) {
+    int ultrasonic_i2c_file = open(ULTRASONIC_I2C_DEV, O_RDWR);
+    if (ultrasonic_i2c_file < 0) {
         printf("Error: Opening i2c port file\n");
-        exit(file);
+        exit(ultrasonic_i2c_file);
     }
-    int status = ioctl(file, I2C_SLAVE, I2C_ADDR);
+    int status = ioctl(ultrasonic_i2c_file, I2C_SLAVE, ULTRASONIC_I2C_ADDR);
     if (status < 0) {
         printf("Error: Configuring i2c port");
         exit(status);
@@ -43,31 +46,35 @@ int main() {
 
     printf("Initialised I2C\n");
 
+    long long start_time_ms = get_curr_time_ms();
+
     // Main Loop
     while(1) {
         unsigned char tx_buf[1];
         tx_buf[0] = 81;
 
-        int num_bytes = write(file, tx_buf, sizeof(tx_buf));
+        int num_bytes = write(ultrasonic_i2c_file, tx_buf, sizeof(tx_buf));
         if(num_bytes != sizeof(tx_buf)) {
             printf("Error writing\n");
         }
 
-        int ultrasonic_status = 1;
-        while(ultrasonic_status) {
-            usleep(1000);
-            ultrasonic_status = gpiod_line_get_value(ultrasonic_status_gpio_line);
+        while(gpiod_line_get_value(ultrasonic_status_gpio_line)) {
+            sleep_ms(5);
         }
 
+        long long end_time_ms = get_curr_time_ms();
+        long long delta_time_ms = end_time_ms - start_time_ms;
+        start_time_ms = get_curr_time_ms();
+
         char rx_buf[2];
-        num_bytes = read(file, rx_buf, sizeof(rx_buf));
+        num_bytes = read(ultrasonic_i2c_file, rx_buf, sizeof(rx_buf));
         if(num_bytes != sizeof(rx_buf)) {
             printf("Error reading\n");
         }
         else {
-            printf("%d, %d\n", rx_buf[0], rx_buf[1]);
+            printf("%4d, %4d, %4d, %4lld\n", rx_buf[0], rx_buf[0] % 4, rx_buf[1], delta_time_ms);
         }
 
-        usleep(10000);
+        sleep_ms(5);
     }
 }

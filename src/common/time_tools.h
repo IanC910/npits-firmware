@@ -1,6 +1,6 @@
 
-#ifndef SYSTEM_TOOLS_H
-#define SYSTEM_TOOLS_H
+#ifndef TIME_TOOLS_H
+#define TIME_TOOLS_H
 
 long long get_curr_time_ms();
 long long get_curr_time_us();
