@@ -15,6 +15,7 @@ int main() {
 
     printf("Opened GPIO chip\n");
 
+    int test_gpio_num = 27;
     struct gpiod_line *test_line;
     test_line = gpiod_chip_get_line(chip, test_gpio_num);
     gpiod_line_request_input(test_line, "test_line");
