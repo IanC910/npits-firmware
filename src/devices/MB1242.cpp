@@ -10,7 +10,7 @@
 MB1242::MB1242(const char* i2c_device, int status_gpio_num) {
     this->i2c_file = i2c_open_file(i2c_device);
     gpio_initialize();
-    status_gpio_line = gpio_get_input_line(status_gpio_num);
+    status_gpio_pin = gpio_get_input_pin(status_gpio_num);
 }
 
 MB1242::~MB1242() {
@@ -26,7 +26,7 @@ int MB1242::start_distance_reading() {
 }
 
 bool MB1242::is_reading_in_progress() {
-    return gpio_read_line(status_gpio_line);
+    return gpio_read(status_gpio_pin);
 }
 
 int MB1242::get_distance_report_cm() {

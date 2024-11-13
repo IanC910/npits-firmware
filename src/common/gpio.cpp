@@ -9,24 +9,24 @@ void gpio_initialize() {
     }
 }
 
-struct gpiod_line* gpio_get_input_line(int gpio_num) {
-    struct gpiod_line* input_line;
-    input_line = gpiod_chip_get_line(gpio_chip, gpio_num);
-    gpiod_line_request_input(input_line, "input");
-    return input_line;
+gpio_pin_t* gpio_get_input_pin(int gpio_num) {
+    gpio_pin_t* input_pin;
+    input_pin = gpiod_chip_get_line(gpio_chip, gpio_num);
+    gpiod_line_request_input(input_pin, "input");
+    return input_pin;
 }
 
-struct gpiod_line* gpio_get_output_line(int gpio_num) {
-    struct gpiod_line* output_line;
-    output_line = gpiod_chip_get_line(gpio_chip, gpio_num);
-    gpiod_line_request_output(output_line, "output", 0);
-    return output_line;
+gpio_pin_t* gpio_get_output_pin(int gpio_num) {
+    gpio_pin_t* output_pin;
+    output_pin = gpiod_chip_get_line(gpio_chip, gpio_num);
+    gpiod_line_request_output(output_pin, "output", 0);
+    return output_pin;
 }
 
-int gpio_read_line(struct gpiod_line* input_line) {
-    return gpiod_line_get_value(input_line);
+int gpio_read(gpio_pin_t* input_pin) {
+    return gpiod_line_get_value(input_pin);
 }
 
-void gpio_write_line(struct gpiod_line* output_line, int val) {
-    gpiod_line_set_value(output_line, val);
+void gpio_write(gpio_pin_t* output_pin, int val) {
+    gpiod_line_set_value(output_pin, val);
 }

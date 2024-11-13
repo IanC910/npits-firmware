@@ -7,13 +7,9 @@
 #include <linux/i2c.h>
 #include <linux/i2c-dev.h>
 
-#include <gpiod.h>
+#include "../common/time_tools.h"
+#include "../common/gpio.h"
 
-#include "../common/system_tools.h"
-
-
-
-const char RPI3B_CHIP_NAME[] = "gpiochip0";
 
 const int ULTRASONIC_I2C_ADDR = 0x70;
 const char ULTRASONIC_I2C_DEV[] = "/dev/i2c-1";
@@ -26,7 +22,7 @@ int main() {
     printf("Starting...\n");
 
     // GPIO
-    struct gpiod_chip* chip = gpiod_chip_open_by_name(RPI3B_CHIP_NAME);
+    struct gpiod_chip* chip = gpiod_chip_open_by_name(RPI3B_GPIO_CHIP_NAME);
     printf("Opened GPIO chip\n");
     struct gpiod_line* ultrasonic_status_gpio_line = gpiod_chip_get_line(chip, ULTRASONIC_STATUS_GPIO);
     gpiod_line_request_input(ultrasonic_status_gpio_line, "ultrasonic_status");

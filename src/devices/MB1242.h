@@ -28,7 +28,7 @@ protected:
     int i2c_file = 0;
     int i2c_address = 0;
 
-    struct gpiod_line* status_gpio_line = nullptr;
+    gpio_pin_t* status_gpio_pin = nullptr;
 };
 
 #endif
