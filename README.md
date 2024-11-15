@@ -12,13 +12,14 @@ GPIO:
 
 GoPro:
 If not already installed,
-- $ sudo apt install libcurl4-openssl-dev
-- $ sudo apt install libjsoncpp-dev
-- $ sudo apt install ffmpeg
-- $ sudo apt install dhcpcd5
-- $ sudo systemctl restart dhcpcd
-
+```bash
 sudo apt install libcurl4-openssl-dev
+sudo apt install libjsoncpp-dev
+sudo apt install ffmpeg
+sudo apt install dhcpcd5
+sudo systemctl restart dhcpcd
+```
+
 1. **Edit the `wpa_supplicant.conf` file to connect to the GoPro's Wi-Fi:**
    ```bash
    sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
