@@ -11,7 +11,7 @@ GPIO:
 - $ sudo apt install libgpiod-dev
 
 GoPro:
-If not already installed,
+- If not already installed,
 ```bash
 sudo apt install libcurl4-openssl-dev
 sudo apt install libjsoncpp-dev
@@ -42,6 +42,10 @@ sudo systemctl restart dhcpcd
    ```
 
 3. **Verify the connection to the GoPro:**
-   - $ ifconfig wlan0
+```bash
+ifconfig wlan0
+```
    or
-   - $ iwconfig
+```bash
+iwconfig
+```
