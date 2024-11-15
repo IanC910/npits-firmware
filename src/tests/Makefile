@@ -1,6 +1,6 @@
 
 CC = g++
-CFLAGS = -g -Wmaybe-uninitialized -Wall
+CFLAGS = -std=c++17 -g -Wmaybe-uninitialized -Wall
 CCF = $(CC) $(CFLAGS)
 
 DEVICES = $(wildcard ../devices/*.cpp)
@@ -13,6 +13,12 @@ clean:
 
 
 # Simple Tests
+gopro_simple_test:
+	$(CCF) gopro_simple_test.cpp -o gopro_simple_test.test -lcurl -ljsoncpp
+
+GPIO_simple_test:
+	$(CCF) GPIO_simple_test.cpp -o GPIO_simple_test.test -lgpiod
+
 gpio_simple_test:
 	$(CCF) gpio_simple_test.cpp -o gpio_simple_test.test -lgpiod
 
