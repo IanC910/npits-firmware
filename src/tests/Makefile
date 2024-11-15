@@ -13,11 +13,16 @@ clean:
 
 
 # Simple Tests
+<<<<<<< HEAD:src/device_tests/Makefile
 gopro_simple_test:
 	$(CCF) gopro_simple_test.cpp -o gopro_simple_test.test -lcurl -ljsoncpp
 
 GPIO_simple_test:
 	$(CCF) GPIO_simple_test.cpp -o GPIO_simple_test.test -lgpiod
+=======
+gpio_simple_test:
+	$(CCF) gpio_simple_test.cpp -o gpio_simple_test.test -lgpiod
+>>>>>>> main:src/tests/Makefile
 
 MB1242_simple_test:
 	$(CCF) MB1242_simple_test.cpp $(COMMON) -o MB1242_simple_test.test -lgpiod

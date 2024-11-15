@@ -6,6 +6,9 @@
 
 #include "../devices/OPS241.h"
 
+// This test is garbage
+// TODO: rewrite
+
 typedef struct {
     double time_s;
     double distance_m;

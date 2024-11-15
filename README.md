@@ -11,6 +11,7 @@ GPIO:
 - $ sudo apt install libgpiod-dev
 
 GoPro:
+<<<<<<< HEAD
 - If not already installed,
 ```bash
 sudo apt install libcurl4-openssl-dev
@@ -24,6 +25,18 @@ sudo systemctl restart dhcpcd
    ```bash
    sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
    ```
+=======
+If not already installed,
+- $ sudo apt install libcurl4-openssl-dev
+- $ sudo apt install libjsoncpp-dev
+- $ sudo apt install ffmpeg
+- $ sudo apt install dhcpcd5
+- $ sudo systemctl restart dhcpcd
+
+sudo apt install libcurl4-openssl-dev
+1. **Edit the `wpa_supplicant.conf` file to connect to the GoPro's Wi-Fi:**
+   - $ sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+>>>>>>> main
    - Add the following lines:
      ```conf
      network={
@@ -36,6 +49,7 @@ sudo systemctl restart dhcpcd
    - Replace `GoPro-SSID` and `GoProPassword` with your actual GoPro credentials.
 
 2. **Restart networking services to apply the changes:**
+<<<<<<< HEAD
    ```bash
    sudo systemctl restart networking
    sudo systemctl restart dhcpcd
@@ -49,3 +63,12 @@ ifconfig wlan0
 ```bash
 iwconfig
 ```
+=======
+   - $ sudo systemctl restart networking
+   - $ sudo systemctl restart dhcpcd
+
+3. **Verify the connection to the GoPro:**
+   - $ ifconfig wlan0
+   or
+   - $ iwconfig
+>>>>>>> main
