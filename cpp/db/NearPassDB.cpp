@@ -196,51 +196,51 @@ int getNearPasses(sqlite3* db) {
   return SQLITE_OK;
 }
 
-int main() {
-  sqlite3* db;
+// int main() {
+//   sqlite3* db;
 
-  // Open the database
-  if (openDatabase(&db, "near_pass.db") != SQLITE_OK) {
-    return 1;
-  }
+//   // Open the database
+//   if (openDatabase(&db, "near_pass.db") != SQLITE_OK) {
+//     return 1;
+//   }
 
-  // Create the Rides and NearPass tables if they don't exist
-  if (createRidesTable(db) != SQLITE_OK || createNearPassTable(db) != SQLITE_OK) {
-    sqlite3_close(db);
-    return 1;
-  }
+//   // Create the Rides and NearPass tables if they don't exist
+//   if (createRidesTable(db) != SQLITE_OK || createNearPassTable(db) != SQLITE_OK) {
+//     sqlite3_close(db);
+//     return 1;
+//   }
 
-  // Start a new ride (example)
-  long startTime = 1617282000;  // Example start time (UNIX timestamp)
-  int rideId = startRide(db, startTime);
-  if (rideId == -1) {
-    sqlite3_close(db);
-    return 1;
-  }
+//   // Start a new ride (example)
+//   long startTime = 1617282000;  // Example start time (UNIX timestamp)
+//   int rideId = startRide(db, startTime);
+//   if (rideId == -1) {
+//     sqlite3_close(db);
+//     return 1;
+//   }
 
-  // Insert new NearPass records that reference the inserted Ride
-  NearPass np1 = {37.7749, -122.4194, 500.0, 60.0, 1617282000, rideId};
-  NearPass np2 = {34.0522, -118.2437, 300.0, 45.0, 1617285600, rideId};
+//   // Insert new NearPass records that reference the inserted Ride
+//   NearPass np1 = {37.7749, -122.4194, 500.0, 60.0, 1617282000, rideId};
+//   NearPass np2 = {34.0522, -118.2437, 300.0, 45.0, 1617285600, rideId};
 
-  if (insertNearPass(db, np1) != SQLITE_OK || insertNearPass(db, np2) != SQLITE_OK) {
-    sqlite3_close(db);
-    return 1;
-  }
+//   if (insertNearPass(db, np1) != SQLITE_OK || insertNearPass(db, np2) != SQLITE_OK) {
+//     sqlite3_close(db);
+//     return 1;
+//   }
 
-  // End the ride (example)
-  long endTime = 1617285600;  // Example end time (UNIX timestamp)
-  if (endRide(db, rideId, endTime) != 0) {
-    sqlite3_close(db);
-    return 1;
-  }
+//   // End the ride (example)
+//   long endTime = 1617285600;  // Example end time (UNIX timestamp)
+//   if (endRide(db, rideId, endTime) != 0) {
+//     sqlite3_close(db);
+//     return 1;
+//   }
 
-  // Get and display all NearPass records
-  if (getNearPasses(db) != SQLITE_OK) {
-    sqlite3_close(db);
-    return 1;
-  }
+//   // Get and display all NearPass records
+//   if (getNearPasses(db) != SQLITE_OK) {
+//     sqlite3_close(db);
+//     return 1;
+//   }
 
-  // Close the database
-  sqlite3_close(db);
-  return 0;
-}
+//   // Close the database
+//   sqlite3_close(db);
+//   return 0;
+// }
