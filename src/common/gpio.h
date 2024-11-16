@@ -11,8 +11,6 @@
 
 typedef struct gpiod_line gpio_pin_t;
 
-void gpio_initialize();
-
 gpio_pin_t* gpio_get_input_pin(int gpio_num);
 gpio_pin_t* gpio_get_output_pin(int gpio_num);
 
