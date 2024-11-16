@@ -20,6 +20,14 @@ sudo apt install dhcpcd5
 sudo systemctl restart dhcpcd
 ```
 
+HaarCascade (CV):
+- If not already installed,
+```bash
+sudo apt install python3-opencv
+sudo apt install libopencv-dev
+sudo apt install python3-picamera2
+```
+
 1. **Edit the `wpa_supplicant.conf` file to connect to the GoPro's Wi-Fi:**
    ```bash
    sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
