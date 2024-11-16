@@ -49,3 +49,17 @@ ifconfig wlan0
 ```bash
 iwconfig
 ```
+
+HaarCascade (CV) AND/OR MobileNetSSD:
+- If not already installed,
+```bash
+sudo apt install python3-opencv
+sudo apt install libopencv-dev
+sudo apt install python3-picamera2
+
+mkdir /home/pi/Desktop/Object_Detection_Files
+
+# Copy the files in the zip file in this tutorial (https://core-electronics.com.au/guides/object-identify-raspberry-pi/#Set) into the above newly created directory
+```
+
+```
