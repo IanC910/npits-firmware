@@ -28,7 +28,7 @@ protected:
     int i2c_file = 0;
     int i2c_address = 0;
 
-    gpio_pin_t* status_gpio_pin = nullptr;
+    gpio_pin status_gpio_pin = GPIO_NO_PIN;
 };
 
 #endif
