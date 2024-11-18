@@ -5,6 +5,7 @@ CCF = $(CC) $(CFLAGS)
 
 DEVICES = $(wildcard ../devices/*.cpp)
 COMMON = $(wildcard ../common/*.cpp)
+ALL_SOURCES = $(COMMON) $(DEVICES)
 TEST_EXECS = $(wildcard *.test)
 
 clean:
@@ -31,8 +32,13 @@ OPS241_simple_test:
 
 
 # Tests
-MB1242_class_test:
-	$(CCF) MB1242_class_test.cpp $(COMMON) $(DEVICES) -o MB1242_class_test.test -lgpiod
+MB1242_direct_test:
+	$(CCF) MB1242_direct_test.cpp $(ALL_SOURCES) -o MB1242_direct_test.test -lgpiod
+
+MB1242_async_test:
+	$(CCF) MB1242_async_test.cpp $(ALL_SOURCES) -o MB1242_async_test.test -lgpiod
+
+
 
 OPS241_class_test:
 	$(CCF) OPS241_class_test.cpp ../devices/OPS241.cpp -o OPS241_class_test.test
