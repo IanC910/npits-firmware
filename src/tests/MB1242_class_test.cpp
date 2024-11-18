@@ -11,8 +11,6 @@ int main() {
 
     MB1242 ultrasonic(ULTRASONIC_I2C_DEVICE, ULTRASONIC_STATUS_GPIO_NUM);
 
-    long long start_time_ms = get_time_ms();
-
     while(1) {
         int result = ultrasonic.start_distance_reading();
         if(result != 0) {
@@ -28,7 +26,7 @@ int main() {
             printf("Error: Bad read\n");
         }
         else {
-            printf("%6lld: %3d cm\n", get_time_ms() - start_time_ms, distance_cm);
+            printf("%lld: %3d cm\n", get_time_ms(), distance_cm);
         }
 
         sleep_ms(1);
