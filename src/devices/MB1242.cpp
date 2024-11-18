@@ -72,7 +72,7 @@ int MB1242::update_distance_report() {
     }
 
     if(latest_distance_cm >= 0) {
-        latest_distance_cm = rx_buf[0] * 256 + rx_buf[1];
+        latest_distance_cm = (rx_buf[0] % 4) * 256 + rx_buf[1];
         is_new_sample = true;
         return 0;
     }
