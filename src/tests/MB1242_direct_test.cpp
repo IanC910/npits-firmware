@@ -21,7 +21,8 @@ int main() {
             sleep_ms(5);
         }
 
-        int distance_cm = ultrasonic.update_distance_report_cm();
+        ultrasonic.update_distance_report();
+        int distance_cm = ultrasonic.get_latest_distance_cm();
         if(distance_cm < 0) {
             printf("Error: Bad read\n");
         }
