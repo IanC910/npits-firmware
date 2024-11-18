@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <thread>
+#include <chrono>
 
 #include "../common/time_tools.h"
 #include "../common/gpio.h"
@@ -85,7 +86,7 @@ void MB1242::run_distance_sampler() {
         initiate_distance_reading();
 
         while(is_reading_in_progress()) {
-            sleep_ms(5);
+            std::this_thread::sleep_for(std::chrono::milliseconds(5));
         }
 
         update_distance_report();
