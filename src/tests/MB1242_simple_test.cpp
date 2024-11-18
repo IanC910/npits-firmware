@@ -42,7 +42,7 @@ int main() {
 
     printf("Initialised I2C\n");
 
-    long long start_time_ms = get_curr_time_ms();
+    long long start_time_ms = get_time_ms();
 
     // Main Loop
     while(1) {
@@ -58,9 +58,9 @@ int main() {
             sleep_ms(5);
         }
 
-        long long end_time_ms = get_curr_time_ms();
+        long long end_time_ms = get_time_ms();
         long long delta_time_ms = end_time_ms - start_time_ms;
-        start_time_ms = get_curr_time_ms();
+        start_time_ms = get_time_ms();
 
         char rx_buf[2];
         num_bytes = read(ultrasonic_i2c_file, rx_buf, sizeof(rx_buf));
