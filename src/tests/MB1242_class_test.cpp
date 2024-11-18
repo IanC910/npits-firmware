@@ -28,7 +28,5 @@ int main() {
         else {
             printf("%lld: %3d cm\n", get_time_ms(), distance_cm);
         }
-
-        sleep_ms(1);
     }
 }
