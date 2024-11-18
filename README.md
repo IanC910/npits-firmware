@@ -7,6 +7,7 @@ sudo apt install i2c-tools
 sudo apt install libi2c-dev
 ```
 
+
 ### GPIO:
 ```bash
 sudo apt install gpiod
@@ -15,11 +16,13 @@ sudo apt install libgpiod-dev
 ```
 Compile applications with ```-lgpiod```
 
+
 ### SQLite:
 ```bash
 sudo apt install libsqlite3-dev
 ```
 Compile applications with ```-lsqlite3```
+
 
 ### GoPro:
 ```bash
@@ -52,13 +55,14 @@ Compile applications with ```-lcurl -ljsoncpp```
     ```
 
 3. **Verify the connection to the GoPro:**
-```bash
-ifconfig wlan0
-```
-or
-```bash
-iwconfig
-```
+    ```bash
+    ifconfig wlan0
+    ```
+    or
+    ```bash
+    iwconfig
+    ```
+
 
 ### HaarCascade (CV) AND/OR MobileNetSSD:
 ```bash
