@@ -1,11 +1,12 @@
 
 #include <stdio.h>
+#include <string>
 
 #include "../common/time_tools.h"
 
 #include "../devices/MB1242.h"
 
-const char ULTRASONIC_I2C_DEVICE[] = "/dev/i2c-1";
+const std::string ULTRASONIC_I2C_DEVICE = "/dev/i2c-1";
 const int ULTRASONIC_STATUS_GPIO_NUM = 17;
 
 int main() {

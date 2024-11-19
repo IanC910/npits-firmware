@@ -3,6 +3,7 @@
 #define MB1242_H
 
 #include <thread>
+#include <string>
 
 #include "../common/gpio.h"
 
@@ -15,7 +16,7 @@ const int MB1242_MAX_DISTANCE_cm = 765;
 
 class MB1242 {
 public:
-    MB1242(const char* i2c_device, int status_gpio_num);
+    MB1242(const std::string i2c_device, int status_gpio_num);
     ~MB1242();
 
     struct report {

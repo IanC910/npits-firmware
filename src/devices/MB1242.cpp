@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <thread>
 #include <chrono>
+#include <string>
 
 #include "../common/time_tools.h"
 #include "../common/gpio.h"
@@ -11,8 +12,8 @@
 
 
 
-MB1242::MB1242(const char* i2c_device, int status_gpio_num) {
-    this->i2c_file = i2c_open_file(i2c_device);
+MB1242::MB1242(const std::string i2c_device, int status_gpio_num) {
+    this->i2c_file = i2c_open_file(i2c_device.c_str());
     status_gpio_pin = gpio_get_input_pin(status_gpio_num);
 }
 
