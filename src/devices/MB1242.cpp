@@ -25,7 +25,7 @@ MB1242::~MB1242() {
 
 void MB1242::begin_sampling() {
     do_run_sampler = true;
-    sampler_thread = std::thread(&MB1242::run_distance_sampler, this);
+    sampler_thread = std::thread(&MB1242::run_sampler, this);
 }
 
 void MB1242::stop_sampling() {
@@ -35,16 +35,16 @@ void MB1242::stop_sampling() {
     }
 }
 
-bool MB1242::is_new_distance_available() {
+bool MB1242::is_new_report_available() {
     return is_new_sample;
 }
 
-int MB1242::get_latest_distance_cm() {
+MB1242::report MB1242::get_latest_report() {
     is_new_sample = false;
-    return latest_distance_cm;
+    return latest_report;
 }
 
-// Direct COntrol
+// Direct Control
 
 int MB1242::initiate_distance_reading() {
     i2c_set_address(i2c_file, MB1242_I2C_ADDRESS);
@@ -58,7 +58,7 @@ bool MB1242::is_reading_in_progress() {
     return gpio_read(status_gpio_pin);
 }
 
-int MB1242::update_distance_report() {
+int MB1242::update_report() {
     if(is_reading_in_progress()) {
         return -1;
     }
@@ -71,17 +71,14 @@ int MB1242::update_distance_report() {
         return result;
     }
 
-    if(latest_distance_cm >= 0) {
-        latest_distance_cm = (rx_buf[0] % 4) * 256 + rx_buf[1];
-        is_new_sample = true;
-        return 0;
-    }
-    else {
-        return -1;
-    }
+    int distance_cm = (rx_buf[0] % 4) * 256 + rx_buf[1];
+    latest_report.distance_cm = distance_cm;
+    latest_report.time_stamp_ms = get_time_ms();
+    is_new_sample = true;
+    return 0;
 }
 
-void MB1242::run_distance_sampler() {
+void MB1242::run_sampler() {
     while(do_run_sampler) {
         initiate_distance_reading();
 
@@ -89,6 +86,6 @@ void MB1242::run_distance_sampler() {
             std::this_thread::sleep_for(std::chrono::milliseconds(5));
         }
 
-        update_distance_report();
+        update_report();
     }
 }

@@ -18,7 +18,10 @@ public:
     MB1242(const char* i2c_device, int status_gpio_num);
     ~MB1242();
 
-
+    struct report {
+        long long time_stamp_ms;
+        unsigned short distance_cm;
+    };
 
     // === Asynchronous reading ===
 
@@ -28,10 +31,9 @@ public:
     // Stops the sampling thread
     void stop_sampling();
 
-    bool is_new_distance_available();
+    bool is_new_report_available();
 
-    // Returns the latest distance reading
-    int get_latest_distance_cm();
+    report get_latest_report();
 
 
 
@@ -44,24 +46,22 @@ public:
     bool is_reading_in_progress();
 
     // Updates the latest distance report in cm
-    // Returns 0 if success
-    int update_distance_report();
+    // Returns 0 on success
+    int update_report();
 
 
 
 protected:
-    bool do_run_sampler = false;
-    std::thread sampler_thread;
-
-    int latest_distance_cm = 0;
+    report latest_report = {0, 0};
     int is_new_sample = false;
 
     int i2c_file = 0;
     int i2c_address = 0;
-
     gpio_pin status_gpio_pin = GPIO_NO_PIN;
 
-    void run_distance_sampler();
+    bool do_run_sampler = false;
+    std::thread sampler_thread;
+    void run_sampler();
 };
 
 #endif
