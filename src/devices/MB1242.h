@@ -5,7 +5,7 @@
 #include <thread>
 #include <string>
 
-#include "../common/gpio.h"
+#include "gpio.h"
 
 
 

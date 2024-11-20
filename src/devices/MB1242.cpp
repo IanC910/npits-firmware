@@ -5,8 +5,8 @@
 #include <string>
 
 #include "../common/time_tools.h"
-#include "../common/gpio.h"
-#include "../common/i2c.h"
+#include "gpio.h"
+#include "i2c.h"
 
 #include "MB1242.h"
 

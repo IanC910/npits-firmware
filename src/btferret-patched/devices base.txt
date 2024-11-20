@@ -1,7 +1,7 @@
 DEVICE = NPITS      TYPE = MESH     NODE = 1    ADDRESS = <BT_MAC_ADDRESS>
     ; Generic Access
     PRIMARY_SERVICE = 1800
-        LECHAR = Device Name        PERMIT = 02     SIZE = 16   UUID = 2A00
+        LECHAR = Device Name        PERMIT = 02     SIZE = 16   UUID = 2A00 ; Pi writes
 
     ; Get Rides List
     PRIMARY_SERVICE = 1900

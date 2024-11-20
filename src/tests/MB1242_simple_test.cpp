@@ -8,7 +8,7 @@
 #include <linux/i2c-dev.h>
 
 #include "../common/time_tools.h"
-#include "../common/gpio.h"
+#include "gpio.h"
 
 
 const int ULTRASONIC_I2C_ADDR = 0x70;
