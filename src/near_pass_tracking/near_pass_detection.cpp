@@ -1,0 +1,107 @@
+
+#include <chrono>
+#include <string>
+#include <thread>
+
+#include "../common/time_tools.h"
+#include "../common/structs.h"
+#include "../devices/MB1242.h"
+#include "../bluetooth/le_server.h"
+#include "../db/near_pass_db.h"
+
+#include "near_pass_detection.h"
+
+static MB1242 ultrasonic;
+
+static bool do_run_detector = false;
+static std::thread detector_thread;
+
+static const int DISTANCE_THRESHOLD_cm = 200;
+static const int NEAR_PASS_COOLDOWN_ms = 300;
+static const int NEAR_PASS_MIN_DURATION_ms = 100;
+static const int NEAR_PASS_MAX_DURATION_ms = 3000;
+
+static void run_detector() {
+    ultrasonic.begin_sampling();
+
+    bool in_near_pass = false;
+    long long last_near_pass_time_ms = get_time_ms();
+    long long near_pass_start_time_ms = get_time_ms();
+    int min_distance_cm = MB1242_MAX_DISTANCE_cm;
+    int near_pass_duration_ms = 0;
+
+    while(do_run_detector) {
+        while(!ultrasonic.is_new_report_available()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
+
+        MB1242::report report = ultrasonic.get_latest_report();
+
+        switch(in_near_pass) {
+            case false:
+                // Condition to enter a near pass
+                if(report.distance_cm <= DISTANCE_THRESHOLD_cm &&
+                    report.time_stamp_ms > last_near_pass_time_ms + NEAR_PASS_COOLDOWN_ms
+                ) {
+                    in_near_pass = true;
+                    last_near_pass_time_ms = report.time_stamp_ms;
+                    near_pass_start_time_ms = report.time_stamp_ms;
+
+                    // TODO: validate and clip gopro footage
+                }
+                // No break
+            case true:
+                // Condition to remain in a near pass
+                if(report.distance_cm <= DISTANCE_THRESHOLD_cm) {
+                    if(report.distance_cm < min_distance_cm) {
+                        min_distance_cm = report.distance_cm;
+                    }
+                }
+                // Condition to exit a near pass
+                else {
+                    in_near_pass = false;
+
+                    near_pass_duration_ms = report.time_stamp_ms - near_pass_start_time_ms;
+
+                    // If the near pass is valid
+                    // TODO (Maybe): get info from extra validator thread
+                    if(near_pass_duration_ms >= NEAR_PASS_MIN_DURATION_ms &&
+                        near_pass_duration_ms <= NEAR_PASS_MAX_DURATION_ms
+                    ) {
+                        NearPass near_pass;
+                        near_pass.time = (long)(near_pass_start_time / 1000);
+                        near_pass.distance_cm = min_distance_cm;
+                        near_pass.speed = le_server_get_latest_speed_mps();
+                        near_pass.latitude = le_server_get_latest_latitude();
+                        near_pass.longitude = le_server_get_latest_longitude();
+
+                        // TODO (Maybe): Send to validator instead of logging in db
+                        db_insert_near_pass(db, near_pass);
+                    }
+
+                    // Reset necessary params
+                    min_distance_cm = MB1242_MAX_DISTANCE_cm;
+                }
+                break;
+            default:
+                break;
+        } // switch
+    }
+
+    ultrasonic.stop_sampling();
+}
+
+void near_pass_detection_init(string ultrasonic_i2c_device, int ultrasonic_status_gpio_num) {
+    ultrasonic = MB1242(ultrasonic_i2c_device, ultrasonic_status_gpio_num);
+}
+
+void near_pass_detection_start() {
+    detector_thread = std::thread(run_detector);
+}
+
+void near_pass_detection_stop() {
+    do_run_detector = false;
+    if(detector_thread.joinable()) {
+        detector_thread.join();
+    }
+}
