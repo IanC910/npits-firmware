@@ -19,7 +19,7 @@ static std::thread detector_thread;
 static const int DISTANCE_THRESHOLD_cm = 200;
 static const int NEAR_PASS_COOLDOWN_ms = 300;
 static const int NEAR_PASS_MIN_DURATION_ms = 100;
-static const int NEAR_PASS_MAX_DURATION_ms = 3000;
+static const int NEAR_PASS_MAX_DURATION_ms = 5000;
 
 static void run_detector() {
     ultrasonic.begin_sampling();
