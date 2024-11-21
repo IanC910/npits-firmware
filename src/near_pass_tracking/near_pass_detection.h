@@ -7,7 +7,10 @@
 void near_pass_detection_init(std::string ultrasonic_i2c_device, int ultrasonic_status_gpio_num);
 
 void near_pass_detection_start();
-
 void near_pass_detection_stop();
+
+void near_pass_detection_set_latitude(double latitude);
+void near_pass_detection_set_longitude(double longitude);
+void near_pass_detection_set_speed_mps(double speed_mps);
 
 #endif

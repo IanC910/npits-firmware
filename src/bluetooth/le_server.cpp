@@ -4,17 +4,19 @@
 #include <string.h>
 #include <thread>
 
+#include "../constants.h"
+
+#include "../near_pass_tracking/near_pass_detection.h"
+
 #include "btlib.h"
 #include "ctic_index.h"
 
-#include "le_server.h"
+#include "npits_le_server.h"
+
+static bool initialized = false;
 
 static bool do_run_le_server = false;
 static std::thread le_server_thread;
-
-static double latest_latitude = 0;
-static double latest_longitude = 0;
-static double latest_speed_mps = 0;
 
 static int le_client_write_callback(int client_node, int ctic_index) {
     switch(ctic_index) {
@@ -32,19 +34,25 @@ static int le_client_write_callback(int client_node, int ctic_index) {
         case CTIC_GPS_LATIDUDE:
             unsigned char read_buf[32];
             int num_bytes = read_ctic(client_node, ctic_index, read_buf, sizeof(read_buf));
-            sscanf((const char*)read_buf, "%lf", &latest_latitude);
+            double latitude;
+            sscanf((const char*)read_buf, "%lf", &latitude);
+            near_pass_detection_set_latitude(latitude);
             break;
 
         case CTIC_GPS_LONGITUDE:
             unsigned char read_buf[32];
             int num_bytes = read_ctic(client_node, ctic_index, read_buf, sizeof(read_buf));
-            sscanf((const char*)read_buf, "%lf", &latest_longitude);
+            double longitude;
+            sscanf((const char*)read_buf, "%lf", &longitude);
+            near_pass_detection_set_longitude(longitude);
             break;
 
         case CTIC_GPS_SPEED_MPS:
             unsigned char read_buf[32];
             int num_bytes = read_ctic(client_node, ctic_index, read_buf, sizeof(read_buf));
-            sscanf((const char*)read_buf, "%lf", &latest_speed_mps);
+            double speed_mps;
+            sscanf((const char*)read_buf, "%lf", &speed_mps);
+            near_pass_detection_set_speed_mps(speed_mps);
             break;
 
         case CTIC_RC_CMD:
@@ -92,7 +100,18 @@ static void run_le_server() {
     close_all();
 }
 
+void le_server_init() {
+    if(initialized) {
+        return;
+    }
+
+    near_pass_detection_init(ULTRASONIC_I2C_DEVICE, ULTRASONIC_STATUS_GPIO_NUM);
+
+    initialized = true;
+}
+
 void le_server_start() {
+    le_server_init();
     do_run_le_server = true;
     le_server_thread = std::thread(run_le_server);
 }
@@ -102,16 +121,4 @@ void le_server_stop() {
     if(le_server_thread.joinable()) {
         le_server_thread.join();
     }
-}
-
-double le_server_get_latest_latitude() {
-    return latest_latitude;
-}
-
-double le_server_get_latest_longitude() {
-    return latest_longitude;
-}
-
-double le_server_get_latest_speed_mps() {
-    return latest_speed_mps;
 }

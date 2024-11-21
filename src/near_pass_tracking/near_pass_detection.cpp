@@ -6,7 +6,6 @@
 #include "../common/time_tools.h"
 #include "../common/structs.h"
 #include "../devices/MB1242.h"
-#include "../bluetooth/le_server.h"
 #include "../db/near_pass_db.h"
 
 #include "near_pass_detection.h"
@@ -20,6 +19,10 @@ static const int DISTANCE_THRESHOLD_cm = 200;
 static const int NEAR_PASS_COOLDOWN_ms = 300;
 static const int NEAR_PASS_MIN_DURATION_ms = 100;
 static const int NEAR_PASS_MAX_DURATION_ms = 5000;
+
+static double latest_latitude = 0;
+static double latest_longitude = 0;
+static double latest_speed_mps = 0;
 
 static void run_detector() {
     ultrasonic.begin_sampling();
@@ -69,11 +72,11 @@ static void run_detector() {
                         near_pass_duration_ms <= NEAR_PASS_MAX_DURATION_ms
                     ) {
                         NearPass near_pass;
-                        near_pass.time = (long)(near_pass_start_time / 1000);
-                        near_pass.distance_cm = min_distance_cm;
-                        near_pass.speed = le_server_get_latest_speed_mps();
-                        near_pass.latitude = le_server_get_latest_latitude();
-                        near_pass.longitude = le_server_get_latest_longitude();
+                        near_pass.time          = (long)(near_pass_start_time / 1000);
+                        near_pass.distance_cm   = min_distance_cm;
+                        near_pass.speed         = latest_speed_mps;
+                        near_pass.latitude      = latest_latitude;
+                        near_pass.longitude     = latest_longitude;
 
                         // TODO (Maybe): Send to validator instead of logging in db
                         db_insert_near_pass(db, near_pass);
@@ -104,4 +107,16 @@ void near_pass_detection_stop() {
     if(detector_thread.joinable()) {
         detector_thread.join();
     }
+}
+
+void near_pass_detection_set_latitude(double latitude) {
+    latest_latitude = latitude;
+}
+
+void near_pass_detection_set_longitude(double longitude) {
+    lastest_longitude = longitude;
+}
+
+void near_pass_detection_set_speed_mps(double speed_mps) {
+    latest_speed_mps = speed_mps;
 }

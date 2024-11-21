@@ -1,6 +1,6 @@
 
-#include "near_pass_tracking/npits.h"
+#include "bluetooth/le_server.h"
 
 int main() {
-    npits_run();
+    le_server_start();
 }
