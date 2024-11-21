@@ -9,6 +9,9 @@
 
 using namespace std;
 
+static sqlite3* db;
+static const string DB_NAME = "near_pass.db"
+
 // Callback function to display the result of the SELECT query
 static int callback(void* data, int argc, char** argv, char** colNames) {
     for (int i = 0; i < argc; i++) {
@@ -18,8 +21,8 @@ static int callback(void* data, int argc, char** argv, char** colNames) {
     return 0;
 }
 
-int db_open(sqlite3** db, const string& dbName) {
-    int rc = sqlite3_open(dbName.c_str(), db);
+int db_open() {
+    int rc = sqlite3_open(DB_NAME.c_str(), &db);
     if (rc) {
         cerr << "Can't open database: " << sqlite3_errmsg(*db) << endl;
         return rc;
@@ -29,7 +32,11 @@ int db_open(sqlite3** db, const string& dbName) {
     return SQLITE_OK;
 }
 
-int db_create_rides_table(sqlite3* db) {
+db_close() {
+    sqlite3_close(db);
+}
+
+int db_create_rides_table() {
     const char* createTableSQL =
         "CREATE TABLE IF NOT EXISTS Rides ("
         "rideId INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -47,7 +54,7 @@ int db_create_rides_table(sqlite3* db) {
     return SQLITE_OK;
 }
 
-int db_create_near_pass_table(sqlite3* db) {
+int db_create_near_pass_table() {
     const char* createTableSQL =
         "CREATE TABLE IF NOT EXISTS NearPass ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -70,7 +77,7 @@ int db_create_near_pass_table(sqlite3* db) {
     return SQLITE_OK;
 }
 
-int db_start_ride(sqlite3* db, long startTime) {
+int db_start_ride(long startTime) {
     const char* insertSQL =
         "INSERT INTO Rides (startTime, endTime) "
         "VALUES (?, NULL);";  // endTime is NULL initially
@@ -101,7 +108,7 @@ int db_start_ride(sqlite3* db, long startTime) {
     return rideId;
 }
 
-int db_end_ride(sqlite3* db, int rideId, long endTime) {
+int db_end_ride(int rideId, long endTime) {
     const char* updateSQL =
         "UPDATE Rides SET endTime = ? WHERE rideId = ?;";
 
@@ -130,7 +137,7 @@ int db_end_ride(sqlite3* db, int rideId, long endTime) {
     return SQLITE_OK;
 }
 
-int db_insert_near_pass(sqlite3* db, const NearPass& nearPass) {
+int db_insert_near_pass(const NearPass& nearPass) {
     const char* insertSQL =
         "INSERT INTO NearPass (latitude, longitude, distance, speed, time, rideId) "
         "VALUES (?, ?, ?, ?, ?, ?);";
@@ -163,7 +170,7 @@ int db_insert_near_pass(sqlite3* db, const NearPass& nearPass) {
     return SQLITE_OK;
 }
 
-int db_get_near_passes(sqlite3* db) {
+int db_get_near_passes() {
     const char* selectSQL = "SELECT * FROM NearPass;";
 
     char* errMessage = nullptr;
