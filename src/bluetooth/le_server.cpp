@@ -11,7 +11,7 @@
 #include "btlib.h"
 #include "ctic_index.h"
 
-#include "npits_le_server.h"
+#include "le_server.h"
 
 static bool initialized = false;
 
