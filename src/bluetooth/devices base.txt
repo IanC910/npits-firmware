@@ -13,8 +13,8 @@ DEVICE = NPITS      TYPE = MESH     NODE = 1    ADDRESS = <BT_MAC_ADDRESS>
 
     ; Get Near Pass List
     PRIMARY_SERVICE = 2000
-        LECHAR = Ride Request       PERMIT = 16     SIZE = 01   UUID = 2001 ; Both write
-        LECHAR = Ride ID            PERMIT = 04     SIZE = 16   UUID = 2002 ; Phone writes
+        LECHAR = NPL Request        PERMIT = 16     SIZE = 01   UUID = 2001 ; Both write
+        LECHAR = NPL ID             PERMIT = 04     SIZE = 16   UUID = 2002 ; Phone writes
         LECHAR = NP Valid           PERMIT = 16     SIZE = 01   UUID = 2003 ; Both write
         LECHAR = NP UNIX Time       PERMIT = 02     SIZE = 16   UUID = 2010 ; Pi writes
         LECHAR = NP Distance cm     PERMIT = 02     SIZE = 04   UUID = 2011 ; Pi writes
@@ -24,5 +24,9 @@ DEVICE = NPITS      TYPE = MESH     NODE = 1    ADDRESS = <BT_MAC_ADDRESS>
 
     ; Give GPS Coords
     PRIMARY_SERVICE = 2100
-        LECHAR = Latitude           PERMIT = 04     SIZE = 16   UUID = 2110 ; Phone writes
-        LECHAR = Longitude          PERMIT = 04     SIZE = 16   UUID = 2111 ; Phone writes
+        LECHAR = GPS Latitude       PERMIT = 04     SIZE = 16   UUID = 2110 ; Phone writes
+        LECHAR = GPS Longitude      PERMIT = 04     SIZE = 16   UUID = 2111 ; Phone writes
+        LECHAR = GPS Speed mps      PERMIT = 04     SIZE = 16   UUID = 2112 ; Phone writes
+
+    ; Control
+    PRIMARY_SERVICE = 2200

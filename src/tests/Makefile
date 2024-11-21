@@ -3,8 +3,8 @@ CC = g++
 CFLAGS = -std=c++17 -g -Wmaybe-uninitialized -Wall
 CCF = $(CC) $(CFLAGS)
 
-DEVICES = $(wildcard ../devices/*.cpp)
 COMMON = $(wildcard ../common/*.cpp)
+DEVICES = $(wildcard ../devices/*.cpp)
 ALL_SOURCES = $(COMMON) $(DEVICES)
 TEST_EXECS = $(wildcard *.test)
 
