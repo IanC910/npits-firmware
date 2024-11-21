@@ -29,8 +29,7 @@ enum ctic_t {
     CTIC_GPS_SPEED_MPS,
 
     // Ride Control Service
-    CTIC_RC_CMD,
-    CTIC_RC_ACK
+    CTIC_RC_CMD
 };
 
 enum rc_cmd_t {
