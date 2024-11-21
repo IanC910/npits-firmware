@@ -78,7 +78,7 @@ static void run_detector() {
                         near_pass.longitude     = latest_longitude;
 
                         // TODO (Maybe): Send to validator instead of logging in db
-                        db_insert_near_pass(db, near_pass);
+                        db_insert_near_pass(near_pass);
                     }
 
                     // Reset necessary params
