@@ -1,8 +1,8 @@
 
-#ifndef CTIC_INDEX_H
-#define CTIC_INDEX_H
+#ifndef LE_PARAMS_H
+#define LE_PARAMS_H
 
-enum ctic_index_t {
+enum ctic_t {
     // Generic Access Service
     CTIC_DEVICE_NAME = 0,
 
@@ -32,5 +32,11 @@ enum ctic_index_t {
     CTIC_RC_CMD,
     CTIC_RC_ACK
 };
+
+enum rc_cmd_t {
+    RC_CMD_NONE,
+    RC_CMD_START_RIDE,
+    RC_CMD_END_RIDE
+}
 
 #endif

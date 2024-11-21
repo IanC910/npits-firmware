@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 
-#include "../common/structs.h"
+#include "../near_pass_tracking/types.h"
 
 #include "NearPassDB.h"
 

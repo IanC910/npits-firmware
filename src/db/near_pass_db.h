@@ -5,6 +5,8 @@
 #include <sqlite3.h>
 #include <string>
 
+#include "../near_pass_tracking/types.h"
+
 // Function to open the SQLite database
 // Sets *db to a pointer to a db
 // Returns SQLITE_OK on success

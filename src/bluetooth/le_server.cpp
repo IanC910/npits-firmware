@@ -4,12 +4,10 @@
 #include <string.h>
 #include <thread>
 
-#include "../common/constants.h"
-
 #include "../near_pass_tracking/near_pass_detection.h"
 
 #include "btlib.h"
-#include "ctic_index.h"
+#include "le_params.h"
 
 #include "le_server.h"
 
