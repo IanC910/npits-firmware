@@ -39,6 +39,11 @@ static void run_detector() {
 
         MB1242::report report = ultrasonic.get_latest_report();
 
+
+        if(report.distance_cm < min_distance_cm) {
+            min_distance_cm = report.distance_cm;
+        }
+
         switch(in_near_pass) {
             case false:
                 // Condition to enter a near pass
@@ -51,18 +56,11 @@ static void run_detector() {
 
                     // TODO: validate and clip gopro footage
                 }
-                // No break
+                break;
             case true:
-                // Condition to remain in a near pass
-                if(report.distance_cm <= DISTANCE_THRESHOLD_cm) {
-                    if(report.distance_cm < min_distance_cm) {
-                        min_distance_cm = report.distance_cm;
-                    }
-                }
                 // Condition to exit a near pass
-                else {
+                if(report.distance_cm > DISTANCE_THRESHOLD_cm) {
                     in_near_pass = false;
-
                     near_pass_duration_ms = report.time_stamp_ms - near_pass_start_time_ms;
 
                     // If the near pass is valid

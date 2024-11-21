@@ -12,15 +12,6 @@ using namespace std;
 static sqlite3* db;
 static const string DB_NAME = "near_pass.db"
 
-// Callback function to display the result of the SELECT query
-static int callback(void* data, int argc, char** argv, char** colNames) {
-    for (int i = 0; i < argc; i++) {
-        cout << colNames[i] << ": " << (argv[i] ? argv[i] : "NULL") << endl;
-    }
-    cout << endl;
-    return 0;
-}
-
 int db_open() {
     int rc = sqlite3_open(DB_NAME.c_str(), &db);
     if (rc) {
@@ -168,6 +159,14 @@ int db_insert_near_pass(const NearPass& nearPass) {
     cout << "NearPass inserted successfully" << endl;
     sqlite3_finalize(stmt);
     return SQLITE_OK;
+}
+
+static int select_callback(void* data, int argc, char** argv, char** colNames) {
+    for (int i = 0; i < argc; i++) {
+        cout << colNames[i] << ": " << (argv[i] ? argv[i] : "NULL") << endl;
+    }
+    cout << endl;
+    return 0;
 }
 
 int db_get_near_passes() {
