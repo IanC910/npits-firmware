@@ -7,7 +7,7 @@
 #include "../near_pass_tracking/near_pass_detection.h"
 
 #include "btlib.h"
-#include "le_params.h"
+#include "le_types.h"
 
 #include "le_server.h"
 
