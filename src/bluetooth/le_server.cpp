@@ -4,7 +4,7 @@
 #include <string.h>
 #include <thread>
 
-#include "../constants.h"
+#include "../common/constants.h"
 
 #include "../near_pass_tracking/near_pass_detection.h"
 
@@ -12,8 +12,6 @@
 #include "ctic_index.h"
 
 #include "le_server.h"
-
-static bool initialized = false;
 
 static bool do_run_le_server = false;
 static std::thread le_server_thread;
@@ -100,18 +98,7 @@ static void run_le_server() {
     close_all();
 }
 
-void le_server_init() {
-    if(initialized) {
-        return;
-    }
-
-    near_pass_detection_init(ULTRASONIC_I2C_DEVICE, ULTRASONIC_STATUS_GPIO_NUM);
-
-    initialized = true;
-}
-
 void le_server_start() {
-    le_server_init();
     do_run_le_server = true;
     le_server_thread = std::thread(run_le_server);
 }

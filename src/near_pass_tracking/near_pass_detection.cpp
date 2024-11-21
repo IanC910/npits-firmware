@@ -5,10 +5,13 @@
 
 #include "../common/time_tools.h"
 #include "../common/structs.h"
+#include "../common/constants.h"
 #include "../devices/MB1242.h"
 #include "../db/near_pass_db.h"
 
 #include "near_pass_detection.h"
+
+static bool initialized = false;
 
 static MB1242 ultrasonic;
 
@@ -94,11 +97,18 @@ static void run_detector() {
     ultrasonic.stop_sampling();
 }
 
-void near_pass_detection_init(string ultrasonic_i2c_device, int ultrasonic_status_gpio_num) {
-    ultrasonic = MB1242(ultrasonic_i2c_device, ultrasonic_status_gpio_num);
+void near_pass_detection_init() {
+    if(initialized) {
+        return;
+    }
+
+    ultrasonic = MB1242(ULTRASONIC_I2C_DEVICE, ULTRASONIC_STATUS_GPIO_NUM);
+
+    initialized = true;
 }
 
 void near_pass_detection_start() {
+    near_pass_detection_init()
     detector_thread = std::thread(run_detector);
 }
 
