@@ -15,6 +15,9 @@ static bool do_run_le_server = false;
 static std::thread le_server_thread;
 
 static int le_client_write_callback(int client_node, int ctic_index) {
+    unsigned char read_buf[32];
+    int num_bytes = read_ctic(client_node, ctic_index, read_buf, sizeof(read_buf));
+
     switch(ctic_index) {
         case CTIC_RL_REQUEST:
             break;
@@ -28,30 +31,39 @@ static int le_client_write_callback(int client_node, int ctic_index) {
             break;
 
         case CTIC_GPS_LATIDUDE:
-            unsigned char read_buf[32];
-            int num_bytes = read_ctic(client_node, ctic_index, read_buf, sizeof(read_buf));
             double latitude;
             sscanf((const char*)read_buf, "%lf", &latitude);
             near_pass_detector_set_latitude(latitude);
             break;
 
         case CTIC_GPS_LONGITUDE:
-            unsigned char read_buf[32];
-            int num_bytes = read_ctic(client_node, ctic_index, read_buf, sizeof(read_buf));
             double longitude;
             sscanf((const char*)read_buf, "%lf", &longitude);
             near_pass_detector_set_longitude(longitude);
             break;
 
         case CTIC_GPS_SPEED_MPS:
-            unsigned char read_buf[32];
-            int num_bytes = read_ctic(client_node, ctic_index, read_buf, sizeof(read_buf));
             double speed_mps;
             sscanf((const char*)read_buf, "%lf", &speed_mps);
             near_pass_detector_set_speed_mps(speed_mps);
             break;
 
         case CTIC_RC_CMD:
+            rc_cmd_t rc_cmd;
+            sscanf((const char*)read_buf, "%d", &rc_cmd);
+
+            switch(rc_cmd) {
+                case RC_CMD_START_RIDE:
+                    near_pass_detector_start_ride();
+                    break;
+
+                case RC_CMD_END_RIDE:
+                    near_pass_detector_end_ride();
+                    break;
+
+                default:
+                    break;
+            }
             break;
 
         default:

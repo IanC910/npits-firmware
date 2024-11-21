@@ -13,11 +13,14 @@
 #include "near_pass_detector.h"
 
 static bool initialized = false;
+static bool is_ride_active = false;
 
 static MB1242 ultrasonic;
 
 static bool do_run_near_pass_detector = false;
 static std::thread detector_thread;
+
+static int curr_ride_id = 0;
 
 static double latest_latitude = 0;
 static double latest_longitude = 0;
@@ -90,26 +93,50 @@ static void run_near_pass_detector() {
     ultrasonic.stop_sampling();
 }
 
-void near_pass_detector_init() {
+int near_pass_detector_init() {
     if(initialized) {
-        return;
+        return 1;
     }
 
     ultrasonic = MB1242(ULTRASONIC_I2C_DEVICE, ULTRASONIC_STATUS_GPIO_NUM);
 
     initialized = true;
+
+    return 0;
 }
 
-void near_pass_detector_start() {
-    near_pass_detector_init()
+int near_pass_detector_start_ride() {
+    if(is_ride_active) {
+        return 1;
+    }
+
+    near_pass_detector_init();
+
+    is_ride_active = true;
+    curr_ride_id = db_start_ride(get_time_s());
+
     detector_thread = std::thread(run_near_pass_detector);
+
+    return 0;
 }
 
-void near_pass_detector_stop() {
+int near_pass_detector_end_ride() {
+    if(!is_ride_active) {
+        return 1;
+    }
+
     do_run_near_pass_detector = false;
     if(detector_thread.joinable()) {
         detector_thread.join();
     }
+
+    db_end_ride(curr_ride_id, get_time_s());
+
+    is_ride_active = false;
+}
+
+bool near_pass_detector_is_active() {
+    return is_ride_active;
 }
 
 void near_pass_detector_set_latitude(double latitude) {
