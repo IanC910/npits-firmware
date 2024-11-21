@@ -26,7 +26,11 @@ enum ctic_index_t {
     // Give GPS Coords Service
     CTIC_GPS_LATIDUDE,
     CTIC_GPS_LONGITUDE,
-    CTIC_GPS_SPEED_MPS
+    CTIC_GPS_SPEED_MPS,
+
+    // Ride Control Service
+    CTIC_RC_CMD,
+    CTIC_RC_ACK
 };
 
 #endif

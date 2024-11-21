@@ -28,5 +28,7 @@ DEVICE = NPITS      TYPE = MESH     NODE = 1    ADDRESS = <BT_MAC_ADDRESS>
         LECHAR = GPS Longitude      PERMIT = 04     SIZE = 16   UUID = 2111 ; Phone writes
         LECHAR = GPS Speed mps      PERMIT = 04     SIZE = 16   UUID = 2112 ; Phone writes
 
-    ; Control
+    ; Ride Control
     PRIMARY_SERVICE = 2200
+        LECHAR = RC Cmd             PERMIT = 04     SIZE = 01   UUID = 2200 ; Phone writes
+        LECHAR = RC Ack             PERMIT = 02     SIZE = 01   UUID = 2201 ; Pi writes
