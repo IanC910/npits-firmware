@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 
-#include "../near_pass_tracking/types.h"
+#include "../near_pass_detector/types.h"
 
 #include "NearPassDB.h"
 

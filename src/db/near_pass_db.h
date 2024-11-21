@@ -2,7 +2,6 @@
 #ifndef NEAR_PASS_DB_H
 #define NEAR_PASS_DB_H
 
-#include <sqlite3.h>
 #include <string>
 
 #include "../near_pass_tracking/types.h"

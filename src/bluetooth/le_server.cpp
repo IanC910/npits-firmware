@@ -4,7 +4,7 @@
 #include <string.h>
 #include <thread>
 
-#include "../near_pass_tracking/near_pass_detection.h"
+#include "../near_pass_detector/near_pass_detector.h"
 
 #include "btlib.h"
 #include "le_types.h"
@@ -32,7 +32,7 @@ static int le_client_write_callback(int client_node, int ctic_index) {
             int num_bytes = read_ctic(client_node, ctic_index, read_buf, sizeof(read_buf));
             double latitude;
             sscanf((const char*)read_buf, "%lf", &latitude);
-            near_pass_detection_set_latitude(latitude);
+            near_pass_detector_set_latitude(latitude);
             break;
 
         case CTIC_GPS_LONGITUDE:
@@ -40,7 +40,7 @@ static int le_client_write_callback(int client_node, int ctic_index) {
             int num_bytes = read_ctic(client_node, ctic_index, read_buf, sizeof(read_buf));
             double longitude;
             sscanf((const char*)read_buf, "%lf", &longitude);
-            near_pass_detection_set_longitude(longitude);
+            near_pass_detector_set_longitude(longitude);
             break;
 
         case CTIC_GPS_SPEED_MPS:
@@ -48,7 +48,7 @@ static int le_client_write_callback(int client_node, int ctic_index) {
             int num_bytes = read_ctic(client_node, ctic_index, read_buf, sizeof(read_buf));
             double speed_mps;
             sscanf((const char*)read_buf, "%lf", &speed_mps);
-            near_pass_detection_set_speed_mps(speed_mps);
+            near_pass_detector_set_speed_mps(speed_mps);
             break;
 
         case CTIC_RC_CMD:

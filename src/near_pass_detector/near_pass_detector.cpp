@@ -9,21 +9,21 @@
 #include "../db/near_pass_db.h"
 #include "../connection_params.h"
 
-#include "near_pass_detection_params.h"
-#include "near_pass_detection.h"
+#include "near_pass_detector_params.h"
+#include "near_pass_detector.h"
 
 static bool initialized = false;
 
 static MB1242 ultrasonic;
 
-static bool do_run_detector = false;
+static bool do_run_near_pass_detector = false;
 static std::thread detector_thread;
 
 static double latest_latitude = 0;
 static double latest_longitude = 0;
 static double latest_speed_mps = 0;
 
-static void run_detector() {
+static void run_near_pass_detector() {
     ultrasonic.begin_sampling();
 
     bool in_near_pass = false;
@@ -32,13 +32,12 @@ static void run_detector() {
     int min_distance_cm = MB1242_MAX_DISTANCE_cm;
     int near_pass_duration_ms = 0;
 
-    while(do_run_detector) {
+    while(do_run_near_pass_detector) {
         while(!ultrasonic.is_new_report_available()) {
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
 
         MB1242::report report = ultrasonic.get_latest_report();
-
 
         if(report.distance_cm < min_distance_cm) {
             min_distance_cm = report.distance_cm;
@@ -91,7 +90,7 @@ static void run_detector() {
     ultrasonic.stop_sampling();
 }
 
-void near_pass_detection_init() {
+void near_pass_detector_init() {
     if(initialized) {
         return;
     }
@@ -101,26 +100,26 @@ void near_pass_detection_init() {
     initialized = true;
 }
 
-void near_pass_detection_start() {
-    near_pass_detection_init()
-    detector_thread = std::thread(run_detector);
+void near_pass_detector_start() {
+    near_pass_detector_init()
+    detector_thread = std::thread(run_near_pass_detector);
 }
 
-void near_pass_detection_stop() {
-    do_run_detector = false;
+void near_pass_detector_stop() {
+    do_run_near_pass_detector = false;
     if(detector_thread.joinable()) {
         detector_thread.join();
     }
 }
 
-void near_pass_detection_set_latitude(double latitude) {
+void near_pass_detector_set_latitude(double latitude) {
     latest_latitude = latitude;
 }
 
-void near_pass_detection_set_longitude(double longitude) {
+void near_pass_detector_set_longitude(double longitude) {
     lastest_longitude = longitude;
 }
 
-void near_pass_detection_set_speed_mps(double speed_mps) {
+void near_pass_detector_set_speed_mps(double speed_mps) {
     latest_speed_mps = speed_mps;
 }
