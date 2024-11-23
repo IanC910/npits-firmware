@@ -3,19 +3,19 @@
 #include <iostream>
 #include <string>
 
-#include "../near_pass_detector/types.h"
+#include "../near_pass_detector/near_pass_detector_types.h"
 
-#include "NearPassDB.h"
+#include "near_pass_db.h"
 
 using namespace std;
 
 static sqlite3* db;
-static const string DB_NAME = "near_pass.db"
+static const string DB_NAME = "near_pass.db";
 
 int db_open() {
     int rc = sqlite3_open(DB_NAME.c_str(), &db);
     if (rc) {
-        cerr << "Can't open database: " << sqlite3_errmsg(*db) << endl;
+        cerr << "Can't open database: " << sqlite3_errmsg(db) << endl;
         return rc;
     } else {
         cout << "Opened database successfully" << endl;
@@ -23,7 +23,7 @@ int db_open() {
     return SQLITE_OK;
 }
 
-db_close() {
+void db_close() {
     sqlite3_close(db);
 }
 
@@ -49,11 +49,11 @@ int db_create_near_pass_table() {
     const char* createTableSQL =
         "CREATE TABLE IF NOT EXISTS NearPass ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+        "time INTEGER, "
+        "distance_cm INTEGER, "
+        "speed_mps REAL, "
         "latitude REAL, "
         "longitude REAL, "
-        "distance REAL, "
-        "speed REAL, "
-        "time INTEGER, "
         "rideId INTEGER, "
         "FOREIGN KEY(rideId) REFERENCES Rides(rideId));";
 
@@ -130,7 +130,7 @@ int db_end_ride(int rideId, long endTime) {
 
 int db_insert_near_pass(const NearPass& nearPass) {
     const char* insertSQL =
-        "INSERT INTO NearPass (latitude, longitude, distance, speed, time, rideId) "
+        "INSERT INTO NearPass (latitude, longitude, distance_cm, speed_mps, time, rideId) "
         "VALUES (?, ?, ?, ?, ?, ?);";
 
     sqlite3_stmt* stmt;
@@ -143,8 +143,8 @@ int db_insert_near_pass(const NearPass& nearPass) {
     // Bind values to the prepared statement
     sqlite3_bind_double(stmt, 1, nearPass.latitude);
     sqlite3_bind_double(stmt, 2, nearPass.longitude);
-    sqlite3_bind_double(stmt, 3, nearPass.distance);
-    sqlite3_bind_double(stmt, 4, nearPass.speed);
+    sqlite3_bind_double(stmt, 3, nearPass.distance_cm);
+    sqlite3_bind_double(stmt, 4, nearPass.speed_mps);
     sqlite3_bind_int64(stmt, 5, nearPass.time);
     sqlite3_bind_int(stmt, 6, nearPass.rideId);
 
@@ -173,7 +173,7 @@ int db_get_near_passes() {
     const char* selectSQL = "SELECT * FROM NearPass;";
 
     char* errMessage = nullptr;
-    int rc = sqlite3_exec(db, selectSQL, callback, nullptr, &errMessage);
+    int rc = sqlite3_exec(db, selectSQL, select_callback, nullptr, &errMessage);
     if (rc != SQLITE_OK) {
         cerr << "SQL error: " << errMessage << endl;
         sqlite3_free(errMessage);

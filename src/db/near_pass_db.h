@@ -4,13 +4,13 @@
 
 #include <string>
 
-#include "../near_pass_tracking/types.h"
+#include "../near_pass_detector/types.h"
 
 // Function to open the SQLite database
 // Returns SQLITE_OK on success
 int db_open();
 
-int db_close();
+void db_close();
 
 // Function to create the Rides table
 // Returns SQLITE_OK on success

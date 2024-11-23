@@ -25,14 +25,21 @@ MB1242::~MB1242() {
 // Async
 
 void MB1242::begin_sampling() {
+    if(do_run_sampler) {
+        return;
+    }
     do_run_sampler = true;
-    sampler_thread = std::thread(&MB1242::run_sampler, this);
+    sampler_thread = new std::thread(&MB1242::run_sampler, this);
 }
 
 void MB1242::stop_sampling() {
+    if(!do_run_sampler) {
+        return;
+    }
     do_run_sampler = false;
-    if(sampler_thread.joinable()) {
-        sampler_thread.join();
+    if(sampler_thread->joinable()) {
+        sampler_thread->join();
+        delete sampler_thread;
     }
 }
 

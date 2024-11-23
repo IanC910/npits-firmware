@@ -3,21 +3,46 @@
 #define NEAR_PASS_DETECTOR_H
 
 #include <string>
+#include <thread>
 
-// Returns 0 on success, 1 if already initialized
-int near_pass_detector_init();
+#include "../devices/MB1242.h"
 
-// Returns 0 on success, 1 if ride already active
-int near_pass_detector_start_ride();
+enum near_pass_state_t {
+    NPS_NONE,
+    NPS_IN_NEAR_PASS
+};
 
-// Returns 0 on success, 1 if no ride is active
-int near_pass_detector_end_ride();
+class NearPassDetector {
+public:
+    NearPassDetector();
 
-// Returns true if a ride is currently active, false otherwise
-bool near_pass_detector_is_active();
+    // Returns 0 on success, 1 if ride already active
+    int start_ride();
 
-void near_pass_detector_set_latitude(double latitude);
-void near_pass_detector_set_longitude(double longitude);
-void near_pass_detector_set_speed_mps(double speed_mps);
+    // Returns 0 on success, 1 if no ride is active
+    int end_ride();
+
+    // Returns true if a ride is currently active, false otherwise
+    bool get_is_ride_active();
+
+    void set_latitude(double latitude);
+    void set_longitude(double longitude);
+    void set_speed_mps(double speed_mps);
+
+private:
+    bool is_ride_active = false;
+    int curr_ride_id = 0;
+
+    MB1242 ultrasonic;
+
+    bool do_run_near_pass_detector = false;
+    std::thread* detector_thread;
+
+    double latest_latitude = 0;
+    double latest_longitude = 0;
+    double latest_speed_mps = 0;
+
+    void run_near_pass_detector();
+};
 
 #endif

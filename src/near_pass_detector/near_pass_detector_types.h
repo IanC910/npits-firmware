@@ -3,12 +3,12 @@
 #define STRUCTS_H
 
 struct NearPass {
-    int rideId;
     long time; // UNIX timestamp
     int distance_cm;
-    double speed;
+    double speed_mps;
     double latitude;
     double longitude;
+    int rideId;
 };
 
 struct Ride {

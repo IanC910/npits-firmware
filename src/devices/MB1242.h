@@ -61,7 +61,7 @@ protected:
     gpio_pin status_gpio_pin = GPIO_NO_PIN;
 
     bool do_run_sampler = false;
-    std::thread sampler_thread;
+    std::thread* sampler_thread;
     void run_sampler();
 };
 

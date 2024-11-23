@@ -3,9 +3,9 @@
 #include <string>
 #include <iostream>
 
-#include "../common/structs.h"
+#include "../near_pass_detector/types.h"
 
-#include "near_pass_db.h"
+#include "../db/near_pass_db.h"
 
 int main() {
     // Open the database
@@ -28,8 +28,8 @@ int main() {
     }
 
     // Insert new NearPass records that reference the inserted Ride
-    NearPass np1 = {37.7749, -122.4194, 500.0, 60.0, 1617282000, rideId};
-    NearPass np2 = {34.0522, -118.2437, 300.0, 45.0, 1617285600, rideId};
+    NearPass np1 = {1617282000, 500, 60.0, 37.7749, -122.4194, rideId};
+    NearPass np2 = {1617285600, 300, 45.0, 34.0522, -118.2437, rideId};
 
     if (db_insert_near_pass(np1) != SQLITE_OK || db_insert_near_pass(np2) != SQLITE_OK) {
         db_close();

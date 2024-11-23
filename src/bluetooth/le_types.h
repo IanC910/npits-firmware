@@ -4,7 +4,7 @@
 
 enum ctic_t {
     // Generic Access Service
-    CTIC_DEVICE_NAME = 0,
+    CTIC_DEVICE_NAME,
 
     // Get Rides List Service
     CTIC_RL_REQUEST,

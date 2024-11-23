@@ -12,9 +12,11 @@
 #include "le_server.h"
 
 static bool do_run_le_server = false;
-static std::thread le_server_thread;
+static std::thread* le_server_thread;
 
-static int le_client_write_callback(int client_node, int ctic_index) {
+static NearPassDetector near_pass_detector;
+
+static void le_client_write_callback(int client_node, int ctic_index) {
     unsigned char read_buf[32];
     int num_bytes = read_ctic(client_node, ctic_index, read_buf, sizeof(read_buf));
 
@@ -33,19 +35,19 @@ static int le_client_write_callback(int client_node, int ctic_index) {
         case CTIC_GPS_LATIDUDE:
             double latitude;
             sscanf((const char*)read_buf, "%lf", &latitude);
-            near_pass_detector_set_latitude(latitude);
+            near_pass_detector.set_latitude(latitude);
             break;
 
         case CTIC_GPS_LONGITUDE:
             double longitude;
             sscanf((const char*)read_buf, "%lf", &longitude);
-            near_pass_detector_set_longitude(longitude);
+            near_pass_detector.set_longitude(longitude);
             break;
 
         case CTIC_GPS_SPEED_MPS:
             double speed_mps;
             sscanf((const char*)read_buf, "%lf", &speed_mps);
-            near_pass_detector_set_speed_mps(speed_mps);
+            near_pass_detector.set_speed_mps(speed_mps);
             break;
 
         case CTIC_RC_CMD:
@@ -54,11 +56,11 @@ static int le_client_write_callback(int client_node, int ctic_index) {
 
             switch(rc_cmd) {
                 case RC_CMD_START_RIDE:
-                    near_pass_detector_start_ride();
+                    near_pass_detector.start_ride();
                     break;
 
                 case RC_CMD_END_RIDE:
-                    near_pass_detector_end_ride();
+                    near_pass_detector.end_ride();
                     break;
 
                 default:
@@ -110,12 +112,13 @@ static void run_le_server() {
 
 void le_server_start() {
     do_run_le_server = true;
-    le_server_thread = std::thread(run_le_server);
+    le_server_thread = new std::thread(run_le_server);
 }
 
 void le_server_stop() {
     do_run_le_server = false;
-    if(le_server_thread.joinable()) {
-        le_server_thread.join();
+    if(le_server_thread->joinable()) {
+        le_server_thread->join();
+        delete le_server_thread;
     }
 }
