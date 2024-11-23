@@ -11,7 +11,7 @@
 
 #include "OPS243.h"
 
-OPS243::OPS243(const char serial_port[]) {
+OPS243::OPS243(const char serial_port[], int BAUD_RATE) {
     /* Constructor: Mainly initializes the serial port for 
     communication with the OPS243*/
 
@@ -49,8 +49,8 @@ OPS243::OPS243(const char serial_port[]) {
     tty.c_cc[VMIN] = 0;
 
     // Set in/out baud rate to be 115200
-    cfsetispeed(&tty, OPS241_BAUD_RATE);
-    cfsetospeed(&tty, OPS241_BAUD_RATE);
+    cfsetispeed(&tty, BAUD_RATE);
+    cfsetospeed(&tty, BAUD_RATE);
 
     // Save tty settings, also checking for error
     if (tcsetattr(serial_file, TCSANOW, &tty) != 0) {
@@ -83,8 +83,8 @@ void OPS243::set_data_precision(int precision) {
         printf("Invalid precision value, valid values are between 0 and 5\n");
         return;
     }
-
-    std::string cmd = "F" + std::to_string(precision);
+    char cmd[3];
+    sprintf(cmd, "F%d", precision);
     write(serial_file, cmd, sizeof(cmd));
 }
 
@@ -96,20 +96,21 @@ void OPS243::set_minimum_speed_filter(int min_speed) {
         return;
     }
 
-    std::string cmd = "R>\n" + std::to_string(min_speed);
+    char cmd[3];
+    sprintf(cmd, "R>%d\n", min_speed);
     write(serial_file, cmd, sizeof(cmd));
-
 }
 
 void OPS243::set_maximum_speed_filter(int max_speed) {
     /* Sets the maximum value of speed that will be reported*/
     /* Any number above max_speed will not be reported */
-    if (min_speed < 0) {
+    if (max_speed < 0) {
         printf("Maximum speed must be greater than zero");
         return;
     }
 
-    std::string cmd = "R<\n" + std::to_string(max_speed);
+    char cmd[3];
+    sprintf(cmd, "R<%d\n", max_speed);
     write(serial_file, cmd, sizeof(cmd));
 }
 
@@ -121,7 +122,8 @@ void OPS243::set_minimum_range_filter(int min_range) {
         return;
     }
 
-    std::string cmd = "r>\n" + std::to_string(min_range);
+    char cmd[3];
+    sprintf(cmd, "r>%d\n", min_range);
     write(serial_file, cmd, sizeof(cmd));
 }
 
@@ -133,7 +135,8 @@ void OPS243::set_maximum_range_filter(int max_range) {
         return;
     }
 
-    std::string cmd = "r<\n" + std::to_string(max_range);
+    char cmd[3];
+    sprintf(cmd, "r<%d\n", max_range);
     write(serial_file, cmd, sizeof(cmd));
 }
 
@@ -216,12 +219,3 @@ void OPS243::stop_reporting_distance() {
     write(serial_file, cmd, sizeof(cmd));
 }
 
-
-void OPS243::set_num_digits(unsigned int num_digits) {
-    if(num_digits > 5) {
-        num_digits = 5;
-    }
-    char cmd[3];
-    sprintf(cmd, "F%d", num_digits);
-    write(serial_file, cmd, sizeof(cmd));
-}
