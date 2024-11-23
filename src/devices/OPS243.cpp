@@ -140,6 +140,16 @@ void OPS243::set_maximum_range_filter(int max_range) {
     write(serial_file, cmd, sizeof(cmd));
 }
 
+void OPS243::report_current_range_filter() {
+    char cmd[] = "r?";
+    write(serial_file, cmd, sizeof(cmd));
+}
+
+void OPS243::report_current_speed_filter() {
+    char cmd[] = "R?";
+    write(serial_file, cmd, sizeof(cmd));
+}
+
 void OPS243::set_inbound_only() {
     /* Set the reporting to only be for inbound directions */
     char cmd[] = "R+\n";
@@ -209,13 +219,31 @@ int OPS243::get_module_info(char* module_info, int length) {
     return total_bytes;
 }
 
-void OPS243::start_reporting_distance() {
+int OPS243::get_serial_file() { return serial_file;}
+
+void print_serial_file(OPS243& obj) {
+    char line_buf[256];
+    memset(line_buf, 0, sizeof(line_buf));
+    read(obj.get_serial_file(), line_buf, sizeof(line_buf));  // Access via getter
+    printf("%s\n", line_buf);
+}
+
+void OPS243::turn_distance_reporting_on() {
     char cmd[] = "oD";
     write(serial_file, cmd, sizeof(cmd));
 }
 
-void OPS243::stop_reporting_distance() {
+void OPS243::turn_distance_reporting_off() {
     char cmd[] = "od";
     write(serial_file, cmd, sizeof(cmd));
 }
 
+void OPS243::turn_speed_reporting_on() {
+    char cmd[] = "oS";
+    write(serial_file, cmd, sizeof(cmd));
+}
+
+void OPS243::turn_speed_reporting_off() {
+    char cmd[] = "os";
+    write(serial_file, cmd, sizeof(cmd));
+}

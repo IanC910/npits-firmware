@@ -25,6 +25,9 @@ public:
     void set_minimum_range_filter(int min_range);
     void set_maximum_range_filter(int max_range);
 
+    void report_current_range_filter();
+    void report_current_speed_filter();
+
     void set_inbound_only();
     void set_outbound_only();
     void clear_direction_control();
@@ -32,11 +35,14 @@ public:
     void enable_peak_speed_average();
     void disable_peak_speed_average();
 
-    void start_reporting_distance();
-    void stop_reporting_distance();
+    void turn_distance_reporting_on();
+    void turn_distance_reporting_off();
+    
+    void turn_speed_reporting_on();
+    void turn_speed_reporting_off();
 
-    void start_reporting_speed();
-    void stop_reporting_speed();
+    int get_serial_file();
+    void print_serial_file(OPS243& obj);
 
 private:
     int serial_file;
