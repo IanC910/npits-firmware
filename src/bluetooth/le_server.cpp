@@ -47,7 +47,7 @@ static void write_near_pass_object(NearPass& near_pass) {
     write_ctic(localnode(), CTIC_NP_SPEED_MPS,      (unsigned char*)(&near_pass.speed_mps),     sizeof(near_pass.speed_mps));
     write_ctic(localnode(), CTIC_NP_LATITUDE,       (unsigned char*)(&near_pass.latitude),      sizeof(near_pass.latitude));
     write_ctic(localnode(), CTIC_NP_LONGITUDE,      (unsigned char*)(&near_pass.longitude),     sizeof(near_pass.longitude));
-    write_ctic(localnode(), CTIC_NPL_ID,            (unsigned char*)(&near_pass.rideId),        sizeof(near_pass.rideId));
+    write_ctic(localnode(), CTIC_NP_RIDE_ID,        (unsigned char*)(&near_pass.rideId),        sizeof(near_pass.rideId));
 }
 
 static void le_client_write_callback(int ctic_index) {

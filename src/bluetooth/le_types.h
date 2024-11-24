@@ -15,13 +15,13 @@ enum ctic_t {
 
     // Get Near Pass List Service
     CTIC_NPL_REQUEST,
-    CTIC_NPL_ID,
     CTIC_NP_VALID,
     CTIC_NP_TIME,
     CTIC_NP_DISTANCE_CM,
     CTIC_NP_SPEED_MPS,
     CTIC_NP_LATITUDE,
     CTIC_NP_LONGITUDE,
+    CTIC_NP_RIDE_ID,
 
     // Give GPS Coords Service
     CTIC_GPS_LATIDUDE,
