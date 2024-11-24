@@ -6,6 +6,7 @@
 #include <thread>
 #include <vector>
 
+#include "../connection_params.h"
 #include "../db/near_pass_db.h"
 #include "../near_pass_detector/near_pass_detector_types.h"
 #include "../near_pass_detector/near_pass_detector.h"
@@ -15,6 +16,8 @@
 
 #include "le_server.h"
 
+
+
 static const char LOW = 0;
 static const char HIGH = 1;
 
@@ -23,6 +26,10 @@ enum server_state_t {
     SS_RL_REQUEST,
     SS_NPL_REQUEST
 };
+
+
+
+static bool initialized = false;
 
 static server_state_t server_state = SS_IDLE;
 
@@ -276,8 +283,12 @@ static void run_le_server() {
     close_all();
 }
 
-void le_server_start(char* device_file) {
-    if(init_blue(device_file) == 0) {
+void le_server_init() {
+    if(initialized) {
+        return;
+    }
+
+    if(init_blue((char*)LE_SERVER_DEVICES_FILE.c_str()) == 0) {
         printf("Couldn't init bluetooth\n");
         exit(1);
     }
@@ -296,6 +307,15 @@ void le_server_start(char* device_file) {
         near_pass_detector = new NearPassDetector();
     }
     db_open();
+
+    initialized = true;
+}
+
+void le_server_start() {
+    if(!initialized) {
+        printf("LE server error: LE server not initialized\n");
+        exit(1);
+    }
     le_server_thread = new std::thread(run_le_server);
 }
 
