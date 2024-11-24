@@ -39,8 +39,8 @@ public:
     void enable_peak_speed_average();
     void disable_peak_speed_average();
 
-    void turn_distance_reporting_on();
-    void turn_distance_reporting_off();
+    void turn_range_reporting_on();
+    void turn_range_reporting_off();
     
     void turn_speed_reporting_on();
     void turn_speed_reporting_off();
@@ -52,8 +52,8 @@ public:
     void turn_magnitude_reporting_off();
 
     void turn_largest_report_order_on();
-    void set_number_of_reports(int number_of_reports);
-
+    void set_number_of_range_reports(int number_of_reports);
+    void set_number_of_speed_reports(int number_of_reports);
 private:
     int serial_file;
 };
