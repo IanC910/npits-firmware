@@ -17,10 +17,10 @@ static std::vector<NearPass>* current_near_pass_list;
 int db_open() {
     int rc = sqlite3_open(DB_NAME.c_str(), &db);
     if (rc) {
-        std::cerr << "Can't open database: " << sqlite3_errmsg(db) << "\n";
+        std::cout << "Can't open database: " << sqlite3_errmsg(db) << std::endl;
         return rc;
     } else {
-        std::cout << "Opened database successfully\n";
+        std::cout << "Opened database successfully" << std::endl;
     }
     return SQLITE_OK;
 }
@@ -39,11 +39,11 @@ int db_create_rides_table() {
     char* errMessage = nullptr;
     int rc = sqlite3_exec(db, createTableSQL, 0, 0, &errMessage);
     if (rc != SQLITE_OK) {
-        std::cerr << "SQL error (Rides table): " << errMessage << "\n";
+        std::cout << "SQL error (Rides table): " << errMessage << std::endl;
         sqlite3_free(errMessage);
         return rc;
     }
-    std::cout << "Rides table created successfully\n";
+    std::cout << "Rides table created successfully" << std::endl;
     return SQLITE_OK;
 }
 
@@ -62,11 +62,11 @@ int db_create_near_pass_table() {
     char* errMessage = nullptr;
     int rc = sqlite3_exec(db, createTableSQL, 0, 0, &errMessage);
     if (rc != SQLITE_OK) {
-        std::cerr << "SQL error (NearPass table): " << errMessage << "\n";
+        std::cout << "SQL error (NearPass table): " << errMessage << std::endl;
         sqlite3_free(errMessage);
         return rc;
     }
-    std::cout << "NearPass table created successfully\n";
+    std::cout << "NearPass table created successfully" << std::endl;
     return SQLITE_OK;
 }
 
@@ -78,7 +78,7 @@ int db_start_ride(long startTime) {
     sqlite3_stmt* stmt;
     int rc = sqlite3_prepare_v2(db, insertSQL, -1, &stmt, nullptr);
     if (rc != SQLITE_OK) {
-        std::cerr << "Failed to prepare statement (Start Ride): " << sqlite3_errmsg(db) << "\n";
+        std::cout << "Failed to prepare statement (Start Ride): " << sqlite3_errmsg(db) << std::endl;
         return -1;
     }
 
@@ -88,14 +88,14 @@ int db_start_ride(long startTime) {
     // Execute the statement
     rc = sqlite3_step(stmt);
     if (rc != SQLITE_DONE) {
-        std::cerr << "Execution failed (Start Ride): " << sqlite3_errmsg(db) << "\n";
+        std::cout << "Execution failed (Start Ride): " << sqlite3_errmsg(db) << std::endl;
         sqlite3_finalize(stmt);
         return -1;
     }
 
     // Get the generated rideId (last inserted row id)
     int rideId = sqlite3_last_insert_rowid(db);
-    std::cout << "Ride started successfully with rideId: " << rideId << "\n";
+    std::cout << "Ride started successfully with rideId: " << rideId << std::endl;
 
     sqlite3_finalize(stmt);
     return rideId;
@@ -108,7 +108,7 @@ int db_end_ride(int rideId, long endTime) {
     sqlite3_stmt* stmt;
     int rc = sqlite3_prepare_v2(db, updateSQL, -1, &stmt, nullptr);
     if (rc != SQLITE_OK) {
-        std::cerr << "Failed to prepare statement (End Ride): " << sqlite3_errmsg(db) << "\n";
+        std::cout << "Failed to prepare statement (End Ride): " << sqlite3_errmsg(db) << std::endl;
         return -1;
     }
 
@@ -119,12 +119,12 @@ int db_end_ride(int rideId, long endTime) {
     // Execute the statement
     rc = sqlite3_step(stmt);
     if (rc != SQLITE_DONE) {
-        std::cerr << "Execution failed (End Ride): " << sqlite3_errmsg(db) << "\n";
+        std::cout << "Execution failed (End Ride): " << sqlite3_errmsg(db) << std::endl;
         sqlite3_finalize(stmt);
         return -1;
     }
 
-    std::cout << "Ride with rideId " << rideId << " ended successfully\n";
+    std::cout << "Ride with rideId " << rideId << " ended successfully" << std::endl;
 
     sqlite3_finalize(stmt);
     return SQLITE_OK;
@@ -138,7 +138,7 @@ int db_insert_near_pass(const NearPass& nearPass) {
     sqlite3_stmt* stmt;
     int rc = sqlite3_prepare_v2(db, insertSQL, -1, &stmt, nullptr);
     if (rc != SQLITE_OK) {
-        std::cerr << "Failed to prepare statement (NearPass): " << sqlite3_errmsg(db) << "\n";
+        std::cout << "Failed to prepare statement (NearPass): " << sqlite3_errmsg(db) << std::endl;
         return rc;
     }
 
@@ -153,21 +153,21 @@ int db_insert_near_pass(const NearPass& nearPass) {
     // Execute the statement
     rc = sqlite3_step(stmt);
     if (rc != SQLITE_DONE) {
-        std::cerr << "Execution failed (NearPass): " << sqlite3_errmsg(db) << "\n";
+        std::cout << "Execution failed (NearPass): " << sqlite3_errmsg(db) << std::endl;
         sqlite3_finalize(stmt);
         return rc;
     }
 
-    std::cout << "NearPass inserted successfully\n";
+    std::cout << "NearPass inserted successfully" << std::endl;
     sqlite3_finalize(stmt);
     return SQLITE_OK;
 }
 
 static int get_rides_callback(void* data, int argc, char** argv, char** colNames) {
     Ride ride;
-    ride.rideId     = atoi(argv[1]);
-    ride.startTime  = strtol(argv[2], nullptr, 10);
-    ride.endTime    = strtol(argv[3], nullptr, 10);
+    ride.rideId     = atoi(argv[0]);
+    ride.startTime  = strtol(argv[1], nullptr, 10);
+    ride.endTime    = strtol(argv[2], nullptr, 10);
 
     current_ride_list->push_back(ride);
 
@@ -176,17 +176,17 @@ static int get_rides_callback(void* data, int argc, char** argv, char** colNames
 
 int db_get_rides(std::vector<Ride>& ride_list) {
     current_ride_list = &ride_list;
-    current_near_pass_list->clear();
+    current_ride_list->clear();
 
-    const char* selectSQL = "SELECT * FROM Ride;";
+    const char* selectSQL = "SELECT * FROM Rides;";
     char* errMessage = nullptr;
     int rc = sqlite3_exec(db, selectSQL, get_rides_callback, nullptr, &errMessage);
     if(rc != SQLITE_OK) {
-        std::cerr << "SQL error: " << errMessage << "\n";
+        std::cout << "SQL error: " << errMessage << std::endl;
         sqlite3_free(errMessage);
         return rc;
     }
-    std::cout << "Rides query executed successfully\n";
+    std::cout << "Rides query executed successfully" << std::endl;
     return SQLITE_OK;
 }
 
@@ -212,10 +212,10 @@ int db_get_near_passes(std::vector<NearPass>& near_pass_list) {
     char* errMessage = nullptr;
     int rc = sqlite3_exec(db, selectSQL, get_near_passes_callback, nullptr, &errMessage);
     if (rc != SQLITE_OK) {
-        std::cerr << "SQL error: " << errMessage << "\n";
+        std::cout << "SQL error: " << errMessage << std::endl;
         sqlite3_free(errMessage);
         return rc;
     }
-    std::cout << "Near passes query executed successfully\n";
+    std::cout << "Near passes query executed successfully" << std::endl;
     return SQLITE_OK;
 }

@@ -45,6 +45,25 @@ int main() {
         return 1;
     }
 
+    std::vector<Ride> ride_list;
+    if(db_get_rides(ride_list) != SQLITE_OK) {
+        db_close();
+        return 1;
+    }
+
+    for(int i = 0; i < ride_list.size(); i++) {
+        Ride ride = ride_list[i];
+
+        printf(
+            "Ride ID:       %d\n"
+            "Start Time:    %ld\n"
+            "End Time:      %ld\n",
+            ride.rideId,
+            ride.startTime,
+            ride.endTime
+        );
+    }
+
     // Get and display all NearPass records
     std::vector<NearPass> near_pass_list;
     near_pass_list.reserve(10);

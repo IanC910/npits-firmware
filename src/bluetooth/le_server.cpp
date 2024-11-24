@@ -30,16 +30,20 @@ static int current_near_pass_index = 0;
 static bool do_run_le_server = false;
 static std::thread* le_server_thread;
 
-static NearPassDetector near_pass_detector;
+static NearPassDetector* near_pass_detector = nullptr;
 
 static void write_ride_object(Ride& ride) {
     std::string ride_id_str     = std::to_string(ride.rideId);
     std::string start_time_str  = std::to_string(ride.startTime);
     std::string end_time_str    = std::to_string(ride.endTime);
 
-    write_ctic(localnode(), CTIC_R_ID,          (unsigned char*)ride_id_str.c_str(),    ride_id_str.length());
-    write_ctic(localnode(), CTIC_R_START_TIME,  (unsigned char*)start_time_str.c_str(), start_time_str.length());
-    write_ctic(localnode(), CTIC_R_END_TIME,    (unsigned char*)end_time_str.c_str(),   end_time_str.length());
+    // write_ctic(localnode(), CTIC_R_ID,          (unsigned char*)ride_id_str.c_str(),    ride_id_str.length());
+    // write_ctic(localnode(), CTIC_R_START_TIME,  (unsigned char*)start_time_str.c_str(), start_time_str.length());
+    // write_ctic(localnode(), CTIC_R_END_TIME,    (unsigned char*)end_time_str.c_str(),   end_time_str.length());
+
+    write_ctic(localnode(), CTIC_R_ID,          (unsigned char*)(&ride.rideId),     4);
+    write_ctic(localnode(), CTIC_R_START_TIME,  (unsigned char*)(&ride.endTime),    8);
+    write_ctic(localnode(), CTIC_R_END_TIME,    (unsigned char*)(&ride.endTime),    8);
 }
 
 static void write_near_pass_object(NearPass& near_pass) {
@@ -58,9 +62,12 @@ static void write_near_pass_object(NearPass& near_pass) {
     write_ctic(localnode(), CTIC_NPL_ID,            (unsigned char*)ride_id_str.c_str(),    ride_id_str.length());
 }
 
-static void le_client_write_callback(int client_node, int ctic_index) {
+static void le_client_write_callback(int ctic_index) {
     unsigned char read_buf[32];
-    int num_bytes = read_ctic(client_node, ctic_index, read_buf, sizeof(read_buf));
+    int num_bytes = read_ctic(localnode(), ctic_index, read_buf, sizeof(read_buf));
+    if(num_bytes == 0) {
+        printf("le_server: Client wrote 0 bytes to index %d\n", ctic_index);
+    }
 
     // Next state logic
     server_state_t next_state = server_state;
@@ -71,10 +78,15 @@ static void le_client_write_callback(int client_node, int ctic_index) {
             switch(ctic_index) {
                 case CTIC_RL_REQUEST: {
                     int rl_request = atoi((const char*)read_buf);
+                    printf("rl_request: %d\n", rl_request);
                     if(rl_request) {
                         current_ride_list.clear();
                         current_ride_index = 0;
                         db_get_rides(current_ride_list);
+
+                        if(current_ride_list.size() == 0) {
+                            printf("rl_request: no rides to return\n");
+                        }
 
                         // If at least 1 ride, write first ride and go to RL_REQUEST state
                         // If 0 or 1 ride, go back to idle
@@ -94,7 +106,9 @@ static void le_client_write_callback(int client_node, int ctic_index) {
                 }
                 case CTIC_NPL_REQUEST: {
                     int npl_request = atoi((const char*)read_buf);
+                    printf("npl_request: %d\n", npl_request);
                     if(npl_request) {
+                        printf("le_server: Near pass list requested\n");
                         current_near_pass_list.clear();
                         current_near_pass_index = 0;
                         db_get_near_passes(current_near_pass_list);
@@ -192,17 +206,17 @@ static void le_client_write_callback(int client_node, int ctic_index) {
     switch(ctic_index) {
         case CTIC_GPS_LATIDUDE: {
             double latitude = strtod((const char*)read_buf, nullptr);
-            near_pass_detector.set_latitude(latitude);
+            near_pass_detector->set_latitude(latitude);
             break;
         }
         case CTIC_GPS_LONGITUDE: {
             double longitude = strtod((const char*)read_buf, nullptr);
-            near_pass_detector.set_longitude(longitude);
+            near_pass_detector->set_longitude(longitude);
             break;
         }
         case CTIC_GPS_SPEED_MPS: {
             double speed_mps = strtod((const char*)read_buf, nullptr);
-            near_pass_detector.set_speed_mps(speed_mps);
+            near_pass_detector->set_speed_mps(speed_mps);
             break;
         }
         case CTIC_RC_CMD: {
@@ -210,11 +224,11 @@ static void le_client_write_callback(int client_node, int ctic_index) {
 
             switch(rc_cmd) {
                 case RC_CMD_START_RIDE:
-                    near_pass_detector.start_ride();
+                    near_pass_detector->start_ride();
                     break;
 
                 case RC_CMD_END_RIDE:
-                    near_pass_detector.end_ride();
+                    near_pass_detector->end_ride();
                     break;
 
                 default:
@@ -229,13 +243,15 @@ static void le_client_write_callback(int client_node, int ctic_index) {
 
 static int le_server_callback(int client_node, int operation, int ctic_index) {
     switch(operation) {
-        case LE_CONNECT:
+        case LE_CONNECT: {
             printf("le_server: Client Connected\n");
             break;
+        }
         case LE_READ:
             break;
         case LE_WRITE:
-            le_client_write_callback(client_node, ctic_index);
+        printf("le_server: Client wrote index %d\n", ctic_index);
+            le_client_write_callback(ctic_index);
             break;
         case LE_DISCONNECT:
             printf("le_server: Client Disconnected\n");
@@ -256,16 +272,30 @@ static int le_server_callback(int client_node, int operation, int ctic_index) {
 }
 
 static void run_le_server() {
-    // Write Info characteristics
-    const char DEVICE_NAME[] = "NPITS";
-    write_ctic(localnode(), CTIC_DEVICE_NAME, (unsigned char*)DEVICE_NAME, sizeof(DEVICE_NAME));
-
     le_server(le_server_callback, 10);
     close_all();
 }
 
-void le_server_start() {
+void le_server_start(char* device_file) {
+    if(init_blue(device_file) == 0) {
+        printf("Couldn't init bluetooth\n");
+        exit(1);
+    }
+
+    static unsigned char address[6] = {0xD3, 0x56, 0xDB, 0x24, 0xFF, 0xFF};
+
+    set_le_random_address(address);
+    set_le_wait(5000);
+    le_pair(localnode(), JUST_WORKS, 0);
+
+    const char DEVICE_NAME[] = "NPITS";
+    write_ctic(localnode(), CTIC_DEVICE_NAME, (unsigned char*)DEVICE_NAME, sizeof(DEVICE_NAME));
+
     do_run_le_server = true;
+    if(near_pass_detector == nullptr) {
+        near_pass_detector = new NearPassDetector();
+    }
+    db_open();
     le_server_thread = new std::thread(run_le_server);
 }
 

@@ -35,7 +35,7 @@ OPS241_simple_test:
 	$(CCF) OPS241_simple_test.cpp -o OPS241_simple_test.test
 
 le_server_simple_test:
-	g++ le_server_simple_test.c btlib.c -o le_server_simple_test.test -Wno-narrowing
+	g++ le_server_simple_test.c ../bluetooth/btlib.cpp -o le_server_simple_test.test -Wno-narrowing
 
 
 

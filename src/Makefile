@@ -11,7 +11,7 @@ NEAR_PASS_DETECTOR 	= $(wildcard near_pass_detector/*.cpp)
 ALL_SOURCES = $(COMMON) $(DEVICES) $(BLUETOOTH) $(DB) $(NEAR_PASS_DETECTOR)
 
 # Flags
-CFLAGS = -std=c++17 -g -Wmaybe-uninitialized -Wall
+CFLAGS = -std=c++17 -Wmaybe-uninitialized -Wall # -g -fsanitize=address
 GPIO_FLAGS = -lgpiod
 SQLITE_FLAGS = -lsqlite3
 GOPRO_FLAGS = -lcurl -ljsoncpp
