@@ -4,8 +4,6 @@
 
 #include <string>
 
-char DEVICE_FILE[] = "bluetooth/devices.txt";
-
 int main() {
     le_server_init();
     le_server_start();
