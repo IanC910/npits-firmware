@@ -306,7 +306,10 @@ void le_server_init() {
     if(near_pass_detector == nullptr) {
         near_pass_detector = new NearPassDetector();
     }
+
     db_open();
+    db_create_rides_table();
+    db_create_near_pass_table();
 
     initialized = true;
 }
