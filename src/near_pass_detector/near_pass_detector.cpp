@@ -39,6 +39,7 @@ void NearPassDetector::run_near_pass_detector() {
                 if(report.distance_cm <= DISTANCE_THRESHOLD_cm &&
                     report.time_stamp_ms > last_near_pass_time_ms + NEAR_PASS_COOLDOWN_ms
                 ) {
+                    printf("Near pass detector: Start of near pass\n");
                     near_pass_state = NPS_IN_NEAR_PASS;
                     last_near_pass_time_ms = report.time_stamp_ms;
                     near_pass_start_time_ms = report.time_stamp_ms;
@@ -49,6 +50,7 @@ void NearPassDetector::run_near_pass_detector() {
             case true:
                 // Condition to exit a near pass
                 if(report.distance_cm > DISTANCE_THRESHOLD_cm) {
+                    printf("Near pass detector: End of near pass\n");
                     near_pass_state = NPS_NONE;
                     near_pass_duration_ms = report.time_stamp_ms - near_pass_start_time_ms;
 
@@ -57,6 +59,7 @@ void NearPassDetector::run_near_pass_detector() {
                     if(near_pass_duration_ms >= NEAR_PASS_MIN_DURATION_ms &&
                         near_pass_duration_ms <= NEAR_PASS_MAX_DURATION_ms
                     ) {
+                        printf("Near pass detector: Near pass valid, logging\n");
                         NearPass near_pass;
                         near_pass.time          = (long)(near_pass_start_time_ms / 1000);
                         near_pass.distance_cm   = min_distance_cm;
