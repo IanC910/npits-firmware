@@ -37,10 +37,12 @@ int main() {
     // Initialize the radar object
     OPS243 obj(RADAR_SERIAL_PORT, OPS243_BAUD_RATE);
     //obj.turn_magnitude_reporting_on();
-    obj.turn_distance_reporting_on();
-    obj.set_number_of_reports(9);
+    obj.set_number_of_range_reports(9);
+    obj.turn_magnitude_reporting_on();
+    obj.turn_range_reporting_on();
+    //obj.set_number_of_speed_reports(9);
     obj.set_data_precision(2);
-    obj.turn_speed_reporting_on();
+    //obj.turn_speed_reporting_on();
 
     // Main loop
     while (true) {
@@ -61,7 +63,7 @@ int main() {
     }
 
     // Clean up before exiting
-    obj.turn_distance_reporting_off();
+    obj.turn_range_reporting_off();
     //obj.turn_speed_reporting_off();
     obj.~OPS243();
 

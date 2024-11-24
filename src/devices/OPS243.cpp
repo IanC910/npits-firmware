@@ -234,6 +234,20 @@ int OPS243::get_serial_file() { return serial_file;}
 
 void print_serial_file(OPS243& obj) {
     
+        char line_buf[256];
+        memset(line_buf, 0, sizeof(line_buf));
+
+        int line_buf_index = 0;
+        while(line_buf_index < sizeof(line_buf)) {
+            int num_bytes_read = read(obj.get_serial_file(), line_buf + line_buf_index, 1);
+            if(line_buf[line_buf_index] == '\n') {
+                line_buf[line_buf_index] = 0;
+                break;
+            }
+
+            line_buf_index += num_bytes_read;
+        }
+
         struct timespec now;
         timespec_get(&now, TIME_UTC);
         time_t seconds = now.tv_sec;
@@ -241,30 +255,27 @@ void print_serial_file(OPS243& obj) {
         struct tm *timeinfo = localtime(&seconds);
         char time_buffer[30];
         strftime(time_buffer, sizeof(time_buffer), "%Y-%m-%d %H:%M:%S", timeinfo);
-	
-    char line_buf[256];
-    memset(line_buf, 0, sizeof(line_buf));
-    read(obj.get_serial_file(), line_buf, sizeof(line_buf));  // Access via getter
-    printf("%s.%03d: %s\n", time_buffer, milliseconds, line_buf);
+        printf("%s.%03d: %s\n", time_buffer, milliseconds, line_buf);
+
 }
 
-void OPS243::turn_distance_reporting_on() {
-    char cmd[32] = "oD";
+void OPS243::turn_range_reporting_on() {
+    char cmd[32] = "OD";
     write(serial_file, cmd, sizeof(cmd));
 }
 
-void OPS243::turn_distance_reporting_off() {
-    char cmd[32] = "od";
+void OPS243::turn_range_reporting_off() {
+    char cmd[32] = "Od";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::turn_speed_reporting_on() {
-    char cmd[32] = "oS";
+    char cmd[32] = "OS";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::turn_speed_reporting_off() {
-    char cmd[32] = "os";
+    char cmd[32] = "Os";
     write(serial_file, cmd, sizeof(cmd));
 }
 
@@ -283,12 +294,22 @@ void OPS243::turn_largest_report_order_on() {
      write(serial_file, cmd, sizeof(cmd));
 }
 
-void OPS243::set_number_of_reports(int number_of_reports) {
+void OPS243::set_number_of_speed_reports(int number_of_reports) {
      if (number_of_reports > 9 || number_of_reports < 1) {
-	     printf("Invalid number of reports set");
+	     printf("Invalid number of reports set\n");
 	     return;
      }
      char cmd[32];
      sprintf(cmd, "O%d", number_of_reports);
+     write(serial_file, cmd, sizeof(cmd));
+}
+
+void OPS243::set_number_of_range_reports(int number_of_reports) {
+     if (number_of_reports > 9 || number_of_reports < 1) {
+	     printf("Invalid number of reports set\n");
+	     return;
+     }
+     char cmd[32];
+     sprintf(cmd, "o%d", number_of_reports);
      write(serial_file, cmd, sizeof(cmd));
 }
