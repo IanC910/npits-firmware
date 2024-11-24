@@ -15,7 +15,7 @@
 void NearPassDetector::run_near_pass_detector() {
     ultrasonic.begin_sampling();
 
-    enum near_pass_state_t near_pass_state = NPS_NONE;
+    near_pass_state_t near_pass_state = NPS_NONE;
 
     long long last_near_pass_time_ms = get_time_ms();
     long long near_pass_start_time_ms = get_time_ms();

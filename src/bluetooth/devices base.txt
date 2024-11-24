@@ -8,15 +8,15 @@ DEVICE = NPITS      TYPE = MESH     NODE = 1    ADDRESS = <BT_MAC_ADDRESS>
         LECHAR = RL Request         PERMIT = 16     SIZE = 01   UUID = 1401 ; Both write
         LECHAR = R Valid            PERMIT = 16     SIZE = 01   UUID = 1402 ; Both write
         LECHAR = R ID               PERMIT = 02     SIZE = 16   UUID = 1410 ; Pi writes
-        LECHAR = R Start UNIX Time  PERMIT = 02     SIZE = 16   UUID = 1411 ; Pi writes
-        LECHAR = R End UNIX Time    PERMIT = 02     SIZE = 16   UUID = 1412 ; Pi writes
+        LECHAR = R Start Time       PERMIT = 02     SIZE = 16   UUID = 1411 ; Pi writes
+        LECHAR = R End Time         PERMIT = 02     SIZE = 16   UUID = 1412 ; Pi writes
 
     ; Get Near Pass List
     PRIMARY_SERVICE = 2000
         LECHAR = NPL Request        PERMIT = 16     SIZE = 01   UUID = 2001 ; Both write
         LECHAR = NPL ID             PERMIT = 04     SIZE = 16   UUID = 2002 ; Phone writes
         LECHAR = NP Valid           PERMIT = 16     SIZE = 01   UUID = 2003 ; Both write
-        LECHAR = NP UNIX Time       PERMIT = 02     SIZE = 16   UUID = 2010 ; Pi writes
+        LECHAR = NP Time            PERMIT = 02     SIZE = 16   UUID = 2010 ; Pi writes
         LECHAR = NP Distance cm     PERMIT = 02     SIZE = 04   UUID = 2011 ; Pi writes
         LECHAR = NP Speed mps       PERMIT = 02     SIZE = 04   UUID = 2012 ; Pi writes
         LECHAR = NP Latitude        PERMIT = 02     SIZE = 16   UUID = 2013 ; Pi writes

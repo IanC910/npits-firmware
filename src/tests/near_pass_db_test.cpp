@@ -1,9 +1,11 @@
 
 #include <sqlite3.h>
-#include <string>
-#include <iostream>
 
-#include "../near_pass_detector/types.h"
+#include <iostream>
+#include <string>
+#include <vector>
+
+#include "../near_pass_detector/near_pass_detector_types.h"
 
 #include "../db/near_pass_db.h"
 
@@ -44,9 +46,29 @@ int main() {
     }
 
     // Get and display all NearPass records
-    if (db_get_near_passes() != SQLITE_OK) {
+    std::vector<NearPass> near_pass_list;
+    near_pass_list.reserve(10);
+    if (db_get_near_passes(near_pass_list) != SQLITE_OK) {
         db_close();
         return 1;
+    }
+
+    for(int i = 0; i < near_pass_list.size(); i++) {
+        NearPass near_pass = near_pass_list[i];
+
+        printf(
+            "distance_cm: %d\n"
+            "speed_mps:   %f\n"
+            "latitude:    %lf\n"
+            "longitude:   %lf\n"
+            "ride id:     %d\n"
+            "\n",
+            near_pass.distance_cm,
+            near_pass.speed_mps,
+            near_pass.latitude,
+            near_pass.longitude,
+            near_pass.rideId
+        );
     }
 
     // Close the database
