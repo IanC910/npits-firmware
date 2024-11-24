@@ -30,6 +30,11 @@ long long get_time_us() {
     return microseconds;
 }
 
+void sleep_s(long long sleep_time_s) {
+    struct timespec sleep_time = {sleep_time_s, 0};
+    nanosleep(&sleep_time, NULL);
+}
+
 void sleep_ms(long long sleep_time_ms) {
     long long sleep_time_ns = sleep_time_ms * 1000000;
     int s = sleep_time_ns / 1000000000;

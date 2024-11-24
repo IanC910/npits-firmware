@@ -14,7 +14,7 @@ DEVICE = NPITS      TYPE = MESH     NODE = 1    ADDRESS = <BT_MAC_ADDRESS>
     ; Get Near Pass List
     PRIMARY_SERVICE = 2000
         LECHAR = NPL Request        PERMIT = 16     SIZE = 01   UUID = 2001 ; Both write
-        LECHAR = NPL ID             PERMIT = 02     SIZE = 16   UUID = 2002 ; Phone writes
+        LECHAR = NPL ID             PERMIT = 02     SIZE = 16   UUID = 2002 ; Pi Writes
         LECHAR = NP Valid           PERMIT = 16     SIZE = 01   UUID = 2003 ; Both write
         LECHAR = NP Time            PERMIT = 02     SIZE = 16   UUID = 2010 ; Pi writes
         LECHAR = NP Distance cm     PERMIT = 02     SIZE = 04   UUID = 2011 ; Pi writes
