@@ -25,10 +25,11 @@ enum server_state_t {
 };
 
 static server_state_t server_state = SS_IDLE;
-static std::vector<Ride> current_ride_list;
-static std::vector<NearPass> current_near_pass_list;
-static int current_ride_index = 0;
-static int current_near_pass_index = 0;
+
+static std::vector<Ride> ride_list;
+static std::vector<NearPass> near_pass_list;
+static int ride_index = 0;
+static int near_pass_index = 0;
 
 static bool do_run_le_server = false;
 static std::thread* le_server_thread;
@@ -68,24 +69,23 @@ static void le_client_write_callback(int ctic_index) {
                     int rl_request = *(int*)read_buf;
                     printf("RL request: %d\n", rl_request);
                     if(rl_request) {
-                        current_ride_list.clear();
-                        current_ride_index = 0;
-                        db_get_rides(current_ride_list);
+                        ride_index = 0;
+                        db_get_rides(ride_list);
 
-                        if(current_ride_list.size() == 0) {
+                        // If at least 1 object, write first object and go to RL_REQUEST state
+                        // If 0 or 1 objects, go back to idle
+                        if(ride_list.size() > 0) {
+                            write_ride_object(ride_list[ride_index]);
+                            write_ctic(localnode(), CTIC_R_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
+                            ride_index++;
+                            next_state = SS_RL_REQUEST;
+                        }
+                        else {
                             printf("RL request: No objects to return\n");
                         }
 
-                        // If at least 1 ride, write first ride and go to RL_REQUEST state
-                        // If 0 or 1 ride, go back to idle
-                        if(current_ride_list.size() > 0) {
-                            write_ride_object(current_ride_list[current_ride_index]);
-                            write_ctic(localnode(), CTIC_R_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
-                            current_ride_index++;
-                            next_state = SS_RL_REQUEST;
-                        }
-
-                        if(current_ride_index >= current_ride_list.size()) {
+                        if(ride_index >= ride_list.size()) {
+                            printf("RL request: Done\n");
                             write_ctic(localnode(), CTIC_RL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
                             next_state = SS_IDLE;
                         }
@@ -96,24 +96,23 @@ static void le_client_write_callback(int ctic_index) {
                     int npl_request = *(int*)read_buf;
                     printf("NPL request: %d\n", npl_request);
                     if(npl_request) {
-                        current_near_pass_list.clear();
-                        current_near_pass_index = 0;
-                        db_get_near_passes(current_near_pass_list);
+                        near_pass_index = 0;
+                        db_get_near_passes(near_pass_list);
 
-                        if(current_near_pass_list.size() == 0) {
+                        // If at least 1 object, write first object and go to NPL_REQUEST state
+                        // If 0 or 1 objects, go back to idle
+                        if(near_pass_list.size() > 0) {
+                            write_near_pass_object(near_pass_list[near_pass_index]);
+                            write_ctic(localnode(), CTIC_NP_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
+                            near_pass_index++;
+                            next_state = SS_NPL_REQUEST;
+                        }
+                        else {
                             printf("NPL request: No objects to return\n");
                         }
 
-                        // If at least 1 np, write first ride and go to NPL_REQUEST state
-                        // If 0 or 1 np, go back to idle
-                        if(current_near_pass_list.size() > 0) {
-                            write_near_pass_object(current_near_pass_list[current_near_pass_index]);
-                            write_ctic(localnode(), CTIC_NP_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
-                            current_near_pass_index++;
-                            next_state = SS_NPL_REQUEST;
-                        }
-
-                        if(current_near_pass_index >= current_near_pass_list.size()) {
+                        if(near_pass_index >= near_pass_list.size()) {
+                            printf("NPL request: Done\n");
                             write_ctic(localnode(), CTIC_NPL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
                             next_state = SS_IDLE;
                         }
@@ -142,11 +141,11 @@ static void le_client_write_callback(int ctic_index) {
                 case CTIC_R_VALID: {
                     int r_valid = *(int*)read_buf;
                     if(r_valid == 0) {
-                        write_ride_object(current_ride_list[current_ride_index]);
+                        write_ride_object(ride_list[ride_index]);
                         write_ctic(localnode(), CTIC_R_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
-                        current_ride_index++;
+                        ride_index++;
 
-                        if(current_ride_index >= current_ride_list.size()) {
+                        if(ride_index >= ride_list.size()) {
                             printf("RL request: Done\n");
                             write_ctic(localnode(), CTIC_RL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
                             next_state = SS_IDLE;
@@ -176,11 +175,11 @@ static void le_client_write_callback(int ctic_index) {
                 case CTIC_NP_VALID: {
                     int np_valid = *(int*)read_buf;
                     if(np_valid == 0) {
-                        write_near_pass_object(current_near_pass_list[current_near_pass_index]);
+                        write_near_pass_object(near_pass_list[near_pass_index]);
                         write_ctic(localnode(), CTIC_NP_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
-                        current_near_pass_index++;
+                        near_pass_index++;
 
-                        if(current_near_pass_index >= current_near_pass_list.size()) {
+                        if(near_pass_index >= near_pass_list.size()) {
                             printf("NPL request: Done\n");
                             write_ctic(localnode(), CTIC_NPL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
                             next_state = SS_IDLE;
