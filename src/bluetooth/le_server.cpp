@@ -226,7 +226,7 @@ static void le_client_write_callback(int ctic_index) {
                     break;
 
                 case RC_CMD_NONE:
-                    printf("LE Server: Start Ride\n");
+                    printf("LE Server: End Ride\n");
                     near_pass_detector->end_ride();
                     break;
 
