@@ -4,18 +4,35 @@
 
 #include "time_tools.h"
 
-long long get_curr_time_ms() {
+struct timespec get_timespec() {
+    struct timespec now;
+    clock_gettime(CLOCK_REALTIME, &now);
+    return now;
+}
+
+long long get_time_s() {
+    struct timespec now;
+    clock_gettime(CLOCK_REALTIME, &now);
+    return now.tv_sec;
+}
+
+long long get_time_ms() {
     struct timespec now;
     clock_gettime(CLOCK_REALTIME, &now);
     long long milliseconds = now.tv_sec * 1000 + now.tv_nsec / 1000000;
     return milliseconds;
 }
 
-long long get_curr_time_us() {
+long long get_time_us() {
     struct timespec now;
     clock_gettime(CLOCK_REALTIME, &now);
     long long microseconds = now.tv_sec * 1000000 + now.tv_nsec / 1000;
     return microseconds;
+}
+
+void sleep_s(long long sleep_time_s) {
+    struct timespec sleep_time = {sleep_time_s, 0};
+    nanosleep(&sleep_time, NULL);
 }
 
 void sleep_ms(long long sleep_time_ms) {
