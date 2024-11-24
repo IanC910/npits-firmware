@@ -44,6 +44,12 @@ public:
     int get_serial_file();
     void print_serial_file(OPS243& obj);
 
+    void turn_magnitude_reporting_on();
+    void turn_magnitude_reporting_off();
+
+    void turn_largest_report_order_on();
+    void set_number_of_reports(int number_of_reports);
+
 private:
     int serial_file;
 };

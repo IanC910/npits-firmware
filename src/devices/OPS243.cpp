@@ -83,7 +83,7 @@ void OPS243::set_data_precision(int precision) {
         printf("Invalid precision value, valid values are between 0 and 5\n");
         return;
     }
-    char cmd[3];
+    char cmd[32];
     sprintf(cmd, "F%d", precision);
     write(serial_file, cmd, sizeof(cmd));
 }
@@ -96,9 +96,9 @@ void OPS243::set_minimum_speed_filter(int min_speed) {
         return;
     }
 
-    char cmd[3];
+    char cmd[32];
     sprintf(cmd, "R>%d\n", min_speed);
-    write(serial_file, cmd, sizeof(cmd));
+   write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::set_maximum_speed_filter(int max_speed) {
@@ -109,7 +109,7 @@ void OPS243::set_maximum_speed_filter(int max_speed) {
         return;
     }
 
-    char cmd[3];
+    char cmd[32];
     sprintf(cmd, "R<%d\n", max_speed);
     write(serial_file, cmd, sizeof(cmd));
 }
@@ -122,7 +122,7 @@ void OPS243::set_minimum_range_filter(int min_range) {
         return;
     }
 
-    char cmd[3];
+    char cmd[32];
     sprintf(cmd, "r>%d\n", min_range);
     write(serial_file, cmd, sizeof(cmd));
 }
@@ -135,36 +135,36 @@ void OPS243::set_maximum_range_filter(int max_range) {
         return;
     }
 
-    char cmd[3];
+    char cmd[32];
     sprintf(cmd, "r<%d\n", max_range);
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::report_current_range_filter() {
-    char cmd[] = "r?";
+    char cmd[32] = "r?";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::report_current_speed_filter() {
-    char cmd[] = "R?";
+    char cmd[32] = "R?";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::set_inbound_only() {
     /* Set the reporting to only be for inbound directions */
-    char cmd[] = "R+\n";
+    char cmd[32] = "R+\n";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::set_outbound_only() {
     /* Sets the reporting to only be for outbound directions */
-    char cmd[] = "R-\n";
+    char cmd[32] = "R-\n";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::clear_direction_control() {
     /* Clear direction control */
-    char cmd[] = "R|\n";
+    char cmd[32] = "R|\n";
     write(serial_file, cmd, sizeof(cmd));
 }
 
@@ -173,13 +173,13 @@ void OPS243::clear_direction_control() {
 void OPS243::enable_peak_speed_average() {
     /* Enables speed averaging of peak detected */
     /* values across the nearest two speeds detected.*/
-    char cmd[] = "K+\n";
+    char cmd[32] = "K+\n";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::disable_peak_speed_average() {
     /* Disable speed averaging */
-    char cmd[] = "K-\n";
+    char cmd[32] = "K-\n";
     write(serial_file, cmd, sizeof(cmd));
 }
 
@@ -200,7 +200,7 @@ void OPS243::clear_buffer() {
 int OPS243::get_module_info(char* module_info, int length) {
     clear_buffer();
 
-    char cmd[] = "??";
+    char cmd[32] = "??";
     write(serial_file, cmd, sizeof(cmd));
 
     memset(module_info, '\0', length);
@@ -225,25 +225,50 @@ void print_serial_file(OPS243& obj) {
     char line_buf[256];
     memset(line_buf, 0, sizeof(line_buf));
     read(obj.get_serial_file(), line_buf, sizeof(line_buf));  // Access via getter
-    printf("%s\n", line_buf);
+    printf("%s", line_buf);
 }
 
 void OPS243::turn_distance_reporting_on() {
-    char cmd[] = "oD";
+    char cmd[32] = "oD";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::turn_distance_reporting_off() {
-    char cmd[] = "od";
+    char cmd[32] = "od";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::turn_speed_reporting_on() {
-    char cmd[] = "oS";
+    char cmd[32] = "oS";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::turn_speed_reporting_off() {
-    char cmd[] = "os";
+    char cmd[32] = "os";
     write(serial_file, cmd, sizeof(cmd));
+}
+
+void OPS243::turn_magnitude_reporting_on() {
+    char cmd[32] = "oM";
+    write(serial_file, cmd, sizeof(cmd));
+}
+
+void OPS243::turn_magnitude_reporting_off() {
+    char cmd[32] = "om";
+    write(serial_file, cmd, sizeof(cmd));
+}
+
+void OPS243::turn_largest_report_order_on() {
+     char cmd[] = "OV";
+     write(serial_file, cmd, sizeof(cmd));
+}
+
+void OPS243::set_number_of_reports(int number_of_reports) {
+     if (number_of_reports > 9 || number_of_reports < 1) {
+	     printf("Invalid number of reports set");
+	     return;
+     }
+     char cmd[32];
+     sprintf(cmd, "O%d", number_of_reports);
+     write(serial_file, cmd, sizeof(cmd));
 }
