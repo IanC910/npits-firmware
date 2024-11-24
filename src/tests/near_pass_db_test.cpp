@@ -45,19 +45,34 @@ int main() {
         return 1;
     }
 
+    long startTime2 = 1617289000;  // Example start time (UNIX timestamp)
+    int rideId2 = db_start_ride(startTime2);
+    if (rideId2 == -1) {
+        db_close();
+        return 1;
+    }
+
+    long endTime2 = 1617290000;
+    if(db_end_ride(rideId2, endTime2) != 0) {
+        db_close();
+        return 1;
+    }
+
     std::vector<Ride> ride_list;
     if(db_get_rides(ride_list) != SQLITE_OK) {
         db_close();
         return 1;
     }
 
+    printf("Rides:\n");
     for(int i = 0; i < ride_list.size(); i++) {
         Ride ride = ride_list[i];
 
         printf(
             "Ride ID:       %d\n"
             "Start Time:    %ld\n"
-            "End Time:      %ld\n",
+            "End Time:      %ld\n"
+            "\n",
             ride.rideId,
             ride.startTime,
             ride.endTime
@@ -72,6 +87,7 @@ int main() {
         return 1;
     }
 
+    printf("Near Passes:\n");
     for(int i = 0; i < near_pass_list.size(); i++) {
         NearPass near_pass = near_pass_list[i];
 
