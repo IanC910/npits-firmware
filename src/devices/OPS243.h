@@ -16,6 +16,10 @@ public:
     // Puts at most length bytes of the module info string into module_info
     // Returns number of bytes read
     int get_module_info(char* module_info, int length);
+
+    void output_current_speed_settings();
+    void output_current_range_settings();
+
     void set_speed_output_units();
     void set_range_output_units();
 

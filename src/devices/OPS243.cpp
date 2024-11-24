@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <string>
+#include <time.h>
 
 #include <fcntl.h>
 #include <errno.h>
@@ -61,6 +62,16 @@ OPS243::OPS243(const char serial_port[], int BAUD_RATE) {
 
 OPS243::~OPS243() {
     close(serial_file);
+}
+
+void OPS243::output_current_speed_settings() {
+    char cmd[] = "O?";
+    write(serial_file, cmd, sizeof(cmd));
+}
+
+void OPS243::output_current_range_settings() {
+    char cmd[] = "o?";
+    write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::set_speed_output_units() {
@@ -222,10 +233,19 @@ int OPS243::get_module_info(char* module_info, int length) {
 int OPS243::get_serial_file() { return serial_file;}
 
 void print_serial_file(OPS243& obj) {
+    
+        struct timespec now;
+        timespec_get(&now, TIME_UTC);
+        time_t seconds = now.tv_sec;
+        int milliseconds = now.tv_nsec / 1000000;
+        struct tm *timeinfo = localtime(&seconds);
+        char time_buffer[30];
+        strftime(time_buffer, sizeof(time_buffer), "%Y-%m-%d %H:%M:%S", timeinfo);
+	
     char line_buf[256];
     memset(line_buf, 0, sizeof(line_buf));
     read(obj.get_serial_file(), line_buf, sizeof(line_buf));  // Access via getter
-    printf("%s", line_buf);
+    printf("%s.%03d: %s\n", time_buffer, milliseconds, line_buf);
 }
 
 void OPS243::turn_distance_reporting_on() {
