@@ -17,7 +17,6 @@ void NearPassDetector::run_near_pass_detector() {
 
     near_pass_state_t near_pass_state = NPS_NONE;
 
-    long long last_near_pass_time_ms = get_time_ms();
     long long near_pass_start_time_ms = get_time_ms();
     int min_distance_cm = MB1242_MAX_DISTANCE_cm;
     int near_pass_duration_ms = 0;
@@ -34,20 +33,19 @@ void NearPassDetector::run_near_pass_detector() {
         }
 
         switch(near_pass_state) {
-            case false:
+            case NPS_NONE:
                 // Condition to enter a near pass
                 if(report.distance_cm <= DISTANCE_THRESHOLD_cm &&
-                    report.time_stamp_ms > last_near_pass_time_ms + NEAR_PASS_COOLDOWN_ms
+                    report.time_stamp_ms > near_pass_start_time_ms + NEAR_PASS_COOLDOWN_ms
                 ) {
                     printf("Near pass detector: Start of near pass\n");
                     near_pass_state = NPS_IN_NEAR_PASS;
-                    last_near_pass_time_ms = report.time_stamp_ms;
                     near_pass_start_time_ms = report.time_stamp_ms;
 
                     // TODO: validate and clip gopro footage
                 }
                 break;
-            case true:
+            case NPS_IN_NEAR_PASS:
                 // Condition to exit a near pass
                 if(report.distance_cm > DISTANCE_THRESHOLD_cm) {
                     printf("Near pass detector: End of near pass\n");

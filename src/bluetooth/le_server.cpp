@@ -3,7 +3,6 @@
 #include <stdlib.h>
 
 #include <string>
-#include <thread>
 #include <vector>
 
 #include "../connection_params.h"
@@ -29,8 +28,6 @@ enum server_state_t {
 
 
 
-static bool initialized = false;
-
 static server_state_t server_state = SS_IDLE;
 
 static std::vector<Ride> ride_list;
@@ -39,7 +36,6 @@ static int ride_index = 0;
 static int near_pass_index = 0;
 
 static bool do_run_le_server = false;
-static std::thread* le_server_thread;
 
 static NearPassDetector* near_pass_detector = nullptr;
 
@@ -127,7 +123,6 @@ static void le_client_write_callback(int ctic_index) {
                     break;
                 }
                 default:
-                    printf("LE Server: Idle, client write ignored\n");
                     break;
             } // switch ctic
             break;
@@ -161,7 +156,6 @@ static void le_client_write_callback(int ctic_index) {
                     break;
                 }
                 default:
-                    printf("LE Server: Filling RL request, client write ignored\n");
                     break;
             } // switch ctic
             break;
@@ -195,7 +189,6 @@ static void le_client_write_callback(int ctic_index) {
                     break;
                 }
                 default:
-                    printf("LE server: Filling NPL request, client write ignored\n");
                     break;
             } // switch ctic
             break;
@@ -232,7 +225,7 @@ static void le_client_write_callback(int ctic_index) {
                     near_pass_detector->start_ride();
                     break;
 
-                case RC_CMD_END_RIDE:
+                case RC_CMD_NONE:
                     printf("LE Server: Start Ride\n");
                     near_pass_detector->end_ride();
                     break;
@@ -278,16 +271,7 @@ static int le_server_callback(int client_node, int operation, int ctic_index) {
     return SERVER_CONTINUE;
 }
 
-static void run_le_server() {
-    le_server(le_server_callback, 10);
-    close_all();
-}
-
-void le_server_init() {
-    if(initialized) {
-        return;
-    }
-
+void le_server_run() {
     if(init_blue((char*)LE_SERVER_DEVICES_FILE.c_str()) == 0) {
         printf("Couldn't init bluetooth\n");
         exit(1);
@@ -311,21 +295,10 @@ void le_server_init() {
     db_create_rides_table();
     db_create_near_pass_table();
 
-    initialized = true;
-}
-
-void le_server_start() {
-    if(!initialized) {
-        printf("LE server error: LE server not initialized\n");
-        exit(1);
-    }
-    le_server_thread = new std::thread(run_le_server);
+    le_server(le_server_callback, 10);
+    close_all();
 }
 
 void le_server_stop() {
     do_run_le_server = false;
-    if(le_server_thread->joinable()) {
-        le_server_thread->join();
-        delete le_server_thread;
-    }
 }
