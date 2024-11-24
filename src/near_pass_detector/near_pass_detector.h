@@ -7,11 +7,6 @@
 
 #include "../devices/MB1242.h"
 
-enum near_pass_state_t {
-    NPS_NONE,
-    NPS_IN_NEAR_PASS
-};
-
 class NearPassDetector {
 public:
     NearPassDetector();

@@ -12,14 +12,25 @@
 #include "near_pass_detector_types.h"
 #include "near_pass_detector.h"
 
+
+
+enum near_pass_state_t {
+    NPS_NONE,
+    NPS_POTENTIALLY_STARTED,
+    NPS_IN_NEAR_PASS,
+    NPS_POTENTIALLY_OVER,
+};
+
+
+
 void NearPassDetector::run_near_pass_detector() {
     ultrasonic.begin_sampling();
 
     near_pass_state_t near_pass_state = NPS_NONE;
 
     long long near_pass_start_time_ms = get_time_ms();
+    long long near_pass_end_time_ms = 0;
     int min_distance_cm = MB1242_MAX_DISTANCE_cm;
-    int near_pass_duration_ms = 0;
 
     while(do_run_near_pass_detector) {
         while(!ultrasonic.is_new_report_available()) {
@@ -28,55 +39,90 @@ void NearPassDetector::run_near_pass_detector() {
 
         MB1242::report report = ultrasonic.get_latest_report();
 
+        printf("%lld: %3d cm\n",
+            report.time_stamp_ms,
+            report.distance_cm
+        );
+
         if(report.distance_cm < min_distance_cm) {
             min_distance_cm = report.distance_cm;
         }
 
         switch(near_pass_state) {
-            case NPS_NONE:
+            case NPS_NONE: {
                 // Condition to enter a near pass
-                if(report.distance_cm <= DISTANCE_THRESHOLD_cm &&
-                    report.time_stamp_ms > near_pass_start_time_ms + NEAR_PASS_COOLDOWN_ms
-                ) {
-                    printf("Near pass detector: Start of near pass\n");
-                    near_pass_state = NPS_IN_NEAR_PASS;
+                if(report.distance_cm <= DISTANCE_THRESHOLD_cm) {
+                    printf("Near pass detector: Near pass potentially started\n");
+                    near_pass_state = NPS_POTENTIALLY_STARTED;
                     near_pass_start_time_ms = report.time_stamp_ms;
-
-                    // TODO: validate and clip gopro footage
                 }
                 break;
-            case NPS_IN_NEAR_PASS:
+            }
+            case NPS_POTENTIALLY_STARTED: {
+                // Condition to confirm near pass
+                if(report.distance_cm <= DISTANCE_THRESHOLD_cm) {
+                    int current_duration_ms = report.time_stamp_ms - near_pass_start_time_ms;
+                    if(current_duration_ms >= NEAR_PASS_STABILITY_DURATION_ms) {
+                        printf("Near pass detector: In near pass\n");
+                        near_pass_state = NPS_IN_NEAR_PASS;
+                    }
+                }
+                // Else, cancel the near pass
+                else {
+                    printf("Near pass detector: Near pass entrance cancelled\n");
+                    near_pass_state = NPS_NONE;
+                }
+                break;
+            }
+            case NPS_IN_NEAR_PASS: {
                 // Condition to exit a near pass
                 if(report.distance_cm > DISTANCE_THRESHOLD_cm) {
-                    printf("Near pass detector: End of near pass\n");
-                    near_pass_state = NPS_NONE;
-                    near_pass_duration_ms = report.time_stamp_ms - near_pass_start_time_ms;
-
-                    // If the near pass is valid
-                    // TODO (Maybe): get info from extra validator thread
-                    if(near_pass_duration_ms >= NEAR_PASS_MIN_DURATION_ms &&
-                        near_pass_duration_ms <= NEAR_PASS_MAX_DURATION_ms
-                    ) {
-                        printf("Near pass detector: Near pass valid, logging\n");
-                        NearPass near_pass;
-                        near_pass.time          = (long)(near_pass_start_time_ms / 1000);
-                        near_pass.distance_cm   = min_distance_cm;
-                        near_pass.speed_mps     = latest_speed_mps;
-                        near_pass.latitude      = latest_latitude;
-                        near_pass.longitude     = latest_longitude;
-
-                        // TODO (Maybe): Send to validator instead of logging in db
-                        db_insert_near_pass(near_pass);
-                    }
-
-                    // Reset necessary params
-                    min_distance_cm = MB1242_MAX_DISTANCE_cm;
+                    printf("Near pass detector: Near pass potentially over\n");
+                    near_pass_state = NPS_POTENTIALLY_OVER;
+                    near_pass_end_time_ms = report.time_stamp_ms;
                 }
                 break;
+            }
+            case NPS_POTENTIALLY_OVER: {
+                // Condition to confirm near pass is over
+                if(report.distance_cm > DISTANCE_THRESHOLD_cm) {
+                    int current_duration_ms = report.time_stamp_ms - near_pass_end_time_ms;
+                    if(current_duration_ms > NEAR_PASS_STABILITY_DURATION_ms) {
+                        printf("Near pass detector: Near pass over\n");
+                        near_pass_state = NPS_NONE;
+
+                        int near_pass_duration_ms = near_pass_end_time_ms - near_pass_start_time_ms;
+
+                        // If near pass valid, log in db
+                        if(near_pass_duration_ms >= NEAR_PASS_MIN_DURATION_ms &&
+                            near_pass_duration_ms <= NEAR_PASS_MAX_DURATION_ms
+                        ) {
+                            printf("Near pass detector: Near pass valid, logging\n");
+                            NearPass near_pass;
+                            near_pass.time          = (long)(near_pass_start_time_ms / 1000);
+                            near_pass.distance_cm   = min_distance_cm;
+                            near_pass.speed_mps     = latest_speed_mps;
+                            near_pass.latitude      = latest_latitude;
+                            near_pass.longitude     = latest_longitude;
+
+                            db_insert_near_pass(near_pass);
+                        }
+
+                        // Reset necessary params
+                        min_distance_cm = MB1242_MAX_DISTANCE_cm;
+                    }
+                }
+                // Else, stay in the near pass
+                else {
+                    printf("Near pass detector: Near pass exit cancelled\n");
+                    near_pass_state = NPS_IN_NEAR_PASS;
+                }
+                break;
+            }
             default:
                 break;
-        } // switch
-    }
+        } // switch(state)
+    } // while(do_run)
 
     ultrasonic.stop_sampling();
 }
