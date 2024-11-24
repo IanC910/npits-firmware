@@ -76,8 +76,8 @@ void OPS243::output_current_range_settings() {
 
 void OPS243::set_speed_output_units() {
     /* Sets the units for which the sensor will use to report speed*/
-    /* Hard-coded to km/h */
-    char cmd[] = "UK";
+    /* Hard-coded to m/s */
+    char cmd[] = "UM";
     write(serial_file, cmd, sizeof(cmd));
 }
 
@@ -312,4 +312,9 @@ void OPS243::set_number_of_range_reports(int number_of_reports) {
      char cmd[32];
      sprintf(cmd, "o%d", number_of_reports);
      write(serial_file, cmd, sizeof(cmd));
+}
+
+void OPS243::set_output_to_binary() {
+    char cmd[32] = "OB"; //TODO: DOUBLE CHECK THIS
+    write(serial_file, cmd, sizeof(cmd));
 }
