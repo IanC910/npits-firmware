@@ -34,8 +34,7 @@ enum ctic_t {
 
 enum rc_cmd_t {
     RC_CMD_NONE,
-    RC_CMD_START_RIDE,
-    RC_CMD_END_RIDE
+    RC_CMD_START_RIDE
 };
 
 #endif
