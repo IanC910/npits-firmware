@@ -57,16 +57,28 @@ bool near_pass_validator::is_vehicle_approaching(float* speed_matrix, int* magni
 
 bool near_pass_validator::is_vehicle_in_range(float* range_matrix, int* magnitude_matrix) {
     int nearest_signal = 0;
-    bool ret = false;
+    bool ret = true;
 
     for (int i = 0; i < 9; i++) {
-        if (range_matrix[i] != NULL && range_matrix[i] >= MAXIMUM_RANGE_THRESHOLD && range_matrix[i] > nearest_signal)
+        if (range_matrix[i] != NULL && range_matrix[i] >= MINIMUM_RANGE_THRESHOLD && range_matrix[i] > nearest_signal)
             if (magnitude_matrix[i] > RANGE_MAGNITUDE_THRESHOLD) {
                 nearest_signal = i;
                 ret = true;
+		printf("Made it here\n");
             }
     }
+/*
+     	    printf("Magnitudes: ");
+            for(int i = 0; i < sizeof(magnitude_matrix)/sizeof(magnitude_matrix[0]); i++) {
+                printf("%d,", magnitude_matrix[i]);
+            }
 
+            printf("Ranges:");
+            for(int j = 0; j < sizeof(range_matrix)/sizeof(range_matrix[0]); j++) {
+                printf("%f,", range_matrix[j]);
+            }
+	    printf("\n");
+*/
     return ret;
 }
 
