@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "../common/time_tools.h"
 #include "../connection_params.h"
 #include "../db/near_pass_db.h"
 #include "../near_pass_detector/near_pass_detector_types.h"
@@ -80,6 +81,7 @@ static void le_client_write_callback(int ctic_index) {
                         if(ride_list.size() > 0) {
                             write_ride_object(ride_list[ride_index]);
                             write_ctic(localnode(), CTIC_R_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
+                            printf("RL request: Wrote valid object\n");
                             ride_index++;
                             next_state = SS_RL_REQUEST;
                         }
@@ -107,6 +109,7 @@ static void le_client_write_callback(int ctic_index) {
                         if(near_pass_list.size() > 0) {
                             write_near_pass_object(near_pass_list[near_pass_index]);
                             write_ctic(localnode(), CTIC_NP_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
+                            printf("NPL request: Wrote valid object\n");
                             near_pass_index++;
                             next_state = SS_NPL_REQUEST;
                         }
@@ -145,6 +148,7 @@ static void le_client_write_callback(int ctic_index) {
                     if(r_valid == 0) {
                         write_ride_object(ride_list[ride_index]);
                         write_ctic(localnode(), CTIC_R_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
+                            printf("RL request: Wrote valid object\n");
                         ride_index++;
 
                         if(ride_index >= ride_list.size()) {
@@ -178,6 +182,7 @@ static void le_client_write_callback(int ctic_index) {
                     if(np_valid == 0) {
                         write_near_pass_object(near_pass_list[near_pass_index]);
                         write_ctic(localnode(), CTIC_NP_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
+                            printf("NPL request: Wrote valid object\n");
                         near_pass_index++;
 
                         if(near_pass_index >= near_pass_list.size()) {
