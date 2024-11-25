@@ -48,14 +48,27 @@ public:
     int get_serial_file();
     void print_serial_file(OPS243& obj);
 
-    void turn_magnitude_reporting_on();
-    void turn_magnitude_reporting_off();
+    void turn_fmcw_magnitude_reporting_on();
+    void turn_fmcw_magnitude_reporting_off();
+
+    void turn_doppler_magnitude_reporting_on();
+    void turn_doppler_magnitude_reporting_off();
 
     void turn_largest_report_order_on();
     void set_number_of_range_reports(int number_of_reports);
     void set_number_of_speed_reports(int number_of_reports);
+
+    void turn_binary_output_on();
+    void turn_binary_output_off();
+   
+    void turn_JSON_output_on();
+    void turn_JSON_output_off();
+
+    void turn_units_output_on();
+    void turn_units_output_off(); 
 private:
     int serial_file;
 };
 
 #endif
+
