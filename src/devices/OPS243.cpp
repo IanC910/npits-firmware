@@ -1,9 +1,12 @@
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <string>
 #include <time.h>
+#include <iostream>
+#include <sstream>
+#include <vector>
+#include <cstring>
 
 #include <fcntl.h>
 #include <errno.h>
@@ -180,7 +183,7 @@ void OPS243::clear_direction_control() {
 }
 
 /* Speed averaging allows a means of filtering for the peak speed of an object. 
-/* Some objects due to slight delays in signal path will have multiple speed reports.*/
+* Some objects due to slight delays in signal path will have multiple speed reports.*/
 void OPS243::enable_peak_speed_average() {
     /* Enables speed averaging of peak detected */
     /* values across the nearest two speeds detected.*/
@@ -232,8 +235,8 @@ int OPS243::get_module_info(char* module_info, int length) {
 
 int OPS243::get_serial_file() { return serial_file;}
 
-void print_serial_file(OPS243& obj) {
-    
+void read_serial_file(OPS243& obj, int* speed_magnitudes, int* range_magnitudes, float* speeds, float* ranges) {
+
         char line_buf[256];
         memset(line_buf, 0, sizeof(line_buf));
 
@@ -255,8 +258,83 @@ void print_serial_file(OPS243& obj) {
         struct tm *timeinfo = localtime(&seconds);
         char time_buffer[30];
         strftime(time_buffer, sizeof(time_buffer), "%Y-%m-%d %H:%M:%S", timeinfo);
-        printf("%s.%03d: %s\n", time_buffer, milliseconds, line_buf);
+        //printf("%s.%03d: %s\n", time_buffer, milliseconds, line_buf);
 
+        char *token;
+        int count = 0;
+        int magnitude_index = 0;
+        int speed_index = 0;
+        int range_index = 0;
+        const char s[2] = ",";
+	
+        if (line_buf[1] == 'm' && line_buf[3] != 's') {
+            token = strtok(line_buf, s);
+
+            while (token) {
+                //printf("%s\n", token); 
+                if (count == 0) {
+                    token = strtok(NULL, s); // Ignore the "m"
+                    count++;
+                    continue;
+                }
+                if ((count % 2) != 0) {
+                    range_magnitudes[magnitude_index] = atoi(token);
+                    magnitude_index++;
+                }
+                if ((count % 2) == 0 && count != 0) {
+                    ranges[range_index] = atof(token);
+                    range_index++;
+                }
+                count++;
+                token = strtok(NULL, s);
+            }/*
+ 	    printf("Magnitudes: ");
+            for(int i = 0; i < magnitude_index; i++) {
+                printf("%d,", range_magnitudes[i]);
+            }
+
+            printf("Ranges:");
+            for(int j = 0; j < range_index; j++) {
+                printf("%f,", ranges[j]);
+            }
+	    printf("\n"); */
+            return;
+        }
+        
+        if (line_buf[3] == 's') {
+            token = strtok(line_buf, s);
+
+            while (token) {
+                if (count == 0) {
+                    token = strtok(NULL, s); // Ignore the "mps"
+                    count++;
+                    continue;
+                }
+                if ((count % 2) != 0) {
+                    speed_magnitudes[magnitude_index] = atoi(token);
+                    magnitude_index++;
+                }
+                if ((count % 2) == 0 && count != 0) {
+                    speeds[range_index] = atof(token);
+                    speed_index++;
+                }
+                count++;
+                token = strtok(NULL, s);
+            }
+        	/*
+
+            printf("Magnitudes: ");
+            for(int i = 0; i < magnitude_index; i++) { 
+                printf("%d,", speed_magnitudes[i]);
+            }
+
+            printf("Speeds:"); 
+            for(int j = 0; j < speed_index; j++) {
+                printf("%f,", speeds[j]);
+            }
+	    printf("\n"); */
+	return;
+	}
 }
 
 void OPS243::turn_range_reporting_on() {
@@ -279,13 +357,23 @@ void OPS243::turn_speed_reporting_off() {
     write(serial_file, cmd, sizeof(cmd));
 }
 
-void OPS243::turn_magnitude_reporting_on() {
+void OPS243::turn_fmcw_magnitude_reporting_on() {
     char cmd[32] = "oM";
     write(serial_file, cmd, sizeof(cmd));
 }
 
-void OPS243::turn_magnitude_reporting_off() {
+void OPS243::turn_fmcw_magnitude_reporting_off() {
     char cmd[32] = "om";
+    write(serial_file, cmd, sizeof(cmd));
+}
+
+void OPS243::turn_doppler_magnitude_reporting_on() {
+    char cmd[32] = "OM";
+    write(serial_file, cmd, sizeof(cmd));
+}
+
+void OPS243::turn_doppler_magnitude_reporting_off() {
+    char cmd[32] = "Om";
     write(serial_file, cmd, sizeof(cmd));
 }
 
@@ -314,7 +402,32 @@ void OPS243::set_number_of_range_reports(int number_of_reports) {
      write(serial_file, cmd, sizeof(cmd));
 }
 
-void OPS243::set_output_to_binary() {
-    char cmd[32] = "OB"; //TODO: DOUBLE CHECK THIS
+void OPS243::turn_binary_output_on() {
+    char cmd[32] = "OB";
+    write(serial_file, cmd, sizeof(cmd));
+}
+
+void OPS243::turn_binary_output_off() {
+    char cmd[32] = "Ob";
+    write(serial_file, cmd, sizeof(cmd));
+}
+
+void OPS243::turn_JSON_output_on() {
+    char cmd[32] = "OJ";
+    write(serial_file, cmd, sizeof(cmd));
+}
+
+void OPS243::turn_JSON_output_off() {
+    char cmd[32] = "Oj";
+    write(serial_file, cmd, sizeof(cmd));
+}
+
+void OPS243::turn_units_output_on() {
+    char cmd[32] = "OU";
+    write(serial_file, cmd, sizeof(cmd));
+}
+
+void OPS243::turn_units_output_off() {
+    char cmd[32] = "ou";
     write(serial_file, cmd, sizeof(cmd));
 }
