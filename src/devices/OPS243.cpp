@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -184,7 +183,7 @@ void OPS243::clear_direction_control() {
 }
 
 /* Speed averaging allows a means of filtering for the peak speed of an object. 
-/* Some objects due to slight delays in signal path will have multiple speed reports.*/
+* Some objects due to slight delays in signal path will have multiple speed reports.*/
 void OPS243::enable_peak_speed_average() {
     /* Enables speed averaging of peak detected */
     /* values across the nearest two speeds detected.*/
@@ -236,124 +235,7 @@ int OPS243::get_module_info(char* module_info, int length) {
 
 int OPS243::get_serial_file() { return serial_file;}
 
-
-void outputRanges(int* &magnitudes, float* &distances) {
-        std::cout << "Magnitudes: ";
-        for (int i = 0; i < sizeof(magnitudes)-1; ++i) {
-                std::cout << magnitudes[i] << " ";
-        }
-        std::cout << std::endl;
-
-        std::cout << "Distances: ";
-        for (int i = 0; i < sizeof(distances)-1; ++i) {
-                std::cout << distances[i] << " ";
-        }
-        std::cout << std::endl;
-        
-}
-
-void outputSpeeds(int* &magnitudes, float* &speeds) {
-        std::cout << "Magnitudes: ";
-        for (int i = 0; i < sizeof(magnitudes)-1; ++i) {
-                std::cout << magnitudes[i] << " ";
-        }
-        std::cout << std::endl;
-
-        std::cout << "Speeds: ";
-        for (int i = 0; i < sizeof(speeds)-1; ++i) {
-                std::cout << speeds[i] << " ";
-        }
-        std::cout << std::endl;
-}
-
-
-void parseInputSpeed(const char* input, int* &magnitudes, float* &speeds) {
-    printf("%s\n", input);
-
-    // Create a copy of the input string that can be modified
-    char* inputCopy = new char[strlen(input) + 1];
-    strcpy(inputCopy, input);
-
-    // Skip the initial "mps" and the first comma
-    if (strncmp(inputCopy, "mps", 3) == 0 && inputCopy[3] == ',') {
-        std::vector<int> magnitudesVec;
-        std::vector<float> speedsVec;
-
-        char* token = strtok(inputCopy + 4, ","); // Skip "mps,"
-
-        bool isMagnitude = true;
-
-        while (token) {
-            if (isMagnitude) {
-                magnitudesVec.push_back(atoi(token));
-            } else {
-                speedsVec.push_back(atof(token));
-            }
-            isMagnitude = !isMagnitude;
-            token = strtok(NULL, ",");
-        }
-
-        // Allocate memory for the arrays
-        magnitudes = new int[magnitudesVec.size()];
-        speeds = new float[speedsVec.size()];
-
-        // Copy values from vectors to arrays
-        for (size_t i = 0; i < magnitudesVec.size(); ++i) {
-            magnitudes[i] = magnitudesVec[i];
-        }
-
-        for (size_t i = 0; i < speedsVec.size(); ++i) {
-            speeds[i] = speedsVec[i];
-        }
-
-        delete[] inputCopy;  // Don't forget to free the allocated memory
-    }
-}
-
-void parseInputRange(char* input, int* &magnitudes, float* &distances) {
-
-    // Create a copy of the input string that can be modified
-    char* inputCopy = new char[strlen(input) + 1];
-    strcpy(inputCopy, input);
-
-    // Skip the initial 'm' and the first comma
-    if (inputCopy[1] == 'm' && inputCopy[2] == '\"') {
-        std::vector<int> magnitudesVec;
-        std::vector<float> distancesVec;
-
-        char* token = strtok(inputCopy + 4, ","); // Skip "m\","
-
-        bool isMagnitude = true;
-
-        while (token) {
-            if (isMagnitude) {
-                magnitudesVec.push_back(atoi(token));
-            } else {
-                distancesVec.push_back(atof(token));
-            }
-            isMagnitude = !isMagnitude;
-            token = strtok(NULL, ",");
-        }
-
-        // Allocate memory for the arrays
-        magnitudes = new int[magnitudesVec.size()];
-        distances = new float[distancesVec.size()];
-
-        // Copy values from vectors to arrays
-
-        for (size_t i = 0; i < magnitudesVec.size(); ++i) {
-            magnitudes[i] = magnitudesVec[i];
-        }
-
-        for (size_t i = 0; i < distancesVec.size(); ++i) {
-            distances[i] = distancesVec[i];
-        }
-
-        delete[] inputCopy;  // Don't forget to free the allocated memory
-    }
-}
-
-void print_serial_file(OPS243& obj) {
+void read_serial_file(OPS243& obj, int* speed_magnitudes, int* range_magnitudes, float* speeds, float* ranges) {
 
         char line_buf[256];
         memset(line_buf, 0, sizeof(line_buf));
@@ -378,99 +260,81 @@ void print_serial_file(OPS243& obj) {
         strftime(time_buffer, sizeof(time_buffer), "%Y-%m-%d %H:%M:%S", timeinfo);
         //printf("%s.%03d: %s\n", time_buffer, milliseconds, line_buf);
 
-        printf("%s\n", line_buf);
-
-	int magnitudes[9];
-	float ranges[9];
-	float speeds[9];
-	char *token;
-	int count = 0;
-	int magnitude_index = 0;
-	int speed_index = 0;
-	int range_index = 0;
-	const char s[2] = ",";
-	/*	
-	token = strtok(line_buf, s);
-	while(token) {
-		printf("%s\n", token);
-		token = strtok(NULL, s);
-	}
-	*/
-
+        char *token;
+        int count = 0;
+        int magnitude_index = 0;
+        int speed_index = 0;
+        int range_index = 0;
+        const char s[2] = ",";
 	
-	if (line_buf[1] == 'm') {
-		token = strtok(line_buf, s);
+        if (line_buf[1] == 'm' && line_buf[3] != 's') {
+            token = strtok(line_buf, s);
 
-		while (token) {
-			//printf("%s\n", token); 
-			if (count == 0) {
-				token = strtok(NULL, s); // Ignore the "m"
-				count++;
-				continue;
-			}
-			if ((count % 2) != 0) {
-				magnitudes[magnitude_index] = atoi(token);
-				printf("%s\n", token);
-				magnitude_index++;
-			}
-			if ((count % 2) == 0 && count != 0) {
-				ranges[range_index] = atof(token);
-				range_index++;
-			}
-			count++;
-			token = strtok(NULL, s);
-		}
+            while (token) {
+                //printf("%s\n", token); 
+                if (count == 0) {
+                    token = strtok(NULL, s); // Ignore the "m"
+                    count++;
+                    continue;
+                }
+                if ((count % 2) != 0) {
+                    range_magnitudes[magnitude_index] = atoi(token);
+                    magnitude_index++;
+                }
+                if ((count % 2) == 0 && count != 0) {
+                    ranges[range_index] = atof(token);
+                    range_index++;
+                }
+                count++;
+                token = strtok(NULL, s);
+            }/*
+ 	    printf("Magnitudes: ");
+            for(int i = 0; i < magnitude_index; i++) {
+                printf("%d,", range_magnitudes[i]);
+            }
 
-		printf("Magnitudes: ");
-		for(int i = 0; i < magnitude_index; i++) { 
-			printf("%d,", magnitudes[i]);
-		}
+            printf("Ranges:");
+            for(int j = 0; j < range_index; j++) {
+                printf("%f,", ranges[j]);
+            }
+	    printf("\n"); */
+            return;
+        }
+        
+        if (line_buf[3] == 's') {
+            token = strtok(line_buf, s);
 
-		printf("\nRanges:\n"); 
-		for(int j = 0; j < range_index; j++) {
-			printf("%f,", ranges[j]);
-		}
-		return;
+            while (token) {
+                if (count == 0) {
+                    token = strtok(NULL, s); // Ignore the "mps"
+                    count++;
+                    continue;
+                }
+                if ((count % 2) != 0) {
+                    speed_magnitudes[magnitude_index] = atoi(token);
+                    magnitude_index++;
+                }
+                if ((count % 2) == 0 && count != 0) {
+                    speeds[range_index] = atof(token);
+                    speed_index++;
+                }
+                count++;
+                token = strtok(NULL, s);
+            }
+        	/*
+
+            printf("Magnitudes: ");
+            for(int i = 0; i < magnitude_index; i++) { 
+                printf("%d,", speed_magnitudes[i]);
+            }
+
+            printf("Speeds:"); 
+            for(int j = 0; j < speed_index; j++) {
+                printf("%f,", speeds[j]);
+            }
+	    printf("\n"); */
+	return;
 	}
-	
-
-	if (line_buf[3] == 's') {
-		token = strtok(line_buf, ",");
-
-		while(token) {
-			if (count == 0) {
-				token = strtok(NULL,",");
-				continue;
-			}
-
-			if (count % 2 != 0) {
-				magnitudes[magnitude_index] = atoi(token);
-				magnitude_index++;
-			}
-			if (count % 2 == 0) {
-				speeds[speed_index] = atof(token);
-				speed_index++;
-			}
-			token = strtok(NULL, ",");
-		}	
-		return;
-	}
-		
-
-/*
-    	int* magnitudes = nullptr;
-    	float* distances = nullptr;
-	float* speeds = nullptr;
-
-	if (line_buf[1] == 'm') {
-    		parseInputRange(line_buf, magnitudes, distances);
-		outputRanges(magnitudes, distances);
-	}
-	if (line_buf[3] == 's') {
-		parseInputSpeed(line_buf, magnitudes, speeds);
-		outputSpeeds(magnitudes, speeds);
-	}
-  */  	
 }
 
 void OPS243::turn_range_reporting_on() {
@@ -567,4 +431,3 @@ void OPS243::turn_units_output_off() {
     char cmd[32] = "ou";
     write(serial_file, cmd, sizeof(cmd));
 }
-
