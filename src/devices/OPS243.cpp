@@ -314,7 +314,7 @@ void OPS243::set_number_of_range_reports(int number_of_reports) {
      write(serial_file, cmd, sizeof(cmd));
 }
 
-void OPS243::set_output_to_binary() {
-    char cmd[32] = "OB"; //TODO: DOUBLE CHECK THIS
-    write(serial_file, cmd, sizeof(cmd));
-}
+// void OPS243::set_output_to_binary() {
+//     char cmd[32] = "OB"; //TODO: DOUBLE CHECK THIS
+//     write(serial_file, cmd, sizeof(cmd));
+// }
