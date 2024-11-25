@@ -1,7 +1,7 @@
 #ifndef VehicleApproachDetector_H
 #define VehicleApproachDetector_H
 
-#include "OPS243.h"
+#include "../devices/OPS243.h"
 
 #define unsigned int SPEED_MASK = 0x0000FF00
 #define unsigned int RANGE_MASK = 0xFF000000
