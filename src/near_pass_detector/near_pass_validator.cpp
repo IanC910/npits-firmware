@@ -9,7 +9,7 @@
 #include <errno.h>
 #include <termios.h>
 #include <unistd.h>
-#include "VehicleApproachDetector.h"
+#include "near_pass_validator.h"
 
 VehicleApproachDetector::VehicleApproachDetector(const char serial_port[], int BAUD_RATE) 
     : OPS243(port, baud_rate) {
