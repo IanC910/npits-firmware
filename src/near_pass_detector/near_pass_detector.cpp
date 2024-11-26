@@ -23,7 +23,7 @@ enum near_pass_state_t {
 
 
 
-void NearPassDetector::run_near_pass_detector(int &ride_status, int &approaching) {
+void NearPassDetector::run_near_pass_detector(int &approaching) {
     ultrasonic.begin_sampling();
 
     near_pass_state_t near_pass_state = NPS_NONE;
@@ -51,7 +51,7 @@ void NearPassDetector::run_near_pass_detector(int &ride_status, int &approaching
         switch(near_pass_state) {
             case NPS_NONE: {
                 // Condition to enter a near pass
-                if(report.distance_cm <= DISTANCE_THRESHOLD_cm) {
+                if(report.distance_cm <= DISTANCE_THRESHOLD_cm && approaching) {
                     printf("Near pass detector: Near pass potentially started\n");
                     near_pass_state = NPS_POTENTIALLY_STARTED;
                     near_pass_start_time_ms = report.time_stamp_ms;
