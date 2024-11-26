@@ -39,6 +39,8 @@ static bool do_run_le_server = false;
 
 static NearPassDetector* near_pass_detector = nullptr;
 
+static int &ride_status;
+
 static void write_ride_object(Ride& ride) {
     write_ctic(localnode(), CTIC_R_ID,          (unsigned char*)(&ride.rideId),     sizeof(ride.rideId));
     write_ctic(localnode(), CTIC_R_START_TIME,  (unsigned char*)(&ride.startTime),  sizeof(ride.startTime));
@@ -222,12 +224,12 @@ static void le_client_write_callback(int ctic_index) {
             switch(rc_cmd) {
                 case RC_CMD_START_RIDE:
                     printf("LE Server: Start ride\n");
-                    near_pass_detector->start_ride();
+                    ride_status = 1;
                     break;
 
                 case RC_CMD_NONE:
                     printf("LE Server: End Ride\n");
-                    near_pass_detector->end_ride();
+                    ride_status = 0;
                     break;
 
                 default:
@@ -271,7 +273,7 @@ static int le_server_callback(int client_node, int operation, int ctic_index) {
     return SERVER_CONTINUE;
 }
 
-void le_server_run() {
+void le_server_run(&ride_status) {
     if(init_blue((char*)LE_SERVER_DEVICES_FILE.c_str()) == 0) {
         printf("Couldn't init bluetooth\n");
         exit(1);

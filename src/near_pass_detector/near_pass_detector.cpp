@@ -23,7 +23,7 @@ enum near_pass_state_t {
 
 
 
-void NearPassDetector::run_near_pass_detector() {
+void NearPassDetector::run_near_pass_detector(int &ride_status, int &approaching) {
     ultrasonic.begin_sampling();
 
     near_pass_state_t near_pass_state = NPS_NONE;

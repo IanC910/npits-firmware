@@ -9,7 +9,7 @@
 
 class NearPassDetector {
 public:
-    NearPassDetector();
+    NearPassDetector(int &ride_status, int &approaching);
 
     // Returns 0 on success, 1 if ride already active
     int start_ride();
@@ -38,6 +38,9 @@ private:
     double latest_speed_mps = 0;
 
     void run_near_pass_detector();
+
+    int ride_status;
+    int approaching;
 };
 
 #endif
