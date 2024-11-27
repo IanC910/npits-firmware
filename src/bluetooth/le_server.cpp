@@ -18,8 +18,8 @@
 
 
 
-static const char LOW = 0;
-static const char HIGH = 1;
+static const int LOW = 0;
+static const int HIGH = 1;
 
 enum server_state_t {
     SS_IDLE,
@@ -41,18 +41,18 @@ static bool do_run_le_server = false;
 static NearPassDetector* near_pass_detector = nullptr;
 
 static void write_ride_object(Ride& ride) {
-    write_ctic(localnode(), CTIC_R_ID,          (unsigned char*)(&ride.rideId),     sizeof(ride.rideId));
-    write_ctic(localnode(), CTIC_R_START_TIME,  (unsigned char*)(&ride.startTime),  sizeof(ride.startTime));
-    write_ctic(localnode(), CTIC_R_END_TIME,    (unsigned char*)(&ride.endTime),    sizeof(ride.endTime));
+    write_ctic(localnode(), CTIC_R_ID,          (unsigned char*)(&ride.rideId),     0);
+    write_ctic(localnode(), CTIC_R_START_TIME,  (unsigned char*)(&ride.startTime),  0);
+    write_ctic(localnode(), CTIC_R_END_TIME,    (unsigned char*)(&ride.endTime),    0);
 }
 
 static void write_near_pass_object(NearPass& near_pass) {
-    write_ctic(localnode(), CTIC_NP_TIME,           (unsigned char*)(&near_pass.time),          sizeof(near_pass.time));
-    write_ctic(localnode(), CTIC_NP_DISTANCE_CM,    (unsigned char*)(&near_pass.distance_cm),   sizeof(near_pass.distance_cm));
-    write_ctic(localnode(), CTIC_NP_SPEED_MPS,      (unsigned char*)(&near_pass.speed_mps),     sizeof(near_pass.speed_mps));
-    write_ctic(localnode(), CTIC_NP_LATITUDE,       (unsigned char*)(&near_pass.latitude),      sizeof(near_pass.latitude));
-    write_ctic(localnode(), CTIC_NP_LONGITUDE,      (unsigned char*)(&near_pass.longitude),     sizeof(near_pass.longitude));
-    write_ctic(localnode(), CTIC_NP_RIDE_ID,        (unsigned char*)(&near_pass.rideId),        sizeof(near_pass.rideId));
+    write_ctic(localnode(), CTIC_NP_TIME,           (unsigned char*)(&near_pass.time),          0);
+    write_ctic(localnode(), CTIC_NP_DISTANCE_CM,    (unsigned char*)(&near_pass.distance_cm),   0);
+    write_ctic(localnode(), CTIC_NP_SPEED_MPS,      (unsigned char*)(&near_pass.speed_mps),     0);
+    write_ctic(localnode(), CTIC_NP_LATITUDE,       (unsigned char*)(&near_pass.latitude),      0);
+    write_ctic(localnode(), CTIC_NP_LONGITUDE,      (unsigned char*)(&near_pass.longitude),     0);
+    write_ctic(localnode(), CTIC_NP_RIDE_ID,        (unsigned char*)(&near_pass.rideId),        0);
 }
 
 static void le_client_write_callback(int ctic_index) {
