@@ -62,8 +62,7 @@ static void le_client_write_callback(int ctic_index) {
         printf("LE Server: Client wrote 0 bytes\n");
     }
 
-    // Next state logic
-    server_state_t next_state = server_state;
+    // State change logic
     switch(server_state) {
         case SS_IDLE: {
             // If client wrote 1 to RL_REQUEST, initiate sending ride list
@@ -83,7 +82,7 @@ static void le_client_write_callback(int ctic_index) {
                             write_ctic(localnode(), CTIC_R_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
                             printf("RL request: Wrote valid object\n");
                             ride_index++;
-                            next_state = SS_RL_REQUEST;
+                            server_state = SS_RL_REQUEST;
                         }
                         else {
                             printf("RL request: No objects to return\n");
@@ -92,7 +91,7 @@ static void le_client_write_callback(int ctic_index) {
                         if(ride_index >= ride_list.size()) {
                             printf("RL request: Done\n");
                             write_ctic(localnode(), CTIC_RL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
-                            next_state = SS_IDLE;
+                            server_state = SS_IDLE;
                         }
                     }
                     break;
@@ -111,7 +110,7 @@ static void le_client_write_callback(int ctic_index) {
                             write_ctic(localnode(), CTIC_NP_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
                             printf("NPL request: Wrote valid object\n");
                             near_pass_index++;
-                            next_state = SS_NPL_REQUEST;
+                            server_state = SS_NPL_REQUEST;
                         }
                         else {
                             printf("NPL request: No objects to return\n");
@@ -120,7 +119,7 @@ static void le_client_write_callback(int ctic_index) {
                         if(near_pass_index >= near_pass_list.size()) {
                             printf("NPL request: Done\n");
                             write_ctic(localnode(), CTIC_NPL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
-                            next_state = SS_IDLE;
+                            server_state = SS_IDLE;
                         }
                     }
                     break;
@@ -139,7 +138,7 @@ static void le_client_write_callback(int ctic_index) {
                     if(rl_request == 0) {
                         printf("RL Request: Cancelled\n");
                         write_ctic(localnode(), CTIC_R_VALID, (unsigned char*)(&LOW), sizeof(LOW));
-                        next_state = SS_IDLE;
+                        server_state = SS_IDLE;
                     }
                     break;
                 }
@@ -154,7 +153,7 @@ static void le_client_write_callback(int ctic_index) {
                         if(ride_index >= ride_list.size()) {
                             printf("RL request: Done\n");
                             write_ctic(localnode(), CTIC_RL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
-                            next_state = SS_IDLE;
+                            server_state = SS_IDLE;
                         }
                     }
                     break;
@@ -173,7 +172,7 @@ static void le_client_write_callback(int ctic_index) {
                     if(npl_request == 0) {
                         printf("NPL request: Cancelled\n");
                         write_ctic(localnode(), CTIC_NP_VALID, (unsigned char*)(&LOW), sizeof(LOW));
-                        next_state = SS_IDLE;
+                        server_state = SS_IDLE;
                     }
                     break;
                 }
@@ -188,7 +187,7 @@ static void le_client_write_callback(int ctic_index) {
                         if(near_pass_index >= near_pass_list.size()) {
                             printf("NPL request: Done\n");
                             write_ctic(localnode(), CTIC_NPL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
-                            next_state = SS_IDLE;
+                            server_state = SS_IDLE;
                         }
                     }
                     break;
@@ -201,8 +200,6 @@ static void le_client_write_callback(int ctic_index) {
         default:
             break;
     } // Switch server_state
-
-    server_state = next_state;
 
     // Non state machine ctics
     switch(ctic_index) {
@@ -262,6 +259,7 @@ static int le_server_callback(int client_node, int operation, int ctic_index) {
             printf("LE Server: Client Disconnected from node %d\n", client_node);
             break;
         case LE_TIMER:
+            printf("LE Server: Timer\n");
             break;
         case LE_KEYPRESS:
             break;
