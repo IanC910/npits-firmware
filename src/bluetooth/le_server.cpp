@@ -30,6 +30,8 @@ enum server_state_t {
 
 
 static server_state_t server_state = SS_IDLE;
+static long long request_start_time_ms = 0;
+static const int REQUEST_TIMEOUT_DURATION_ms = 5000;
 
 static std::vector<Ride> ride_list;
 static std::vector<NearPass> near_pass_list;
@@ -55,7 +57,7 @@ static void write_near_pass_object(NearPass& near_pass) {
     write_ctic(localnode(), CTIC_NP_RIDE_ID,        (unsigned char*)(&near_pass.rideId),        0);
 }
 
-static void le_client_write_callback(int ctic_index) {
+static void le_server_write_callback(int ctic_index) {
     unsigned char read_buf[16];
     int num_bytes = read_ctic(localnode(), ctic_index, read_buf, sizeof(read_buf));
     if(num_bytes == 0) {
@@ -72,6 +74,7 @@ static void le_client_write_callback(int ctic_index) {
                     int rl_request = *(int*)read_buf;
                     printf("RL request: %d\n", rl_request);
                     if(rl_request) {
+                        request_start_time_ms = get_time_ms();
                         ride_index = 0;
                         db_get_rides(ride_list);
 
@@ -100,6 +103,7 @@ static void le_client_write_callback(int ctic_index) {
                     int npl_request = *(int*)read_buf;
                     printf("NPL request: %d\n", npl_request);
                     if(npl_request) {
+                        request_start_time_ms = get_time_ms();
                         near_pass_index = 0;
                         db_get_near_passes(near_pass_list);
 
@@ -243,6 +247,31 @@ static void le_client_write_callback(int ctic_index) {
     }
 }
 
+static void le_server_timer_callback() {
+    switch(server_state) {
+        case SS_IDLE:
+            break;
+        case SS_RL_REQUEST: {
+            if(get_time_ms() - request_start_time_ms >= REQUEST_TIMEOUT_DURATION_ms) {
+                server_state = SS_IDLE;
+                write_ctic(localnode(), CTIC_RL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
+                write_ctic(localnode(), CTIC_R_VALID, (unsigned char*)(&LOW), sizeof(LOW));
+            }
+            break;
+        }
+        case SS_NPL_REQUEST: {
+            if(get_time_ms() - request_start_time_ms >= REQUEST_TIMEOUT_DURATION_ms) {
+                server_state = SS_IDLE;
+                write_ctic(localnode(), CTIC_NPL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
+                write_ctic(localnode(), CTIC_NP_VALID, (unsigned char*)(&LOW), sizeof(LOW));
+            }
+            break;
+        }
+        default:
+            break;
+    }
+}
+
 static int le_server_callback(int client_node, int operation, int ctic_index) {
     switch(operation) {
         case LE_CONNECT: {
@@ -251,16 +280,20 @@ static int le_server_callback(int client_node, int operation, int ctic_index) {
         }
         case LE_READ:
             break;
-        case LE_WRITE:
+        case LE_WRITE: {
             printf("LE Server: Client wrote ctic index %d\n", ctic_index);
-            le_client_write_callback(ctic_index);
+            le_server_write_callback(ctic_index);
             break;
-        case LE_DISCONNECT:
+        }
+        case LE_DISCONNECT: {
             printf("LE Server: Client Disconnected from node %d\n", client_node);
             break;
-        case LE_TIMER:
+        }
+        case LE_TIMER: {
             printf("LE Server: Timer\n");
+            le_server_timer_callback(client_node);
             break;
+        }
         case LE_KEYPRESS:
             break;
         default:
