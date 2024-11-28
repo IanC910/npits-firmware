@@ -3,10 +3,10 @@
 
 #include "../devices/OPS243.h"
 
-#define MINIMUM_SPEED_THRESHOLD 0.5
-#define MINIMUM_RANGE_THRESHOLD 0.5
-#define SPEED_MAGNITUDE_THRESHOLD 300
-#define RANGE_MAGNITUDE_THRESHOLD 300
+#define MINIMUM_SPEED_THRESHOLD 6 //
+#define MINIMUM_RANGE_THRESHOLD 2.5 //
+#define SPEED_MAGNITUDE_THRESHOLD 25 //
+#define RANGE_MAGNITUDE_THRESHOLD 300 //
 #define MAXIMUM_RANGE_VALUE 2.0
 
 class near_pass_validator : public OPS243 {
@@ -25,4 +25,3 @@ class near_pass_validator : public OPS243 {
 };
 
 #endif
-

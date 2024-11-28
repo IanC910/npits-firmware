@@ -258,7 +258,7 @@ void read_serial_file(OPS243& obj, int* speed_magnitudes, int* range_magnitudes,
         struct tm *timeinfo = localtime(&seconds);
         char time_buffer[30];
         strftime(time_buffer, sizeof(time_buffer), "%Y-%m-%d %H:%M:%S", timeinfo);
-        //printf("%s.%03d: %s\n", time_buffer, milliseconds, line_buf);
+//        printf("%s.%03d: %s\n", time_buffer, milliseconds, line_buf);
 
         char *token;
         int count = 0;
@@ -321,7 +321,7 @@ void read_serial_file(OPS243& obj, int* speed_magnitudes, int* range_magnitudes,
                 count++;
                 token = strtok(NULL, s);
             }
-        	/*
+        /*	
 
             printf("Magnitudes: ");
             for(int i = 0; i < magnitude_index; i++) {
