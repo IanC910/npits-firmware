@@ -58,19 +58,6 @@ void npits_ble_server_init(
     initialized = true;
 }
 
-void npits_ble_server_start() {
-    if(!initialized) {
-        printf("LE Server: Couldn't start, not initialized\n");
-        return;
-    }
-
-    // TODO
-}
-
-void npits_ble_server_stop() {
-    do_run_le_server = false;
-}
-
 static void write_ride_object(Ride& ride) {
     write_ctic(localnode(), CTIC_R_ID,          (unsigned char*)(&ride.rideId),     0);
     write_ctic(localnode(), CTIC_R_START_TIME,  (unsigned char*)(&ride.startTime),  0);
@@ -180,7 +167,7 @@ static void write_callback(int ctic_index) {
                     if(r_valid == 0) {
                         write_ride_object(ride_list[ride_index]);
                         write_ctic(localnode(), CTIC_R_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
-                            printf("RL request: Wrote valid object\n");
+                        printf("RL request: Wrote valid object\n");
                         ride_index++;
 
                         if(ride_index >= ride_list.size()) {
@@ -214,7 +201,7 @@ static void write_callback(int ctic_index) {
                     if(np_valid == 0) {
                         write_near_pass_object(near_pass_list[near_pass_index]);
                         write_ctic(localnode(), CTIC_NP_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
-                            printf("NPL request: Wrote valid object\n");
+                        printf("NPL request: Wrote valid object\n");
                         near_pass_index++;
 
                         if(near_pass_index >= near_pass_list.size()) {
@@ -367,6 +354,15 @@ void npits_ble_server_run() {
 
     do_run_le_server = true;
 
-    le_server(server_callback, 10);
+    const int SERVER_CALLBACK_PERIOD_ds = 10;
+
+    // Blocking: thread is inside le_server() until 'x' is pressed on keyboard. Then the server stops
+    // server_callback is called every SERVER_CALLBACK_PERIOD_ds deciseconds or on operation
+    le_server(server_callback, SERVER_CALLBACK_PERIOD_ds);
     close_all();
+    printf("LE server: Stopped\n");
+}
+
+void npits_ble_server_stop() {
+    do_run_le_server = false;
 }

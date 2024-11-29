@@ -11,12 +11,10 @@ void npits_ble_server_init(
     NearPassPredictor* near_pass_predictor
 );
 
-void npits_ble_server_start();
+// Runs the BLE server. Blocking
+void npits_ble_server_run();
 
 // Stops the BLE server. Non-blocking
 void npits_ble_server_stop();
-
-// Runs the BLE server. Blocking
-void npits_ble_server_run();
 
 #endif
