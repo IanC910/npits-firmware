@@ -7,7 +7,6 @@
 #include "../common/time_tools.h"
 #include "../devices/MB1242.h"
 #include "../db/near_pass_db.h"
-#include "../connection_params.h"
 
 #include "near_pass_detection_params.h"
 #include "near_pass_detection_types.h"
