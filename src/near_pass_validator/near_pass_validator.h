@@ -1,7 +1,7 @@
 #ifndef NEAR_PASS_VALIDATOR_H
 #define NEAR_PASS_VALIDATOR_H
 
-#include "OPS243.h"
+#include "../devices/OPS243.h"
 
 #define MINIMUM_SPEED_THRESHOLD 6 //
 #define MINIMUM_RANGE_THRESHOLD 2.5 //

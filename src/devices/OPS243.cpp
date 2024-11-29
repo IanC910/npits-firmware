@@ -16,7 +16,7 @@
 #include "OPS243.h"
 
 OPS243::OPS243(const char serial_port[], int BAUD_RATE) {
-    /* Constructor: Mainly initializes the serial port for 
+    /* Constructor: Mainly initializes the serial port for
     communication with the OPS243*/
 
     serial_file = open(serial_port, O_RDWR);
@@ -182,7 +182,7 @@ void OPS243::clear_direction_control() {
     write(serial_file, cmd, sizeof(cmd));
 }
 
-/* Speed averaging allows a means of filtering for the peak speed of an object. 
+/* Speed averaging allows a means of filtering for the peak speed of an object.
 * Some objects due to slight delays in signal path will have multiple speed reports.*/
 void OPS243::enable_peak_speed_average() {
     /* Enables speed averaging of peak detected */
@@ -266,11 +266,12 @@ void read_serial_file(OPS243& obj, int* speed_magnitudes, int* range_magnitudes,
         int speed_index = 0;
         int range_index = 0;
         const char s[2] = ",";
+
         if (line_buf[1] == 'm' && line_buf[3] != 's') {
             token = strtok(line_buf, s);
 
             while (token) {
-                //printf("%s\n", token); 
+                //printf("%s\n", token);
                 if (count == 0) {
                     token = strtok(NULL, s); // Ignore the "m"
                     count++;
@@ -299,7 +300,7 @@ void read_serial_file(OPS243& obj, int* speed_magnitudes, int* range_magnitudes,
 	    printf("\n"); */
             return;
         }
-        
+
         if (line_buf[3] == 's') {
             token = strtok(line_buf, s);
 
@@ -323,11 +324,11 @@ void read_serial_file(OPS243& obj, int* speed_magnitudes, int* range_magnitudes,
         /*	
 
             printf("Magnitudes: ");
-            for(int i = 0; i < magnitude_index; i++) { 
+            for(int i = 0; i < magnitude_index; i++) {
                 printf("%d,", speed_magnitudes[i]);
             }
 
-            printf("Speeds:"); 
+            printf("Speeds:");
             for(int j = 0; j < speed_index; j++) {
                 printf("%f,", speeds[j]);
             }
