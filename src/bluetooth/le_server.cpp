@@ -253,6 +253,7 @@ static void le_server_timer_callback() {
             break;
         case SS_RL_REQUEST: {
             if(get_time_ms() - request_start_time_ms >= REQUEST_TIMEOUT_DURATION_ms) {
+                printf("RL request: Timeout\n");
                 server_state = SS_IDLE;
                 write_ctic(localnode(), CTIC_RL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
                 write_ctic(localnode(), CTIC_R_VALID, (unsigned char*)(&LOW), sizeof(LOW));
@@ -261,6 +262,7 @@ static void le_server_timer_callback() {
         }
         case SS_NPL_REQUEST: {
             if(get_time_ms() - request_start_time_ms >= REQUEST_TIMEOUT_DURATION_ms) {
+                printf("NPL request: Timeout\n");
                 server_state = SS_IDLE;
                 write_ctic(localnode(), CTIC_NPL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
                 write_ctic(localnode(), CTIC_NP_VALID, (unsigned char*)(&LOW), sizeof(LOW));
@@ -290,8 +292,7 @@ static int le_server_callback(int client_node, int operation, int ctic_index) {
             break;
         }
         case LE_TIMER: {
-            printf("LE Server: Timer\n");
-            le_server_timer_callback(client_node);
+            le_server_timer_callback();
             break;
         }
         case LE_KEYPRESS:
