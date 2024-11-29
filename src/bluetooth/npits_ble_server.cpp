@@ -86,7 +86,7 @@ static void write_near_pass_object(NearPass& near_pass) {
     write_ctic(localnode(), CTIC_NP_RIDE_ID,        (unsigned char*)(&near_pass.rideId),        0);
 }
 
-void write_callback(int ctic_index) {
+static void write_callback(int ctic_index) {
     unsigned char read_buf[16];
     int num_bytes = read_ctic(localnode(), ctic_index, read_buf, sizeof(read_buf));
     if(num_bytes == 0) {
@@ -289,7 +289,7 @@ void write_callback(int ctic_index) {
     }
 }
 
-void timer_callback() {
+static void timer_callback() {
     switch(server_state) {
         case SS_IDLE:
             break;
@@ -316,7 +316,7 @@ void timer_callback() {
     }
 }
 
-int server_callback(int client_node, int operation, int ctic_index) {
+static int server_callback(int client_node, int operation, int ctic_index) {
     switch(operation) {
         case LE_CONNECT: {
             printf("LE Server: Client Connected at node %d\n", client_node);
