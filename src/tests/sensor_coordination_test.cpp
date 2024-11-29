@@ -1,6 +1,7 @@
 #include <thread>
-#include "near_pass_validator.cpp"
-#include "near_pass_detector.cpp"
+
+#include "NearPassPredictor.cpp"
+#include "NearPassDetector.cpp"
 
 
 void le(int &ride_status) {
@@ -10,7 +11,7 @@ void le(int &ride_status) {
 void predictor(int &ride_status, int &approaching) {
 
     if (ride_status) {
-        near_pass_validator npv(serial_port, baud_rate);
+        NearPassPredictor npv(serial_port, baud_rate);
         npv.initialize_sensor();
 
         int speed_magnitudes[9];

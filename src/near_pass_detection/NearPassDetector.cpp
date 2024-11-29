@@ -10,7 +10,7 @@
 
 #include "near_pass_detector_params.h"
 #include "near_pass_detector_types.h"
-#include "near_pass_detector.h"
+#include "NearPassDetector.h"
 
 
 

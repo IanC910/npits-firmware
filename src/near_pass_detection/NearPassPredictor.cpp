@@ -11,22 +11,22 @@
 #include "near_pass_validator.h"
 #include "OPS243.h"
 
-near_pass_validator::near_pass_validator(const char serial_port[], int BAUD_RATE)
+NearPassPredictor::NearPassPredictor(const char serial_port[], int BAUD_RATE)
     : OPS243(serial_port, BAUD_RATE) {
     // Constructor initialization using OPS243
 }
 
-near_pass_validator::~near_pass_validator() {
+NearPassPredictor::~NearPassPredictor() {
     // Destructor, clean up, calling base class destructor is automatic
     this->turn_range_reporting_off();
     this->turn_speed_reporting_off();
 }
 
-void near_pass_validator::set_flag_high() {
+void NearPassPredictor::set_flag_high() {
     flag = true;
 }
 
-void near_pass_validator::initialize_sensor() {
+void NearPassPredictor::initialize_sensor() {
     set_number_of_range_reports(9);
     set_number_of_speed_reports(9);
     turn_units_output_on();
@@ -40,7 +40,7 @@ void near_pass_validator::initialize_sensor() {
     turn_speed_reporting_on();
 }
 
-bool near_pass_validator::is_vehicle_approaching(float* speed_matrix, int* magnitude_matrix) {
+bool NearPassPredictor::is_vehicle_approaching(float* speed_matrix, int* magnitude_matrix) {
     int fastest_signal = 0;
     bool ret = false;
 
@@ -58,7 +58,7 @@ bool near_pass_validator::is_vehicle_approaching(float* speed_matrix, int* magni
     return ret;
 }
 
-bool near_pass_validator::is_vehicle_in_range(float* range_matrix, int* magnitude_matrix) {
+bool NearPassPredictor::is_vehicle_in_range(float* range_matrix, int* magnitude_matrix) {
     int nearest_signal = 0;
     bool ret = true;
 

@@ -1,9 +1,11 @@
-#include "near_pass_validator.cpp"
+
 #include <iostream>
 #include <termios.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <time.h>
+
+#include "NearPassPredictor.cpp"
 
 // Function to check for keyboard 'q' press
 int kbhit() {
@@ -35,7 +37,7 @@ int main() {
     const char serial_port[] = "/dev/ttyACM0";  // Example serial port
     int baud_rate = 115200;  // Example baud rate
 
-    near_pass_validator sensor(serial_port, baud_rate);
+    NearPassPredictor sensor(serial_port, baud_rate);
 
     // Initialize the sensor with custom settings
     sensor.initialize_sensor();

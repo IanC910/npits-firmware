@@ -1,6 +1,6 @@
 
-#ifndef LE_PARAMS_H
-#define LE_PARAMS_H
+#ifndef LE_TYPES_H
+#define LE_TYPES_H
 
 enum ctic_t {
     // Generic Access Service

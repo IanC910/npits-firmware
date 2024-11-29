@@ -9,10 +9,10 @@
 #define RANGE_MAGNITUDE_THRESHOLD 300 //
 #define MAXIMUM_RANGE_VALUE 2.0
 
-class near_pass_validator : public OPS243 {
+class NearPassPredictor : public OPS243 {
     public:
-        near_pass_validator(const char serial_port[], int BAUD_RATE);
-        ~near_pass_validator();
+        NearPassPredictor(const char serial_port[], int BAUD_RATE);
+        ~NearPassPredictor();
 
         void initialize_sensor();
         void set_flag_high();

@@ -8,8 +8,8 @@
 #include "../common/time_tools.h"
 #include "../connection_params.h"
 #include "../db/near_pass_db.h"
-#include "../near_pass_detector/near_pass_detector_types.h"
-#include "../near_pass_detector/near_pass_detector.h"
+#include "../near_pass_detection/near_pass_detection_types.h"
+#include "../near_pass_detection/NearPassDetector.h"
 
 #include "btlib.h"
 #include "le_types.h"
