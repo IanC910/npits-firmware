@@ -1,27 +1,29 @@
-#ifndef NEAR_PASS_VALIDATOR_H
-#define NEAR_PASS_VALIDATOR_H
+#ifndef NEAR_PASS_PREDICTOR_H
+#define NEAR_PASS_PREDICTOR_H
 
 #include "../devices/OPS243.h"
 
-#define MINIMUM_SPEED_THRESHOLD 6 //
-#define MINIMUM_RANGE_THRESHOLD 2.5 //
-#define SPEED_MAGNITUDE_THRESHOLD 25 //
-#define RANGE_MAGNITUDE_THRESHOLD 300 //
-#define MAXIMUM_RANGE_VALUE 2.0
+class NearPassPredictor {
+public:
+    NearPassPredictor(OPS243* radar);
+    ~NearPassPredictor();
 
-class NearPassPredictor : public OPS243 {
-    public:
-        NearPassPredictor(const char serial_port[], int BAUD_RATE);
-        ~NearPassPredictor();
+    void initialize_radar();
+    
+    void update_speeds_and_ranges();
+    bool is_vehicle_approaching();
+    bool is_vehicle_in_range();
+    
+private:
+    bool flag;
 
-        void initialize_sensor();
-        void set_flag_high();
-        
-        bool is_vehicle_approaching(float* speed_matrix, int* magnitude_matrix);
-        bool is_vehicle_in_range(float* range_matrix, int* magnitude_matrix);
-        
-    private:
-        bool flag;
+    float range_m_array[OPS243::MAX_REPORTS];
+    float range_magnitude_array[OPS243::MAX_REPORTS];
+
+    float speed_mps_array[OPS243::MAX_REPORTS];
+    float speed_magnitude_array[OPS243::MAX_REPORTS];
+
+    OPS243* radar = nullptr;
 };
 
 #endif

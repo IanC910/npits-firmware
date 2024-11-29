@@ -5,7 +5,7 @@
 #include <fcntl.h>
 #include <time.h>
 
-#include "NearPassPredictor.cpp"
+#include "../near_pass_detection/NearPassPredictor.h"
 
 // Function to check for keyboard 'q' press
 int kbhit() {
@@ -34,25 +34,13 @@ int kbhit() {
 }
 
 int main() {
-    const char serial_port[] = "/dev/ttyACM0";  // Example serial port
-    int baud_rate = 115200;  // Example baud rate
-
-    NearPassPredictor sensor(serial_port, baud_rate);
+    const char RADAR_SERIAL_PORT[] = "/dev/ttyACM0";
+    OPS243 radar(RADAR_SERIAL_PORT);
+    NearPassPredictor near_pass_predictor(&radar);
 
     // Initialize the sensor with custom settings
-    sensor.initialize_sensor();
-
-    int speed_magnitudes[9];
-    int range_magnitudes[9];
-    float speeds[9];
-    float ranges[9];
+    near_pass_predictor.initialize_radar();
     
-    struct timespec now;
-    time_t seconds;
-    int milliseconds;
-    struct tm *timeinfo;
-    char time_buffer[30];
-
     while (true) {
         if (kbhit()) {
             char ch = getchar();
@@ -62,20 +50,22 @@ int main() {
             }
         }
 
-	timespec_get(&now, TIME_UTC);
-	seconds = now.tv_sec;
-	milliseconds = now.tv_sec/1000000;
-	timeinfo = localtime(&seconds);
+        struct timespec now;
+        timespec_get(&now, TIME_UTC);
+        time_t seconds = now.tv_sec;
+        int milliseconds = now.tv_sec/1000000;
+        struct tm *timeinfo = localtime(&seconds);
+        char time_buffer[30];
         strftime(time_buffer, sizeof(time_buffer), "%Y-%m-%d %H:%M:%S", timeinfo);
 
+        // Assuming read_serial_data reads sensor data and populates the arrays
+        near_pass_predictor.update_speeds_and_ranges();
 
-   	// Assuming read_serial_data reads sensor data and populates the arrays
-        read_serial_file(sensor, speed_magnitudes, range_magnitudes, speeds, ranges);
-
-	if(sensor.is_vehicle_approaching(speeds, speed_magnitudes))
-		if(sensor.is_vehicle_in_range(ranges, range_magnitudes)){
-       	       		printf("%s.%03d: A vehicle is approaching\n", time_buffer, milliseconds);
-		}
+        if(near_pass_predictor.is_vehicle_approaching()) {
+            if(near_pass_predictor.is_vehicle_in_range()){
+                printf("%s.%03d: A vehicle is approaching\n", time_buffer, milliseconds);
+            }
+        }
     }
 
     return 0;

@@ -1,4 +1,5 @@
 
+#include <stdio.h>
 #include <chrono>
 #include <string>
 #include <thread>
@@ -16,6 +17,10 @@
 
 NearPassDetector::NearPassDetector(MB1242* ultrasonic) {
     this->ultrasonic = ultrasonic;
+
+    if(ultrasonic == nullptr) {
+        printf("NearPassDetector: Warning, nultrasonic is nullptr\n");
+    }
 }
 
 int NearPassDetector::start() {

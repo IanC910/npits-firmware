@@ -11,78 +11,86 @@
 
 #include "../devices/OPS243.h"
 
+#include "near_pass_prediction_params.h"
 #include "NearPassPredictor.h"
 
-NearPassPredictor::NearPassPredictor(const char serial_port[], int BAUD_RATE)
-    : OPS243(serial_port, BAUD_RATE) {
-    // Constructor initialization using OPS243
+NearPassPredictor::NearPassPredictor(OPS243* radar) {
+    this->radar = radar;
+
+    if(radar == nullptr) {
+        printf("NearPassPredictor: Warning, radar is nullptr\n");
+    }
 }
 
 NearPassPredictor::~NearPassPredictor() {
-    // Destructor, clean up, calling base class destructor is automatic
-    this->turn_range_reporting_off();
-    this->turn_speed_reporting_off();
-}
-
-void NearPassPredictor::set_flag_high() {
-    flag = true;
-}
-
-void NearPassPredictor::initialize_sensor() {
-    set_number_of_range_reports(9);
-    set_number_of_speed_reports(9);
-    turn_units_output_on();
-    turn_fmcw_magnitude_reporting_on();
-    turn_doppler_magnitude_reporting_on();
-    set_inbound_only();
-    set_maximum_range_filter(MAXIMUM_RANGE_VALUE);
-    set_minimum_speed_filter(MINIMUM_SPEED_THRESHOLD);
-    enable_peak_speed_average();
-    turn_range_reporting_on();
-    turn_speed_reporting_on();
-}
-
-bool NearPassPredictor::is_vehicle_approaching(float* speed_matrix, int* magnitude_matrix) {
-    int fastest_signal = 0;
-    bool ret = false;
-
-    for (int i = 0; i < 9; i++) {
-        if (speed_matrix[i] != NULL && speed_matrix[i] >= MINIMUM_SPEED_THRESHOLD && speed_matrix[i] > fastest_signal)
-	{
-		speed_matrix[i] = NULL;
-            if (magnitude_matrix[i] > SPEED_MAGNITUDE_THRESHOLD) {
-                fastest_signal = i;
-                ret = true;
-            }
-	}
-	}
-
-    return ret;
-}
-
-bool NearPassPredictor::is_vehicle_in_range(float* range_matrix, int* magnitude_matrix) {
-    int nearest_signal = 0;
-    bool ret = true;
-
-    for (int i = 0; i < 9; i++) {
-        if (range_matrix[i] != NULL && range_matrix[i] >= MINIMUM_RANGE_THRESHOLD && range_matrix[i] > nearest_signal)
-            if (magnitude_matrix[i] > RANGE_MAGNITUDE_THRESHOLD) {
-                nearest_signal = i;
-                ret = true;
-            }
+    if(radar == nullptr) {
+        return;
     }
-/*
-     	    printf("Magnitudes: ");
-            for(int i = 0; i < sizeof(magnitude_matrix)/sizeof(magnitude_matrix[0]); i++) {
-                printf("%d,", magnitude_matrix[i]);
-            }
 
-            printf("Ranges:");
-            for(int j = 0; j < sizeof(range_matrix)/sizeof(range_matrix[0]); j++) {
-                printf("%f,", range_matrix[j]);
+    radar->turn_range_reporting_off();
+    radar->turn_speed_reporting_off();
+}
+
+void NearPassPredictor::initialize_radar() {
+    if(radar == nullptr) {
+        printf("NearPassPredictor: Coudn't initialize radar, radar is nullptr\n");
+        return;
+    }
+
+    radar->set_number_of_range_reports(9);
+    radar->set_number_of_speed_reports(9);
+    radar->turn_units_output_on();
+    radar->turn_fmcw_magnitude_reporting_on();
+    radar->turn_doppler_magnitude_reporting_on();
+    radar->set_inbound_only();
+    radar->set_maximum_range_filter(MAXIMUM_RANGE_VALUE);
+    radar->set_minimum_speed_filter(MINIMUM_SPEED_THRESHOLD);
+    radar->enable_peak_speed_average();
+    radar->turn_range_reporting_on();
+    radar->turn_speed_reporting_on();
+}
+
+void NearPassPredictor::update_speeds_and_ranges() {
+    if(radar == nullptr) {
+        printf("NearPassPredictor: Coudn't update, radar is nullptr\n");
+        return;
+    }
+
+    radar->read_speeds_and_ranges(
+        speed_magnitude_array,
+        range_magnitude_array,
+        speed_mps_array,
+        range_m_array
+    );
+}
+
+bool NearPassPredictor::is_vehicle_approaching() {
+    int fastest_signal_index = -1;
+
+    for (int i = 0; i < OPS243::MAX_REPORTS; i++) {
+        if (speed_mps_array[i] != 0 && speed_mps_array[i] >= MINIMUM_SPEED_THRESHOLD && speed_mps_array[i] > fastest_signal_index)
+        {
+            speed_mps_array[i] = 0;
+            if (speed_magnitude_array[i] > SPEED_MAGNITUDE_THRESHOLD) {
+                fastest_signal_index = i;
             }
-	    printf("\n");
-*/
-    return ret;
+	    }
+	}
+
+    return fastest_signal_index;
+}
+
+bool NearPassPredictor::is_vehicle_in_range() {
+    int nearest_signal_index = -1;
+
+    for (int i = 0; i < OPS243::MAX_REPORTS; i++) {
+        if (range_m_array[i] != 0 && range_m_array[i] >= MINIMUM_RANGE_THRESHOLD && range_m_array[i] > nearest_signal_index) {
+            if (range_magnitude_array[i] > RANGE_MAGNITUDE_THRESHOLD) {
+                nearest_signal_index = i;
+            }
+        }
+    }
+
+    return nearest_signal_index;
 }
 

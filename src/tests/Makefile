@@ -7,7 +7,7 @@ COMMON 				= $(wildcard ../common/*.cpp)
 DEVICES 			= $(wildcard ../devices/*.cpp)
 BLUETOOTH			= $(wildcard ../bluetooth/*.cpp)
 DB 					= $(wildcard ../db/*.cpp)
-NEAR_PASS_TRACKING 	= $(wildcard ../near_pass_tracking/*.cpp)
+NEAR_PASS_DETECTION = $(wildcard ../near_pass_detection/*.cpp)
 
 ALL_SOURCES = $(COMMON) $(DEVICES) $(BLUETOOTH) $(DB) $(NEAR_PASS_TRACKING)
 
@@ -49,5 +49,11 @@ MB1242_async_test:
 near_pass_db_test:
 	$(CCF) near_pass_db_test.cpp $(DB) -o near_pass_db_test.test -lsqlite3
 
+NearPassPredicor_test:
+	$(CCF) NearPassPredictor_test.cpp ../devices/OPS243.cpp ../near_pass_detection/NearPassPredictor.cpp -o NearPassPredictor_test.test
+
 OPS241_class_test:
 	$(CCF) OPS241_class_test.cpp ../devices/OPS241.cpp -o OPS241_class_test.test
+
+OPS243_class_test:
+	$(CCF) OPS243_class_test.cpp ../devices/OPS243.cpp -o OPS243_class_test.test

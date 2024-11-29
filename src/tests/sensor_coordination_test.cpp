@@ -12,7 +12,7 @@ void predictor(int &ride_status, int &approaching) {
 
     if (ride_status) {
         NearPassPredictor npv(serial_port, baud_rate);
-        npv.initialize_sensor();
+        npv.initialize_radar();
 
         int speed_magnitudes[9];
         int range_magnitudes[9];
@@ -33,7 +33,7 @@ void predictor(int &ride_status, int &approaching) {
 
         while (ride_status) {
             // Assuming read_serial_data reads sensor data and populates the arrays
-            read_serial_file(sensor, speed_magnitudes, range_magnitudes, speeds, ranges);
+            read_speeds_and_ranges(sensor, speed_magnitudes, range_magnitudes, speeds, ranges);
             if(sensor.is_vehicle_approaching(speeds, speed_magnitudes))
                 if(sensor.is_vehicle_in_range(ranges, range_magnitudes))
                             approaching = true;
