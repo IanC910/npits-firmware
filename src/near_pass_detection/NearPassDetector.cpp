@@ -8,23 +8,58 @@
 #include "../db/near_pass_db.h"
 #include "../connection_params.h"
 
-#include "near_pass_detector_params.h"
-#include "near_pass_detector_types.h"
+#include "near_pass_detection_params.h"
+#include "near_pass_detection_types.h"
 #include "NearPassDetector.h"
 
 
 
-enum near_pass_state_t {
-    NPS_NONE,
-    NPS_POTENTIALLY_STARTED,
-    NPS_IN_NEAR_PASS,
-    NPS_POTENTIALLY_OVER,
-};
+NearPassDetector::NearPassDetector(MB1242* ultrasonic) {
+    this->ultrasonic = ultrasonic;
+}
 
+int NearPassDetector::start() {
+    if(ultrasonic == nullptr) {
+        return 1;
+    }
 
+    if(is_ride_active) {
+        return 1;
+    }
 
-void NearPassDetector::run_near_pass_detector(int &approaching) {
-    ultrasonic.begin_sampling();
+    is_ride_active = true;
+    curr_ride_id = db_start_ride(get_time_s());
+
+    do_run_near_pass_detector = true;
+    detector_thread = new std::thread(&NearPassDetector::run, this);
+
+    return 0;
+}
+
+int NearPassDetector::stop() {
+    if(!is_ride_active) {
+        return 1;
+    }
+
+    do_run_near_pass_detector = false;
+    if(detector_thread->joinable()) {
+        detector_thread->join();
+        delete detector_thread;
+    }
+
+    db_end_ride(curr_ride_id, get_time_s());
+
+    is_ride_active = false;
+
+    return 0;
+}
+
+void NearPassDetector::run() {
+    if(ultrasonic == nullptr) {
+        return;
+    }
+
+    ultrasonic->begin_sampling();
 
     near_pass_state_t near_pass_state = NPS_NONE;
 
@@ -33,11 +68,11 @@ void NearPassDetector::run_near_pass_detector(int &approaching) {
     int min_distance_cm = MB1242_MAX_DISTANCE_cm;
 
     while(do_run_near_pass_detector) {
-        while(!ultrasonic.is_new_report_available()) {
+        while(!ultrasonic->is_new_report_available()) {
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
 
-        MB1242::report report = ultrasonic.get_latest_report();
+        MB1242::report report = ultrasonic->get_latest_report();
 
         printf("%lld: %3d cm\n",
             report.time_stamp_ms,
@@ -51,7 +86,7 @@ void NearPassDetector::run_near_pass_detector(int &approaching) {
         switch(near_pass_state) {
             case NPS_NONE: {
                 // Condition to enter a near pass
-                if(report.distance_cm <= DISTANCE_THRESHOLD_cm && approaching) {
+                if(report.distance_cm <= DISTANCE_THRESHOLD_cm) {
                     printf("Near pass detector: Near pass potentially started\n");
                     near_pass_state = NPS_POTENTIALLY_STARTED;
                     near_pass_start_time_ms = report.time_stamp_ms;
@@ -124,43 +159,7 @@ void NearPassDetector::run_near_pass_detector(int &approaching) {
         } // switch(state)
     } // while(do_run)
 
-    ultrasonic.stop_sampling();
-}
-
-NearPassDetector::NearPassDetector() :
-    ultrasonic(ULTRASONIC_I2C_DEVICE, ULTRASONIC_STATUS_GPIO_NUM)
-{}
-
-int NearPassDetector::start_ride() {
-    if(is_ride_active) {
-        return 1;
-    }
-
-    is_ride_active = true;
-    curr_ride_id = db_start_ride(get_time_s());
-
-    do_run_near_pass_detector = true;
-    detector_thread = new std::thread(&NearPassDetector::run_near_pass_detector, this);
-
-    return 0;
-}
-
-int NearPassDetector::end_ride() {
-    if(!is_ride_active) {
-        return 1;
-    }
-
-    do_run_near_pass_detector = false;
-    if(detector_thread->joinable()) {
-        detector_thread->join();
-        delete detector_thread;
-    }
-
-    db_end_ride(curr_ride_id, get_time_s());
-
-    is_ride_active = false;
-
-    return 0;
+    ultrasonic->stop_sampling();
 }
 
 bool NearPassDetector::get_is_ride_active() {

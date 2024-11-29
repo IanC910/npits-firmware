@@ -1,6 +1,6 @@
 
-#ifndef LE_TYPES_H
-#define LE_TYPES_H
+#ifndef NPITS_BLE_TYPES_H
+#define NPITS_BLE_TYPES_H
 
 enum ctic_t {
     // Generic Access Service
@@ -35,6 +35,12 @@ enum ctic_t {
 enum rc_cmd_t {
     RC_CMD_NONE,
     RC_CMD_START_RIDE
+};
+
+enum server_state_t {
+    SS_IDLE,
+    SS_RL_REQUEST,
+    SS_NPL_REQUEST
 };
 
 #endif

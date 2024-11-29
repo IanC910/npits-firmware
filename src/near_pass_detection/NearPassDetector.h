@@ -9,13 +9,13 @@
 
 class NearPassDetector {
 public:
-    NearPassDetector(int &ride_status, int &approaching);
+    NearPassDetector(MB1242* ultrasonic);
 
     // Returns 0 on success, 1 if ride already active
-    int start_ride();
+    int start();
 
     // Returns 0 on success, 1 if no ride is active
-    int end_ride();
+    int stop();
 
     // Returns true if a ride is currently active, false otherwise
     bool get_is_ride_active();
@@ -28,7 +28,7 @@ private:
     bool is_ride_active = false;
     int curr_ride_id = 0;
 
-    MB1242 ultrasonic;
+    MB1242* ultrasonic = nullptr;
 
     bool do_run_near_pass_detector = false;
     std::thread* detector_thread;
@@ -36,11 +36,15 @@ private:
     double latest_latitude = 0;
     double latest_longitude = 0;
     double latest_speed_mps = 0;
+    
+    enum near_pass_state_t {
+        NPS_NONE,
+        NPS_POTENTIALLY_STARTED,
+        NPS_IN_NEAR_PASS,
+        NPS_POTENTIALLY_OVER,
+    };
 
-    void run_near_pass_detector();
-
-    int ride_status;
-    int approaching;
+    void run();
 };
 
 #endif

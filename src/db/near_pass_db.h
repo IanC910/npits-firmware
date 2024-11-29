@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "../near_pass_detector/near_pass_detector_types.h"
+#include "../near_pass_detection/near_pass_detection_types.h"
 
 // Function to open the SQLite database
 // Returns SQLITE_OK on success

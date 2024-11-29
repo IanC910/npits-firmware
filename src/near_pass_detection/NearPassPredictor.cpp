@@ -8,8 +8,10 @@
 #include <errno.h>
 #include <termios.h>
 #include <unistd.h>
-#include "near_pass_validator.h"
-#include "OPS243.h"
+
+#include "../devices/OPS243.h"
+
+#include "NearPassPredictor.h"
 
 NearPassPredictor::NearPassPredictor(const char serial_port[], int BAUD_RATE)
     : OPS243(serial_port, BAUD_RATE) {

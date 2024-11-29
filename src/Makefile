@@ -1,14 +1,12 @@
 
-CROSS_TOOL = aarch64-linux-gnu-
-
 # Sources
 COMMON 				= $(wildcard common/*.cpp)
 DEVICES 			= $(wildcard devices/*.cpp)
 BLUETOOTH			= $(wildcard bluetooth/*.cpp)
 DB 					= $(wildcard db/*.cpp)
-NEAR_PASS_DETECTOR 	= $(wildcard near_pass_detector/*.cpp)
+NEAR_PASS_DETECTION = $(wildcard near_pass_detection/*.cpp)
 
-ALL_SOURCES = $(COMMON) $(DEVICES) $(BLUETOOTH) $(DB) $(NEAR_PASS_DETECTOR)
+ALL_SOURCES = $(COMMON) $(DEVICES) $(BLUETOOTH) $(DB) $(NEAR_PASS_DETECTION)
 
 # Flags
 CFLAGS = -std=c++17 -Wmaybe-uninitialized -Wall # -g -fsanitize=address

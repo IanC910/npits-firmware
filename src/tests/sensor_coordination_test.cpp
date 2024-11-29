@@ -56,7 +56,7 @@ int main() {
     while (true) {
         while (!ride_status);
         std::thread predictor_thread(predictor, ride_status, approaching);
-        detectorobj.run_near_pass_detector(approaching);
+        detectorobj.run(approaching);
     }
 
 }
