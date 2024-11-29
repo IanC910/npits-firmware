@@ -9,9 +9,9 @@
 #include <termios.h>
 #include <unistd.h>
 #include "near_pass_validator.h"
-#include "OPS243.cpp"
+#include "OPS243.h"
 
-near_pass_validator::near_pass_validator(const char serial_port[], int BAUD_RATE) 
+near_pass_validator::near_pass_validator(const char serial_port[], int BAUD_RATE)
     : OPS243(serial_port, BAUD_RATE) {
     // Constructor initialization using OPS243
 }
@@ -49,7 +49,7 @@ bool near_pass_validator::is_vehicle_approaching(float* speed_matrix, int* magni
 	{
 		speed_matrix[i] = NULL;
             if (magnitude_matrix[i] > SPEED_MAGNITUDE_THRESHOLD) {
-                fastest_signal = i;   
+                fastest_signal = i;
                 ret = true;
             }
 	}
