@@ -51,3 +51,6 @@ near_pass_db_test:
 
 OPS241_class_test:
 	$(CCF) OPS241_class_test.cpp ../devices/OPS241.cpp -o OPS241_class_test.test
+
+time_test:
+	$(CCF) time_test.cpp $(COMMON) -o time_test.test
