@@ -39,10 +39,6 @@ void npits_ble_server_init(
     NearPassDetector* near_pass_detector,
     NearPassPredictor* near_pass_predictor
 ) {
-    if(initialized) {
-        return;
-    }
-
     s_near_pass_detector = near_pass_detector;
     s_near_pass_predictor = near_pass_predictor;
 
@@ -342,7 +338,7 @@ void npits_ble_server_run() {
         printf("LE Server: Couldn't run, not initialized\n");
         return;
     }
-    
+
     // The following 4 lines need to happen for some reason that we don't understand
     static unsigned char address[6] = {0xD3, 0x56, 0xDB, 0x24, 0xFF, 0xFF};
     set_le_random_address(address);
