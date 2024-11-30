@@ -207,19 +207,24 @@ static void le_server_write_callback(int ctic_index) {
 
     // Non state machine ctics
     switch(ctic_index) {
-        case CTIC_GPS_LATIDUDE: {
+        case CTIC_WI_LATIDUDE: {
             double latitude = *(double*)read_buf;
             near_pass_detector->set_latitude(latitude);
             break;
         }
-        case CTIC_GPS_LONGITUDE: {
+        case CTIC_WI_LONGITUDE: {
             double longitude = *(double*)read_buf;
             near_pass_detector->set_longitude(longitude);
             break;
         }
-        case CTIC_GPS_SPEED_MPS: {
+        case CTIC_WI_SPEED_MPS: {
             double speed_mps = *(double*)read_buf;
             near_pass_detector->set_speed_mps(speed_mps);
+            break;
+        }
+        case CTIC_WI_TIME: {
+            long time = *(long*)read_buf;
+            set_time_s(time);
             break;
         }
         case CTIC_RC_CMD: {

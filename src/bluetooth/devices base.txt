@@ -8,25 +8,26 @@ DEVICE = NPITS      TYPE = MESH     NODE = 1    ADDRESS = <BT_MAC_ADDRESS>
         LECHAR = RL Request         PERMIT = 16     SIZE = 04   UUID = 1401 ; Both write
         LECHAR = R Valid            PERMIT = 16     SIZE = 04   UUID = 1402 ; Both write
         LECHAR = R ID               PERMIT = 12     SIZE = 04   UUID = 1410 ; Pi writes
-        LECHAR = R Start Time       PERMIT = 12     SIZE = 16   UUID = 1411 ; Pi writes
-        LECHAR = R End Time         PERMIT = 12     SIZE = 16   UUID = 1412 ; Pi writes
+        LECHAR = R Start Time       PERMIT = 12     SIZE = 08   UUID = 1411 ; Pi writes
+        LECHAR = R End Time         PERMIT = 12     SIZE = 08   UUID = 1412 ; Pi writes
 
     ; Get Near Pass List
     PRIMARY_SERVICE = 2000
         LECHAR = NPL Request        PERMIT = 16     SIZE = 04   UUID = 2001 ; Both write
         LECHAR = NP Valid           PERMIT = 16     SIZE = 04   UUID = 2002 ; Both write
-        LECHAR = NP Time            PERMIT = 12     SIZE = 16   UUID = 2010 ; Pi writes
+        LECHAR = NP Time            PERMIT = 12     SIZE = 08   UUID = 2010 ; Pi writes
         LECHAR = NP Distance cm     PERMIT = 12     SIZE = 04   UUID = 2011 ; Pi writes
-        LECHAR = NP Speed mps       PERMIT = 12     SIZE = 16   UUID = 2012 ; Pi writes
-        LECHAR = NP Latitude        PERMIT = 12     SIZE = 16   UUID = 2013 ; Pi writes
-        LECHAR = NP Longitude       PERMIT = 12     SIZE = 16   UUID = 2014 ; Pi writes
+        LECHAR = NP Speed mps       PERMIT = 12     SIZE = 08   UUID = 2012 ; Pi writes
+        LECHAR = NP Latitude        PERMIT = 12     SIZE = 08   UUID = 2013 ; Pi writes
+        LECHAR = NP Longitude       PERMIT = 12     SIZE = 08   UUID = 2014 ; Pi writes
         LECHAR = NP Ride ID         PERMIT = 12     SIZE = 04   UUID = 2015 ; Pi Writes
 
-    ; Give GPS Coords
+    ; Give World Info
     PRIMARY_SERVICE = 2100
-        LECHAR = GPS Latitude       PERMIT = 14     SIZE = 16   UUID = 2110 ; Phone writes
-        LECHAR = GPS Longitude      PERMIT = 14     SIZE = 16   UUID = 2111 ; Phone writes
-        LECHAR = GPS Speed mps      PERMIT = 14     SIZE = 16   UUID = 2112 ; Phone writes
+        LECHAR = WI Latitude       PERMIT = 14     SIZE = 08   UUID = 2110 ; Phone writes
+        LECHAR = WI Longitude      PERMIT = 14     SIZE = 08   UUID = 2111 ; Phone writes
+        LECHAR = WI Speed mps      PERMIT = 14     SIZE = 08   UUID = 2112 ; Phone writes
+        LECHAR = WI Time           PERMIT = 14     SIZE = 08   UUID = 2113 ; Phone writes
 
     ; Ride Control
     PRIMARY_SERVICE = 2200
