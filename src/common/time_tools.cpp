@@ -5,16 +5,16 @@
 #include "time_tools.h"
 
 // Corrective offset added to all get time functions
-static time_t time_s_offset = 0;
+static time_t global_time_offset_s = 0;
 
 void set_time_s(time_t time_s) {
-    time_s_offset = time_s - get_time_s();
+    global_time_offset_s = time_s - get_time_s();
 }
 
 struct timespec get_timespec() {
     struct timespec now;
     timespec_get(&now, TIME_UTC);
-    now.tv_sec += time_s_offset;
+    now.tv_sec += global_time_offset_s;
     return now;
 }
 
