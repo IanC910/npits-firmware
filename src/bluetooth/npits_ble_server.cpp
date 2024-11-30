@@ -252,12 +252,23 @@ static void write_callback(int ctic_index) {
             switch(rc_cmd) {
                 case RC_CMD_START_RIDE:
                     printf("LE Server: Start ride\n");
+
+                    db_start_ride();
+
+                    if(s_near_pass_predictor != nullptr) {
+                        s_near_pass_predictor->start();
+                    }
+                    else {
+                        printf("LE Server: Warning, no predictor active\n");
+                    }
+
                     if(s_near_pass_detector != nullptr) {
                         s_near_pass_detector->start();
                     }
                     else {
                         printf("LE Server: Warning, no detector active\n");
                     }
+
                     break;
 
                 case RC_CMD_NONE:
@@ -265,6 +276,12 @@ static void write_callback(int ctic_index) {
                     if(s_near_pass_detector != nullptr) {
                         s_near_pass_detector->stop();
                     }
+                    if(s_near_pass_predictor != nullptr) {
+                        s_near_pass_predictor->stop();
+                    }
+
+                    db_end_ride();
+
                     break;
 
                 default:

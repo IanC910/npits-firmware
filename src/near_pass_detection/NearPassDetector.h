@@ -26,8 +26,6 @@ public:
     void set_speed_mps(double speed_mps);
 
 private:
-    int curr_ride_id = 0;
-
     MB1242* ultrasonic = nullptr;
 
     bool do_run = false;

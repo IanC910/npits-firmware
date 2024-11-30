@@ -35,8 +35,6 @@ int NearPassDetector::start() {
         return 1;
     }
 
-    curr_ride_id = db_start_ride(get_time_s());
-
     do_run = true;
     detector_thread = new std::thread(&NearPassDetector::run, this);
 
@@ -54,8 +52,6 @@ int NearPassDetector::stop() {
         delete detector_thread;
         detector_thread = nullptr;
     }
-
-    db_end_ride(curr_ride_id, get_time_s());
 
     return 0;
 }
@@ -162,7 +158,7 @@ void NearPassDetector::run() {
                             near_pass.speed_mps     = latest_speed_mps;
                             near_pass.latitude      = latest_latitude;
                             near_pass.longitude     = latest_longitude;
-                            near_pass.rideId        = curr_ride_id;
+                            near_pass.rideId        = db_get_current_ride_id();
 
                             db_insert_near_pass(near_pass);
                         }
