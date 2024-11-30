@@ -27,7 +27,7 @@ DEVICE = NPITS      TYPE = MESH     NODE = 1    ADDRESS = <BT_MAC_ADDRESS>
         LECHAR = WI Latitude       PERMIT = 14     SIZE = 08   UUID = 2110 ; Phone writes
         LECHAR = WI Longitude      PERMIT = 14     SIZE = 08   UUID = 2111 ; Phone writes
         LECHAR = WI Speed mps      PERMIT = 14     SIZE = 08   UUID = 2112 ; Phone writes
-        LECAHR = WI Time           PERMIT = 14     SIZE = 08   UUID = 2113 ; Phone writes
+        LECHAR = WI Time           PERMIT = 14     SIZE = 08   UUID = 2113 ; Phone writes
 
     ; Ride Control
     PRIMARY_SERVICE = 2200
