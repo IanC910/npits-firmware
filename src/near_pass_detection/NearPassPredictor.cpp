@@ -35,8 +35,6 @@ int NearPassPredictor::start() {
         return 1;
     }
 
-    initialize_radar();
-
     do_run = true;
     predictor_thread = new std::thread(&NearPassPredictor::run, this);
 
