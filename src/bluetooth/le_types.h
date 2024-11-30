@@ -23,10 +23,11 @@ enum ctic_t {
     CTIC_NP_LONGITUDE,
     CTIC_NP_RIDE_ID,
 
-    // Give GPS Coords Service
-    CTIC_GPS_LATIDUDE,
-    CTIC_GPS_LONGITUDE,
-    CTIC_GPS_SPEED_MPS,
+    // Give World Info Service
+    CTIC_WI_LATIDUDE,
+    CTIC_WI_LONGITUDE,
+    CTIC_WI_SPEED_MPS,
+    CTIC_WI_TIME,
 
     // Ride Control Service
     CTIC_RC_CMD

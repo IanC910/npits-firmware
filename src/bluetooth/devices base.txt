@@ -22,11 +22,12 @@ DEVICE = NPITS      TYPE = MESH     NODE = 1    ADDRESS = <BT_MAC_ADDRESS>
         LECHAR = NP Longitude       PERMIT = 12     SIZE = 08   UUID = 2014 ; Pi writes
         LECHAR = NP Ride ID         PERMIT = 12     SIZE = 04   UUID = 2015 ; Pi Writes
 
-    ; Give GPS Coords
+    ; Give World Info
     PRIMARY_SERVICE = 2100
-        LECHAR = GPS Latitude       PERMIT = 14     SIZE = 08   UUID = 2110 ; Phone writes
-        LECHAR = GPS Longitude      PERMIT = 14     SIZE = 08   UUID = 2111 ; Phone writes
-        LECHAR = GPS Speed mps      PERMIT = 14     SIZE = 08   UUID = 2112 ; Phone writes
+        LECHAR = WI Latitude       PERMIT = 14     SIZE = 08   UUID = 2110 ; Phone writes
+        LECHAR = WI Longitude      PERMIT = 14     SIZE = 08   UUID = 2111 ; Phone writes
+        LECHAR = WI Speed mps      PERMIT = 14     SIZE = 08   UUID = 2112 ; Phone writes
+        LECAHR = WI Time           PERMIT = 14     SIZE = 08   UUID = 2113 ; Phone writes
 
     ; Ride Control
     PRIMARY_SERVICE = 2200
