@@ -108,7 +108,7 @@ bool NearPassPredictor::is_vehicle_approaching() {
 	    }
 	}
 
-    return fastest_signal_index;
+    return fastest_signal_index != -1;
 }
 
 bool NearPassPredictor::is_vehicle_in_range() {
@@ -122,7 +122,7 @@ bool NearPassPredictor::is_vehicle_in_range() {
         }
     }
 
-    return nearest_signal_index;
+    return nearest_signal_index != -1;
 }
 
 void NearPassPredictor::run() {
