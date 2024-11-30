@@ -162,6 +162,7 @@ void NearPassDetector::run() {
                             near_pass.speed_mps     = latest_speed_mps;
                             near_pass.latitude      = latest_latitude;
                             near_pass.longitude     = latest_longitude;
+                            near_pass.rideId        = curr_ride_id;
 
                             db_insert_near_pass(near_pass);
                         }
