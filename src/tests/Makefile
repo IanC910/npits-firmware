@@ -57,3 +57,6 @@ OPS241_class_test:
 
 OPS243_class_test:
 	$(CCF) OPS243_class_test.cpp ../devices/OPS243.cpp -o OPS243_class_test.test
+
+time_test:
+	$(CCF) time_test.cpp $(COMMON) -o time_test.test

@@ -240,6 +240,12 @@ static void write_callback(int ctic_index) {
             }
             break;
         }
+        case CTIC_GPS_TIME: {
+            long time = *(long*)read_buf;
+            set_time_s(time);
+            break;
+        }
+
         case CTIC_RC_CMD: {
             rc_cmd_t rc_cmd = *(rc_cmd_t*)read_buf;
 
