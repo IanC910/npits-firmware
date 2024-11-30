@@ -49,8 +49,8 @@ MB1242_async_test:
 near_pass_db_test:
 	$(CCF) near_pass_db_test.cpp $(DB) -o near_pass_db_test.test -lsqlite3
 
-NearPassPredicor_test:
-	$(CCF) NearPassPredictor_test.cpp ../devices/OPS243.cpp ../near_pass_detection/NearPassPredictor.cpp -o NearPassPredictor_test.test
+NearPassPredictor_class_test:
+	$(CCF) NearPassPredictor_class_test.cpp ../devices/OPS243.cpp ../near_pass_detection/NearPassPredictor.cpp -o NearPassPredictor_class_test.test
 
 OPS241_class_test:
 	$(CCF) OPS241_class_test.cpp ../devices/OPS241.cpp -o OPS241_class_test.test
