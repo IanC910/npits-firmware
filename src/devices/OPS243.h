@@ -1,13 +1,15 @@
 #ifndef OPS243_H
 #define OPS243_H
 
+#include <string>
+
 class OPS243 {
 public:
     static const int REPORT_RATE_HZ = 14;
     static const int SERIAL_BAUD_RATE = 115200;
     static const int MAX_REPORTS = 9;
 
-    OPS243(const char serial_port[]);
+    OPS243(const std::string serial_port);
     ~OPS243();
 
     int get_module_info(char* module_info, int length);
@@ -38,7 +40,7 @@ public:
 
     void turn_range_reporting_on();
     void turn_range_reporting_off();
-    
+
     void turn_speed_reporting_on();
     void turn_speed_reporting_off();
 
@@ -56,12 +58,12 @@ public:
 
     void turn_binary_output_on();
     void turn_binary_output_off();
-   
+
     void turn_JSON_output_on();
     void turn_JSON_output_off();
 
     void turn_units_output_on();
-    void turn_units_output_off(); 
+    void turn_units_output_off();
 private:
     int serial_file;
 };

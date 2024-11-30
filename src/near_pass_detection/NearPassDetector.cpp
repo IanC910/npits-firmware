@@ -18,8 +18,12 @@ NearPassDetector::NearPassDetector(MB1242* ultrasonic) {
     this->ultrasonic = ultrasonic;
 
     if(ultrasonic == nullptr) {
-        printf("NearPassDetector: Warning, nultrasonic is nullptr\n");
+        printf("NearPassDetector: Warning, ultrasonic is nullptr\n");
     }
+}
+
+NearPassDetector::~NearPassDetector() {
+    stop();
 }
 
 int NearPassDetector::start() {
@@ -27,39 +31,54 @@ int NearPassDetector::start() {
         return 1;
     }
 
-    if(is_ride_active) {
+    if(is_active()) {
         return 1;
     }
 
-    is_ride_active = true;
     curr_ride_id = db_start_ride(get_time_s());
 
-    do_run_near_pass_detector = true;
+    do_run = true;
     detector_thread = new std::thread(&NearPassDetector::run, this);
 
     return 0;
 }
 
 int NearPassDetector::stop() {
-    if(!is_ride_active) {
+    if(!is_active()) {
         return 1;
     }
 
-    do_run_near_pass_detector = false;
+    do_run = false;
     if(detector_thread->joinable()) {
         detector_thread->join();
         delete detector_thread;
+        detector_thread = nullptr;
     }
 
     db_end_ride(curr_ride_id, get_time_s());
 
-    is_ride_active = false;
-
     return 0;
+}
+
+bool NearPassDetector::is_active() {
+    return (detector_thread != nullptr);
+}
+
+void NearPassDetector::set_latitude(double latitude) {
+    latest_latitude = latitude;
+}
+
+void NearPassDetector::set_longitude(double longitude) {
+    latest_longitude = longitude;
+}
+
+void NearPassDetector::set_speed_mps(double speed_mps) {
+    latest_speed_mps = speed_mps;
 }
 
 void NearPassDetector::run() {
     if(ultrasonic == nullptr) {
+        printf("NearPassDetector: Couldn't run, ultrasonic is nullptr\n");
         return;
     }
 
@@ -71,7 +90,7 @@ void NearPassDetector::run() {
     long long near_pass_end_time_ms = 0;
     int min_distance_cm = MB1242_MAX_DISTANCE_cm;
 
-    while(do_run_near_pass_detector) {
+    while(do_run) {
         while(!ultrasonic->is_new_report_available()) {
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
@@ -164,20 +183,4 @@ void NearPassDetector::run() {
     } // while(do_run)
 
     ultrasonic->stop_sampling();
-}
-
-bool NearPassDetector::get_is_ride_active() {
-    return is_ride_active;
-}
-
-void NearPassDetector::set_latitude(double latitude) {
-    latest_latitude = latitude;
-}
-
-void NearPassDetector::set_longitude(double longitude) {
-    latest_longitude = longitude;
-}
-
-void NearPassDetector::set_speed_mps(double speed_mps) {
-    latest_speed_mps = speed_mps;
 }

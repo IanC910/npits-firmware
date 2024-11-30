@@ -15,11 +15,11 @@
 
 #include "OPS243.h"
 
-OPS243::OPS243(const char serial_port[]) {
+OPS243::OPS243(const std::string serial_port) {
     /* Constructor: Mainly initializes the serial port for
     communication with the OPS243*/
 
-    serial_file = open(serial_port, O_RDWR);
+    serial_file = open(serial_port.c_str(), O_RDWR);
 
     struct termios tty;
 
