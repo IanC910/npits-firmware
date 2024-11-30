@@ -3,6 +3,7 @@
 #include "NearPassPredictor.cpp"
 #include "NearPassDetector.cpp"
 
+// WARNING: Needs a rewrite to reflect current module structure
 
 void le(int &ride_status) {
     le_server_run(ride_status);
@@ -18,7 +19,7 @@ void predictor(int &ride_status, int &approaching) {
         int range_magnitudes[9];
         float speeds[9];
         float ranges[9];
-        
+
         struct timespec now;
         time_t seconds;
         int milliseconds;
@@ -37,7 +38,7 @@ void predictor(int &ride_status, int &approaching) {
             if(sensor.is_vehicle_approaching(speeds, speed_magnitudes))
                 if(sensor.is_vehicle_in_range(ranges, range_magnitudes))
                             approaching = true;
-                
+
         }
     }
 
@@ -50,7 +51,7 @@ int main() {
     int approaching false;
 
     NearPassDetector detectorobj;
-    
+
     // std::thread le_server_thread(le, &ride_status);
 
     while (true) {
