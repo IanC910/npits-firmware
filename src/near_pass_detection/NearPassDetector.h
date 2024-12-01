@@ -18,6 +18,9 @@ public:
     // Returns 0 on success, 1 if no ride is active
     int stop();
 
+    // Runs the detector in a loop until stop() is called. Blocking
+    void run();
+
     // Returns true if a ride is currently active, false otherwise
     bool is_active();
 
@@ -41,8 +44,6 @@ private:
         NPS_IN_NEAR_PASS,
         NPS_POTENTIALLY_OVER,
     };
-
-    void run();
 };
 
 #endif

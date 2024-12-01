@@ -31,18 +31,17 @@ int NearPassPredictor::start() {
         return 1;
     }
 
-    if(is_active()) {
+    if(predictor_thread != nullptr) {
         return 1;
     }
 
-    do_run = true;
     predictor_thread = new std::thread(&NearPassPredictor::run, this);
 
     return 0;
 }
 
 int NearPassPredictor::stop() {
-    if(!is_active()) {
+    if(predictor_thread == nullptr) {
         return 1;
     }
 
@@ -54,6 +53,27 @@ int NearPassPredictor::stop() {
     }
 
     return 0;
+}
+
+void NearPassPredictor::run() {
+    if(radar == nullptr) {
+        printf("NearPassPredictor: Couldn't run, radar is nullptr\n");
+        return;
+    }
+
+    initialize_radar();
+
+    do_run = true;
+    while(do_run) {
+        update_speeds_and_ranges();
+
+        if(is_vehicle_approaching() && is_vehicle_in_range()) {
+            printf("NearPassPredictor: Prediction!\n");
+        }
+    }
+
+    radar->turn_range_reporting_off();
+    radar->turn_speed_reporting_off();
 }
 
 bool NearPassPredictor::is_active() {
@@ -121,26 +141,6 @@ bool NearPassPredictor::is_vehicle_in_range() {
     }
 
     return nearest_signal_index != -1;
-}
-
-void NearPassPredictor::run() {
-    if(radar == nullptr) {
-        printf("NearPassPredictor: Couldn't run, radar is nullptr\n");
-        return;
-    }
-
-    initialize_radar();
-
-    while(do_run) {
-        update_speeds_and_ranges();
-
-        if(is_vehicle_approaching() && is_vehicle_in_range()) {
-            printf("NearPassPredictor: Prediction!\n");
-        }
-    }
-
-    radar->turn_range_reporting_off();
-    radar->turn_speed_reporting_off();
 }
 
 

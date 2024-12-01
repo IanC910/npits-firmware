@@ -15,6 +15,9 @@ public:
 
     int stop();
 
+    // Runs the predictor in a loop until stop() is called. Blocking
+    void run();
+
     bool is_active();
 
     // Direct control
@@ -36,8 +39,6 @@ private:
 
     bool do_run = false;
     std::thread* predictor_thread = nullptr;
-
-    void run();
 };
 
 #endif
