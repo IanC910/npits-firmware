@@ -7,8 +7,8 @@
 #include "../devices/MB1242.h"
 #include "../devices/OPS243.h"
 
-#include "NearPassPredictor.cpp"
-#include "NearPassDetector.cpp"
+#include "../near_pass_prediction/NearPassPredictor.h"
+#include "../near_pass_prediction/NearPassDetector.h"
 
 
 int main() {
