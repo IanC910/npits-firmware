@@ -1,63 +1,26 @@
+
+#include <string>
 #include <thread>
+
+#include "../connection_params.h"
+
+#include "../devices/MB1242.h"
+#include "../devices/OPS243.h"
 
 #include "NearPassPredictor.cpp"
 #include "NearPassDetector.cpp"
 
-// WARNING: Needs a rewrite to reflect current module structure
-
-void le(int &ride_status) {
-    le_server_run(ride_status);
-};
-
-void predictor(int &ride_status, int &approaching) {
-
-    if (ride_status) {
-        NearPassPredictor npv(serial_port, baud_rate);
-        npv.initialize_radar();
-
-        int speed_magnitudes[9];
-        int range_magnitudes[9];
-        float speeds[9];
-        float ranges[9];
-
-        struct timespec now;
-        time_t seconds;
-        int milliseconds;
-        struct tm *timeinfo;
-        char time_buffer[30];
-
-        timespec_get(&now, TIME_UTC);
-        seconds = now.tv_sec;
-        milliseconds = now.tv_sec/1000000;
-        timeinfo = localtime(&seconds);
-        strftime(time_buffer, sizeof(time_buffer), "%Y-%m-%d %H:%M:%S", timeinfo);
-
-        while (ride_status) {
-            // Assuming read_serial_data reads sensor data and populates the arrays
-            read_speeds_and_ranges(sensor, speed_magnitudes, range_magnitudes, speeds, ranges);
-            if(sensor.is_vehicle_approaching(speeds, speed_magnitudes))
-                if(sensor.is_vehicle_in_range(ranges, range_magnitudes))
-                            approaching = true;
-
-        }
-    }
-
-};
-
 
 int main() {
+    MB1242 ultrasonic(ULTRASONIC_I2C_DEVICE, ULTRASONIC_STATUS_GPIO_NUM);
+    OPS243 radar(RADAR_SERIAL_PORT);
 
-    int ride_status = true;
-    int approaching false;
+    NearPassDetector near_pass_detector(&ultrasonic);
+    NearPassPredictor near_pass_predictor(&radar);
 
-    NearPassDetector detectorobj;
+    // Start this one asynchronously on its own thread
+    near_pass_predictor.start();
 
-    // std::thread le_server_thread(le, &ride_status);
-
-    while (true) {
-        while (!ride_status);
-        std::thread predictor_thread(predictor, ride_status, approaching);
-        detectorobj.run(approaching);
-    }
-
+    // Run this one here, blocking. No stop condition except ctrl+c
+    near_pass_detector.run();
 }
