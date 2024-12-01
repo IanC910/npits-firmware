@@ -7,11 +7,9 @@
 #include "log.h"
 
 void log(std::string tag, std::string message) {
-    std::cout <<
-        get_timestamp_hms() <<
-        " [" <<
-        tag <<
-        "] " <<
-        message <<
-        std::endl;
+    printf("%s [%s] %s\n",
+        get_timestamp_hms().c_str(),
+        tag.c_str(),
+        message.c_str()
+    );
 }

@@ -3,21 +3,16 @@
 #include <string>
 
 #include "../common/time_tools.h"
+#include "../common/log.h"
 
 int main() {
-    printf("Now: %ld\n", get_time_s());
-    printf("%s\n", get_timestamp_hms().c_str());
+    log("time_test", "Now: " + std::to_string((int)get_time_s()));
     sleep_s(2);
-    printf("2s later: %ld\n", get_time_s());
-    printf("%s\n", get_timestamp_hms().c_str());
+    log("time_test", "2s later: " + std::to_string(get_time_s()));
 
     set_time_s(0);
 
-    printf("Now: %ld\n", get_time_s());
-    printf("%s\n", get_timestamp_hms().c_str());
+    log("time_test", "Now: " + std::to_string((int)get_time_s()));
     sleep_s(2);
-    printf("2s later: %ld\n", get_time_s());
-    printf("%s\n", get_timestamp_hms().c_str());
-
-
+    log("time_test", "2s later: " + std::to_string(get_time_s()));
 }
