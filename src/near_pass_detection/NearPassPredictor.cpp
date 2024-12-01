@@ -9,6 +9,8 @@
 #include <termios.h>
 #include <unistd.h>
 
+#include "../common/log.h"
+
 #include "../devices/OPS243.h"
 
 #include "near_pass_prediction_params.h"
@@ -18,7 +20,7 @@ NearPassPredictor::NearPassPredictor(OPS243* radar) {
     this->radar = radar;
 
     if(radar == nullptr) {
-        printf("NearPassPredictor: Warning, radar is nullptr\n");
+        log("NearPassPredictor", "Warning, radar is nullptr");
     }
 }
 
@@ -57,7 +59,7 @@ int NearPassPredictor::stop() {
 
 void NearPassPredictor::run() {
     if(radar == nullptr) {
-        printf("NearPassPredictor: Couldn't run, radar is nullptr\n");
+        log("NearPassPredictor", "Couldn't run, radar is nullptr");
         return;
     }
 
@@ -68,7 +70,7 @@ void NearPassPredictor::run() {
         update_speeds_and_ranges();
 
         if(is_vehicle_approaching() && is_vehicle_in_range()) {
-            printf("NearPassPredictor: Prediction!\n");
+            log("NearPassPredictor", "Vehicle approaching");
         }
     }
 
@@ -82,7 +84,7 @@ bool NearPassPredictor::is_active() {
 
 void NearPassPredictor::initialize_radar() {
     if(radar == nullptr) {
-        printf("NearPassPredictor: Coudn't initialize radar, radar is nullptr\n");
+        log("NearPassPredictor", "Coudn't initialize radar, radar is nullptr");
         return;
     }
 
@@ -101,7 +103,7 @@ void NearPassPredictor::initialize_radar() {
 
 void NearPassPredictor::update_speeds_and_ranges() {
     if(radar == nullptr) {
-        printf("NearPassPredictor: Coudn't update, radar is nullptr\n");
+        log("NearPassPredictor", "Coudn't update, radar is nullptr");
         return;
     }
 

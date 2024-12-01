@@ -6,10 +6,11 @@
 #include <thread>
 
 #include "../devices/MB1242.h"
+#include "NearPassPredictor.h"
 
 class NearPassDetector {
 public:
-    NearPassDetector(MB1242* ultrasonic);
+    NearPassDetector(MB1242* ultrasonic, NearPassPredictor* near_pass_predictor);
     ~NearPassDetector();
 
     // Returns 0 on success, 1 if ride already active
@@ -30,6 +31,7 @@ public:
 
 private:
     MB1242* ultrasonic = nullptr;
+    NearPassPredictor* near_pass_predictor = nullptr;
 
     bool do_run = false;
     std::thread* detector_thread = nullptr;

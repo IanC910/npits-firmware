@@ -12,11 +12,11 @@
 
 
 int main() {
-    MB1242 ultrasonic(ULTRASONIC_I2C_DEVICE, ULTRASONIC_STATUS_GPIO_NUM);
     OPS243 radar(RADAR_SERIAL_PORT);
+    MB1242 ultrasonic(ULTRASONIC_I2C_DEVICE, ULTRASONIC_STATUS_GPIO_NUM);
 
-    NearPassDetector near_pass_detector(&ultrasonic);
     NearPassPredictor near_pass_predictor(&radar);
+    NearPassDetector near_pass_detector(&ultrasonic, &near_pass_predictor);
 
     // Start this one asynchronously on its own thread
     near_pass_predictor.start();

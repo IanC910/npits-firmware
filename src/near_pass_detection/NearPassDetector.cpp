@@ -5,6 +5,7 @@
 #include <thread>
 
 #include "../common/time_tools.h"
+#include "../common/log.h"
 #include "../devices/MB1242.h"
 #include "../db/near_pass_db.h"
 
@@ -14,11 +15,16 @@
 
 
 
-NearPassDetector::NearPassDetector(MB1242* ultrasonic) {
+NearPassDetector::NearPassDetector(MB1242* ultrasonic, NearPassPredictor* near_pass_predictor) {
     this->ultrasonic = ultrasonic;
+    this->near_pass_predictor = near_pass_predictor;
 
     if(ultrasonic == nullptr) {
-        printf("NearPassDetector: Warning, ultrasonic is nullptr\n");
+        log("NearPassDetector", "Warning, ultrasonic is nullptr");
+    }
+
+    if(near_pass_predictor == nullptr) {
+        log("NearPassDetector", "Warning, near pass predictor is nullptr");
     }
 }
 
@@ -57,7 +63,7 @@ int NearPassDetector::stop() {
 
 void NearPassDetector::run() {
     if(ultrasonic == nullptr) {
-        printf("NearPassDetector: Couldn't run, ultrasonic is nullptr\n");
+        log("NearPassDetector", "Couldn't run, ultrasonic is nullptr");
         return;
     }
 
@@ -86,11 +92,13 @@ void NearPassDetector::run() {
             min_distance_cm = report.distance_cm;
         }
 
+        // TODO: Figure out where to check for the prediction flag
+
         switch(near_pass_state) {
             case NPS_NONE: {
                 // Condition to enter a near pass
                 if(report.distance_cm <= DISTANCE_THRESHOLD_cm) {
-                    printf("Near pass detector: Near pass potentially started\n");
+                    log("NearPassDetector", "Near pass potentially started");
                     near_pass_state = NPS_POTENTIALLY_STARTED;
                     near_pass_start_time_ms = report.time_stamp_ms;
                 }
@@ -101,13 +109,13 @@ void NearPassDetector::run() {
                 if(report.distance_cm <= DISTANCE_THRESHOLD_cm) {
                     int current_duration_ms = report.time_stamp_ms - near_pass_start_time_ms;
                     if(current_duration_ms >= NEAR_PASS_STABILITY_DURATION_ms) {
-                        printf("Near pass detector: In near pass\n");
+                        log("Near pass detector", "In near pass");
                         near_pass_state = NPS_IN_NEAR_PASS;
                     }
                 }
                 // Else, cancel the near pass
                 else {
-                    printf("Near pass detector: Near pass entrance cancelled\n");
+                    log("Near pass detector", "Near pass entrance cancelled");
                     near_pass_state = NPS_NONE;
                 }
                 break;
@@ -115,7 +123,7 @@ void NearPassDetector::run() {
             case NPS_IN_NEAR_PASS: {
                 // Condition to exit a near pass
                 if(report.distance_cm > DISTANCE_THRESHOLD_cm) {
-                    printf("Near pass detector: Near pass potentially over\n");
+                    log("Near pass detector", "Near pass potentially over");
                     near_pass_state = NPS_POTENTIALLY_OVER;
                     near_pass_end_time_ms = report.time_stamp_ms;
                 }
@@ -126,7 +134,7 @@ void NearPassDetector::run() {
                 if(report.distance_cm > DISTANCE_THRESHOLD_cm) {
                     int current_duration_ms = report.time_stamp_ms - near_pass_end_time_ms;
                     if(current_duration_ms > NEAR_PASS_STABILITY_DURATION_ms) {
-                        printf("Near pass detector: Near pass over\n");
+                        log("Near pass detector", "Near pass over");
                         near_pass_state = NPS_NONE;
 
                         int near_pass_duration_ms = near_pass_end_time_ms - near_pass_start_time_ms;
@@ -135,7 +143,7 @@ void NearPassDetector::run() {
                         if(near_pass_duration_ms >= NEAR_PASS_MIN_DURATION_ms &&
                             near_pass_duration_ms <= NEAR_PASS_MAX_DURATION_ms
                         ) {
-                            printf("Near pass detector: Near pass valid, logging\n");
+                            log("Near pass detector", "Near pass valid, logging");
                             NearPass near_pass;
                             near_pass.time          = (long)(near_pass_start_time_ms / 1000);
                             near_pass.distance_cm   = min_distance_cm;
@@ -153,7 +161,7 @@ void NearPassDetector::run() {
                 }
                 // Else, stay in the near pass
                 else {
-                    printf("Near pass detector: Near pass exit cancelled\n");
+                    log("Near pass detector", "Near pass exit cancelled");
                     near_pass_state = NPS_IN_NEAR_PASS;
                 }
                 break;
