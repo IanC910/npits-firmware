@@ -49,14 +49,20 @@ MB1242_async_test:
 near_pass_db_test:
 	$(CCF) near_pass_db_test.cpp $(DB) -o near_pass_db_test.test -lsqlite3
 
+NearPassDetector_class_test:
+	$(CCF) NearPassDetector_class_test.cpp $(COMMON) $(DEVICES) $(NEAR_PASS_DETECTION) -o NearPassDetector_class_test.test
+
 NearPassPredictor_class_test:
-	$(CCF) NearPassPredictor_class_test.cpp ../devices/OPS243.cpp ../near_pass_detection/NearPassPredictor.cpp -o NearPassPredictor_class_test.test
+	$(CCF) NearPassPredictor_class_test.cpp $(COMMON) $(DEVICES) $(NEAR_PASS_DETECTION) -o NearPassPredictor_class_test.test
 
 OPS241_class_test:
 	$(CCF) OPS241_class_test.cpp ../devices/OPS241.cpp -o OPS241_class_test.test
 
 OPS243_class_test:
 	$(CCF) OPS243_class_test.cpp ../devices/OPS243.cpp -o OPS243_class_test.test
+
+sensor_coordination_test:
+	$(CCF) sensor_coordination_test.cpp $(COMMON) $(DEVICES) $(NEAR_PASS_DETECTION) -o sensor_coordination_test.test
 
 time_test:
 	$(CCF) time_test.cpp $(COMMON) -o time_test.test
