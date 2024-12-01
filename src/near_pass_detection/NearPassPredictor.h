@@ -7,6 +7,17 @@
 
 class NearPassPredictor {
 public:
+
+    struct speed_report_t {
+        float speed_mps;
+        float magnitude;
+    }
+
+    struct range_report_t {
+        float range_m;
+        float magnitude;
+    }
+    
     NearPassPredictor(OPS243* radar);
     ~NearPassPredictor();
 
@@ -25,6 +36,8 @@ public:
     void update_speeds_and_ranges();
     bool is_vehicle_approaching();
     bool is_vehicle_in_range();
+    speed_report_t get_speed_of_approaching_vehicle_mps();
+    range_report_t get_distance_of_highest_mag_m();
 
 private:
     bool flag;

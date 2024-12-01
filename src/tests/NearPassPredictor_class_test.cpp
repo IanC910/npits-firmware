@@ -4,7 +4,9 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <time.h>
+#include <string>
 
+#include "../common/log.h"
 #include "../near_pass_detection/NearPassPredictor.h"
 
 // Function to check for keyboard 'q' press
@@ -50,21 +52,24 @@ int main() {
             }
         }
 
-        struct timespec now;
-        timespec_get(&now, TIME_UTC);
-        time_t seconds = now.tv_sec;
-        int milliseconds = now.tv_sec/1000000;
-        struct tm *timeinfo = localtime(&seconds);
-        char time_buffer[30];
-        strftime(time_buffer, sizeof(time_buffer), "%Y-%m-%d %H:%M:%S", timeinfo);
-
-        // Assuming read_serial_data reads sensor data and populates the arrays
         near_pass_predictor.update_speeds_and_ranges();
 
         if(near_pass_predictor.is_vehicle_approaching()) {
-            if(near_pass_predictor.is_vehicle_in_range()){
-                printf("%s.%03d: A vehicle is approaching\n", time_buffer, milliseconds);
-            }
+            NearPassPredictor::speed_report_t speed_report = near_pass_predictor.get_speed_of_approaching_vehicle_mps();
+            log("Test",
+                "Vehicle approaching!" + 
+                "Speed mps: " + std::to_string(speed_report.speed_mps) +
+                "Magnitude: " + std::to_string(speed_report.magnitude)
+            );
+        }
+            
+        if(near_pass_predictor.is_vehicle_in_range()){
+            NearPassPredictor::range_report_t range_report = near_pass_predictor.get_distance_of_highest_mag_m();
+            log("Test",
+                "Vehicle in range!" + 
+                "Range m: " + std::to_string(range_report.range_m) +
+                "Magnitude: " + std::to_string(range_report.magnitude)
+            );
         }
     }
 

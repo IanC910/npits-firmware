@@ -71,7 +71,7 @@ void NearPassPredictor::run() {
     while(do_run) {
         update_speeds_and_ranges();
 
-        if(is_vehicle_approaching() && is_vehicle_in_range()) {
+        if(is_vehicle_approaching()) {
             log("NearPassPredictor", "Vehicle approaching");
         }
     }
@@ -145,6 +145,50 @@ bool NearPassPredictor::is_vehicle_in_range() {
     }
 
     return nearest_signal_index != -1;
+}
+
+speed_report_t get_speed_of_approaching_vehicle_mps() {
+    int fastest_signal_index = -1;
+
+    for (int i = 0; i < OPS243::MAX_REPORTS; i++) {
+        if (speed_mps_array[i] != 0 && speed_mps_array[i] >= MINIMUM_SPEED_THRESHOLD && speed_mps_array[i] > fastest_signal_index)
+        {
+            speed_mps_array[i] = 0;
+            if (speed_magnitude_array[i] > SPEED_MAGNITUDE_THRESHOLD) {
+                fastest_signal_index = i;
+            }
+	    }
+	}
+
+    if(fastest_signal_index == -1) {
+        return {0, 0}
+    }
+
+    speed_report_t speed_report;
+    speed_report.speed_mps = speed_mps_array[fastest_signal_index];
+    speed_report.magnitude = speed_magnitude_array[fastest_signal_index];
+    return speed_report;
+}
+
+range_report_t get_distance_of_highest_mag_m() {
+    int nearest_signal_index = -1;
+
+    for (int i = 0; i < OPS243::MAX_REPORTS; i++) {
+        if (range_m_array[i] != 0 && range_m_array[i] >= MINIMUM_RANGE_THRESHOLD && range_m_array[i] > nearest_signal_index) {
+            if (range_magnitude_array[i] > RANGE_MAGNITUDE_THRESHOLD) {
+                nearest_signal_index = i;
+            }
+        }
+    }
+
+    if(nearest_signal_index == -1) {
+        return {0, 0}
+    }
+
+    range_report_t range_report;
+    range_report.range_m = range_m_array[nearest_signal_index];
+    range_repor.magnitude = range_magnitude_array[nearest_signal_index];
+    return range_report;
 }
 
 
