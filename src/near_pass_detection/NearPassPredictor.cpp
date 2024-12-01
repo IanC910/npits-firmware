@@ -63,6 +63,8 @@ void NearPassPredictor::run() {
         return;
     }
 
+    log("NearPassPredictr", "Starting...");
+
     initialize_radar();
 
     do_run = true;

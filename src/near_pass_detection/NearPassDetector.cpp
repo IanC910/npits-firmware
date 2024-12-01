@@ -67,6 +67,8 @@ void NearPassDetector::run() {
         return;
     }
 
+    log("NearPassDetector", "Starting...");
+
     ultrasonic->begin_sampling();
 
     near_pass_state_t near_pass_state = NPS_NONE;
