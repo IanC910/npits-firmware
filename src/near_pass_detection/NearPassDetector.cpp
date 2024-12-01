@@ -84,7 +84,7 @@ void NearPassDetector::run() {
 
     long long near_pass_start_time_ms = get_time_ms();
     long long near_pass_end_time_ms = 0;
-    int min_distance_cm = MB1242_MAX_DISTANCE_cm;
+    int min_distance_cm = MB1242::MAX_DISTANCE_cm;
 
     while(do_run) {
         while(!ultrasonic->is_new_report_available()) {
@@ -164,7 +164,7 @@ void NearPassDetector::run() {
                         }
 
                         // Reset necessary params
-                        min_distance_cm = MB1242_MAX_DISTANCE_cm;
+                        min_distance_cm = MB1242::MAX_DISTANCE_cm;
                     }
                 }
                 // Else, stay in the near pass

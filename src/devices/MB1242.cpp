@@ -55,9 +55,9 @@ MB1242::report MB1242::get_latest_report() {
 // Direct Control
 
 int MB1242::initiate_distance_reading() {
-    i2c_set_address(i2c_file, MB1242_I2C_ADDRESS);
+    i2c_set_address(i2c_file, I2C_ADDRESS);
 
-    char tx_buf[] = {MB1242_TAKE_READING_CMD_ID};
+    char tx_buf[] = {TAKE_READING_CMD_ID};
     int result = i2c_write(i2c_file, tx_buf, sizeof(tx_buf));
     return result;
 }
@@ -71,7 +71,7 @@ int MB1242::update_report() {
         return -1;
     }
 
-    i2c_set_address(i2c_file, MB1242_I2C_ADDRESS);
+    i2c_set_address(i2c_file, I2C_ADDRESS);
 
     char rx_buf[2];
     int result = i2c_read(i2c_file, rx_buf, sizeof(rx_buf));

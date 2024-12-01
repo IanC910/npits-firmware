@@ -9,13 +9,15 @@
 
 
 
-const int MB1242_I2C_ADDRESS = 0x70;
-const int MB1242_TAKE_READING_CMD_ID = 81;
-
-const int MB1242_MAX_DISTANCE_cm = 765;
-
 class MB1242 {
 public:
+    static const int I2C_ADDRESS = 0x70;
+    static const int TAKE_READING_CMD_ID = 81;
+   
+    static const int MAX_DISTANCE_cm = 765;
+
+
+
     MB1242(const std::string i2c_device, int status_gpio_num);
     ~MB1242();
 
