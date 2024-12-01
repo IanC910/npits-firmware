@@ -11,13 +11,13 @@ public:
     struct speed_report_t {
         float speed_mps;
         float magnitude;
-    }
+    };
 
     struct range_report_t {
         float range_m;
         float magnitude;
-    }
-    
+    };
+
     NearPassPredictor(OPS243* radar);
     ~NearPassPredictor();
 

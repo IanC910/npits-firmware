@@ -72,7 +72,21 @@ void NearPassPredictor::run() {
         update_speeds_and_ranges();
 
         if(is_vehicle_approaching()) {
-            log("NearPassPredictor", "Vehicle approaching");
+            speed_report_t speed_report = get_speed_of_approaching_vehicle_mps();
+            log("Test",
+                std::string("Vehicle approaching! ") + 
+                std::string(" Speed mps: ") + std::to_string(speed_report.speed_mps) +
+                std::string(" Magnitude: ") + std::to_string(speed_report.magnitude)
+            );
+        }
+            
+        if(is_vehicle_in_range()){
+            range_report_t range_report = get_distance_of_highest_mag_m();
+            log("Test",
+                std::string("Vehicle in range! ") + 
+                std::string(" Range m: ") + std::to_string(range_report.range_m) +
+                std::string(" Magnitude: ") + std::to_string(range_report.magnitude)
+            );
         }
     }
 
@@ -147,7 +161,7 @@ bool NearPassPredictor::is_vehicle_in_range() {
     return nearest_signal_index != -1;
 }
 
-speed_report_t get_speed_of_approaching_vehicle_mps() {
+NearPassPredictor::speed_report_t NearPassPredictor::get_speed_of_approaching_vehicle_mps() {
     int fastest_signal_index = -1;
 
     for (int i = 0; i < OPS243::MAX_REPORTS; i++) {
@@ -161,7 +175,7 @@ speed_report_t get_speed_of_approaching_vehicle_mps() {
 	}
 
     if(fastest_signal_index == -1) {
-        return {0, 0}
+        return {0, 0};
     }
 
     speed_report_t speed_report;
@@ -170,7 +184,7 @@ speed_report_t get_speed_of_approaching_vehicle_mps() {
     return speed_report;
 }
 
-range_report_t get_distance_of_highest_mag_m() {
+NearPassPredictor::range_report_t NearPassPredictor::get_distance_of_highest_mag_m() {
     int nearest_signal_index = -1;
 
     for (int i = 0; i < OPS243::MAX_REPORTS; i++) {
@@ -182,12 +196,12 @@ range_report_t get_distance_of_highest_mag_m() {
     }
 
     if(nearest_signal_index == -1) {
-        return {0, 0}
+        return {0, 0};
     }
 
     range_report_t range_report;
     range_report.range_m = range_m_array[nearest_signal_index];
-    range_repor.magnitude = range_magnitude_array[nearest_signal_index];
+    range_report.magnitude = range_magnitude_array[nearest_signal_index];
     return range_report;
 }
 

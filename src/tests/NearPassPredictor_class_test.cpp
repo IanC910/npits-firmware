@@ -57,18 +57,18 @@ int main() {
         if(near_pass_predictor.is_vehicle_approaching()) {
             NearPassPredictor::speed_report_t speed_report = near_pass_predictor.get_speed_of_approaching_vehicle_mps();
             log("Test",
-                "Vehicle approaching!" + 
-                "Speed mps: " + std::to_string(speed_report.speed_mps) +
-                "Magnitude: " + std::to_string(speed_report.magnitude)
+                std::string("Vehicle approaching! ") + 
+                std::string(" Speed mps: ") + std::to_string(speed_report.speed_mps) +
+                std::string(" Magnitude: ") + std::to_string(speed_report.magnitude)
             );
         }
             
         if(near_pass_predictor.is_vehicle_in_range()){
             NearPassPredictor::range_report_t range_report = near_pass_predictor.get_distance_of_highest_mag_m();
             log("Test",
-                "Vehicle in range!" + 
-                "Range m: " + std::to_string(range_report.range_m) +
-                "Magnitude: " + std::to_string(range_report.magnitude)
+                std::string("Vehicle in range! ") + 
+                std::string(" Range m: ") + std::to_string(range_report.range_m) +
+                std::string(" Magnitude: ") + std::to_string(range_report.magnitude)
             );
         }
     }
