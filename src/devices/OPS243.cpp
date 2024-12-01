@@ -247,15 +247,6 @@ void OPS243::read_speeds_and_ranges(float* speed_magnitude_array, float* range_m
         line_buf_index += num_bytes_read;
     }
 
-    struct timespec now;
-    timespec_get(&now, TIME_UTC);
-    time_t seconds = now.tv_sec;
-    int milliseconds = now.tv_nsec / 1000000;
-    struct tm *timeinfo = localtime(&seconds);
-    char time_buffer[30];
-    strftime(time_buffer, sizeof(time_buffer), "%Y-%m-%d %H:%M:%S", timeinfo);
-    // printf("%s.%03d: %s\n", time_buffer, milliseconds, line_buf);
-
     const char SEPARATOR[2] = ",";
 
     // If line is a range report

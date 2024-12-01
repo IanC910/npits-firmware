@@ -109,13 +109,13 @@ void NearPassDetector::run() {
                 if(report.distance_cm <= DISTANCE_THRESHOLD_cm) {
                     int current_duration_ms = report.time_stamp_ms - near_pass_start_time_ms;
                     if(current_duration_ms >= NEAR_PASS_STABILITY_DURATION_ms) {
-                        log("Near pass detector", "In near pass");
+                        log("NearPassDetector", "In near pass");
                         near_pass_state = NPS_IN_NEAR_PASS;
                     }
                 }
                 // Else, cancel the near pass
                 else {
-                    log("Near pass detector", "Near pass entrance cancelled");
+                    log("NearPassDetector", "Near pass entrance cancelled");
                     near_pass_state = NPS_NONE;
                 }
                 break;
@@ -123,7 +123,7 @@ void NearPassDetector::run() {
             case NPS_IN_NEAR_PASS: {
                 // Condition to exit a near pass
                 if(report.distance_cm > DISTANCE_THRESHOLD_cm) {
-                    log("Near pass detector", "Near pass potentially over");
+                    log("NearPassDetector", "Near pass potentially over");
                     near_pass_state = NPS_POTENTIALLY_OVER;
                     near_pass_end_time_ms = report.time_stamp_ms;
                 }
@@ -134,7 +134,7 @@ void NearPassDetector::run() {
                 if(report.distance_cm > DISTANCE_THRESHOLD_cm) {
                     int current_duration_ms = report.time_stamp_ms - near_pass_end_time_ms;
                     if(current_duration_ms > NEAR_PASS_STABILITY_DURATION_ms) {
-                        log("Near pass detector", "Near pass over");
+                        log("NearPassDetector", "Near pass over");
                         near_pass_state = NPS_NONE;
 
                         int near_pass_duration_ms = near_pass_end_time_ms - near_pass_start_time_ms;
@@ -143,7 +143,7 @@ void NearPassDetector::run() {
                         if(near_pass_duration_ms >= NEAR_PASS_MIN_DURATION_ms &&
                             near_pass_duration_ms <= NEAR_PASS_MAX_DURATION_ms
                         ) {
-                            log("Near pass detector", "Near pass valid, logging");
+                            log("NearPassDetector", "Near pass valid, logging");
                             NearPass near_pass;
                             near_pass.time          = (long)(near_pass_start_time_ms / 1000);
                             near_pass.distance_cm   = min_distance_cm;
@@ -161,7 +161,7 @@ void NearPassDetector::run() {
                 }
                 // Else, stay in the near pass
                 else {
-                    log("Near pass detector", "Near pass exit cancelled");
+                    log("NearPassDetector", "Near pass exit cancelled");
                     near_pass_state = NPS_IN_NEAR_PASS;
                 }
                 break;
