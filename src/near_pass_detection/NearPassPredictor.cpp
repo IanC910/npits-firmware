@@ -163,7 +163,7 @@ OPS243::speed_report_t NearPassPredictor::get_speed_of_highest_mag_mps() {
     int highest_mag_index = -1;
 
     for (int i = 0; i < OPS243::MAX_REPORTS; i++) {
-        if (speed_reports[i].speed_mps != 0 && speed_reports[i].speed_mps >= MIN_SPEED_mps) {
+        if (speed_reports[i].speed_mps >= MIN_SPEED_mps) {
             if (speed_reports[i].magnitude > MIN_SPEED_MAGNITUDE && speed_reports[i].magnitude > speed_reports[highest_mag_index].magnitude) {
                 highest_mag_index = i;
             }
@@ -181,7 +181,7 @@ OPS243::range_report_t NearPassPredictor::get_range_of_highest_mag_m() {
     int highest_mag_index = -1;
 
     for (int i = 0; i < OPS243::MAX_REPORTS; i++) {
-        if (range_reports[i].range_m != 0 && range_reports[i].range_m >= MIN_RANGE_m) {
+        if (range_reports[i].range_m >= MIN_RANGE_m) {
             if (range_reports[i].magnitude > MIN_RANGE_MAGNITUDE && range_reports[i].magnitude > range_reports[highest_mag_index].magnitude) {
                 highest_mag_index = i;
             }
