@@ -2,10 +2,11 @@
 #ifndef NEAR_PASS_PREDICTION_PARAMS_H
 #define NEAR_PASS_PREDICTION_PARAMS_H
 
-const float MINIMUM_SPEED_THRESHOLD = 6;
-const float MINIMUM_RANGE_THRESHOLD = 2.5;
-const float SPEED_MAGNITUDE_THRESHOLD = 25;
-const float RANGE_MAGNITUDE_THRESHOLD = 300;
-const float MAXIMUM_RANGE_VALUE = 2.0;
+const float MIN_SPEED_mps = 6;
+const float MIN_SPEED_MAGNITUDE = 25;
+
+const float MIN_RANGE_m = 2.5;
+const float MAX_RANGE_m = 2.0;
+const float MIN_RANGE_MAGNITUDE = 300;
 
 #endif

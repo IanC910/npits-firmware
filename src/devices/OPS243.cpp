@@ -348,7 +348,7 @@ void OPS243::turn_largest_report_order_on() {
     write(serial_file, cmd, sizeof(cmd));
 }
 
-void OPS243::set_number_of_speed_reports(int number_of_reports) {
+void OPS243::set_num_speed_reports(int number_of_reports) {
     if (number_of_reports > 9 || number_of_reports < 1) {
         printf("Invalid number of reports set\n");
         return;
@@ -358,7 +358,7 @@ void OPS243::set_number_of_speed_reports(int number_of_reports) {
     write(serial_file, cmd, sizeof(cmd));
 }
 
-void OPS243::set_number_of_range_reports(int number_of_reports) {
+void OPS243::set_num_range_reports(int number_of_reports) {
     if (number_of_reports > 9 || number_of_reports < 1) {
         printf("Invalid number of reports set\n");
         return;

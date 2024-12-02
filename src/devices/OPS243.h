@@ -63,8 +63,8 @@ public:
     void turn_doppler_magnitude_reporting_off();
 
     void turn_largest_report_order_on();
-    void set_number_of_range_reports(int number_of_reports);
-    void set_number_of_speed_reports(int number_of_reports);
+    void set_num_range_reports(int number_of_reports);
+    void set_num_speed_reports(int number_of_reports);
 
     void turn_binary_output_on();
     void turn_binary_output_off();

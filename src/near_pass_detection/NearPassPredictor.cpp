@@ -9,6 +9,7 @@
 #include <termios.h>
 #include <unistd.h>
 
+#include "../time_tools.h"
 #include "../common/log.h"
 
 #include "../devices/OPS243.h"
@@ -123,14 +124,12 @@ void NearPassPredictor::initialize_radar() {
         return;
     }
 
-    radar->set_number_of_range_reports(9);
-    radar->set_number_of_speed_reports(9);
+    radar->set_num_range_reports(OPS243::MAX_REPORTS);
+    radar->set_num_speed_reports(OPS243::MAX_REPORTS);
     radar->turn_units_output_on();
     radar->turn_fmcw_magnitude_reporting_on();
     radar->turn_doppler_magnitude_reporting_on();
     radar->set_inbound_only();
-    radar->set_maximum_range_filter(MAXIMUM_RANGE_VALUE);
-    radar->set_minimum_speed_filter(MINIMUM_SPEED_THRESHOLD);
     radar->enable_peak_speed_average();
     radar->turn_range_reporting_on();
     radar->turn_speed_reporting_on();
@@ -162,8 +161,8 @@ OPS243::speed_report_t NearPassPredictor::get_speed_of_highest_mag_mps() {
     int highest_mag_index = -1;
 
     for (int i = 0; i < OPS243::MAX_REPORTS; i++) {
-        if (speed_reports[i].speed_mps != 0 && speed_reports[i].speed_mps >= MINIMUM_SPEED_THRESHOLD) {
-            if (speed_reports[i].magnitude > SPEED_MAGNITUDE_THRESHOLD && speed_reports[i].magnitude > speed_reports[highest_mag_index].magnitude) {
+        if (speed_reports[i].speed_mps != 0 && speed_reports[i].speed_mps >= MIN_SPEED_mps) {
+            if (speed_reports[i].magnitude > MIN_SPEED_MAGNITUDE && speed_reports[i].magnitude > speed_reports[highest_mag_index].magnitude) {
                 highest_mag_index = i;
             }
 	    }
@@ -180,8 +179,8 @@ OPS243::range_report_t NearPassPredictor::get_range_of_highest_mag_m() {
     int highest_mag_index = -1;
 
     for (int i = 0; i < OPS243::MAX_REPORTS; i++) {
-        if (range_reports[i].range_m != 0 && range_reports[i].range_m >= MINIMUM_RANGE_THRESHOLD) {
-            if (range_reports[i].magnitude > RANGE_MAGNITUDE_THRESHOLD && range_reports[i].magnitude > range_reports[highest_mag_index].magnitude) {
+        if (range_reports[i].range_m != 0 && range_reports[i].range_m >= MIN_RANGE_m) {
+            if (range_reports[i].magnitude > MIN_RANGE_MAGNITUDE && range_reports[i].magnitude > range_reports[highest_mag_index].magnitude) {
                 highest_mag_index = i;
             }
         }
