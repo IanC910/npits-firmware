@@ -25,7 +25,7 @@ MB1242::~MB1242() {
 // Async
 
 void MB1242::begin_sampling() {
-    if(do_run_sampler) {
+    if(do_run_sampler || i2c_file < 0) {
         return;
     }
     do_run_sampler = true;
@@ -33,13 +33,14 @@ void MB1242::begin_sampling() {
 }
 
 void MB1242::stop_sampling() {
-    if(!do_run_sampler) {
+    if(!do_run_sampler || i2c_file < 0) {
         return;
     }
     do_run_sampler = false;
     if(sampler_thread->joinable()) {
         sampler_thread->join();
         delete sampler_thread;
+        sampler_thread = nullptr;
     }
 }
 
@@ -55,6 +56,10 @@ MB1242::report MB1242::get_latest_report() {
 // Direct Control
 
 int MB1242::initiate_distance_reading() {
+    if(i2c_file < 0) {
+        return -1;
+    }
+
     i2c_set_address(i2c_file, I2C_ADDRESS);
 
     char tx_buf[] = {TAKE_READING_CMD_ID};
@@ -67,7 +72,7 @@ bool MB1242::is_reading_in_progress() {
 }
 
 int MB1242::update_report() {
-    if(is_reading_in_progress()) {
+    if(is_reading_in_progress() || i2c_file < 0) {
         return -1;
     }
 
