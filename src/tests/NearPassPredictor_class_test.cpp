@@ -42,7 +42,7 @@ int main() {
     NearPassPredictor near_pass_predictor(&radar);
 
     // Initialize the sensor with custom settings
-    near_pass_predictor.initialize_radar();
+    near_pass_predictor.config_radar();
     
     while (true) {
         if (kbhit()) {

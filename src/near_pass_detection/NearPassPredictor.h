@@ -10,7 +10,8 @@ public:
     NearPassPredictor(OPS243* radar);
     ~NearPassPredictor();
 
-    // Asynchronous control
+    // === Asynchronous control ===
+
     int start();
 
     int stop();
@@ -20,11 +21,17 @@ public:
 
     bool is_active();
 
-    // Direct control
-    void initialize_radar();
+    // === Direct control ===
+
+    // Configures radar with a preset of settings
+    void config_radar();
+
+    // Blocking
     void update_speeds_and_ranges();
+
     bool is_vehicle_approaching();
     bool is_vehicle_in_range();
+
     OPS243::speed_report_t get_speed_of_highest_mag_mps();
     OPS243::range_report_t get_range_of_highest_mag_m();
 

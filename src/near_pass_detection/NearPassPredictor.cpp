@@ -66,11 +66,11 @@ void NearPassPredictor::run() {
 
     log("NearPassPredictor", "Starting...");
 
-    initialize_radar();
+    config_radar();
 
     do_run = true;
     while(do_run) {
-        update_speeds_and_ranges();
+        update_speeds_and_ranges(); // Blocking
 
         log("NearPassPredictor", "Radar data:");
         printf("Range:     ");
@@ -108,6 +108,8 @@ void NearPassPredictor::run() {
                 std::string(" Magnitude: ") + std::to_string(range_report.magnitude)
             );
         }
+
+        sleep_ms(50);
     }
 
     radar->turn_range_reporting_off();
@@ -118,7 +120,7 @@ bool NearPassPredictor::is_active() {
     return (predictor_thread != nullptr);
 }
 
-void NearPassPredictor::initialize_radar() {
+void NearPassPredictor::config_radar() {
     if(radar == nullptr) {
         log("NearPassPredictor", "Coudn't initialize radar, radar is nullptr");
         return;
