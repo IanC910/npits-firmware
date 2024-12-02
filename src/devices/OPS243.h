@@ -9,6 +9,16 @@ public:
     static const int SERIAL_BAUD_RATE = 115200;
     static const int MAX_REPORTS = 9;
 
+    struct speed_report_t {
+        float speed_mps;
+        float magnitude;
+    };
+
+    struct range_report_t {
+        float range_m;
+        float magnitude;
+    };
+
     OPS243(const std::string serial_port);
     ~OPS243();
 
@@ -44,7 +54,7 @@ public:
     void turn_speed_reporting_on();
     void turn_speed_reporting_off();
 
-    void read_speeds_and_ranges(float* speed_magnitudes, float* range_magnitudes, float* speeds, float* ranges);
+    void read_speeds_and_ranges(range_report_t* range_reports, speed_report_t* speed_reports);
 
     void turn_fmcw_magnitude_reporting_on();
     void turn_fmcw_magnitude_reporting_off();

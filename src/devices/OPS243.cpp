@@ -232,7 +232,7 @@ int OPS243::get_module_info(char* module_info, int length) {
     return total_bytes;
 }
 
-void OPS243::read_speeds_and_ranges(float* speed_magnitude_array, float* range_magnitude_array, float* speed_mps_array, float* range_m_array) {
+void OPS243::read_speeds_and_ranges(range_report_t* range_reports, speed_report_t* speed_reports) {
     char line_buf[256];
     memset(line_buf, 0, sizeof(line_buf));
 
@@ -247,32 +247,30 @@ void OPS243::read_speeds_and_ranges(float* speed_magnitude_array, float* range_m
         line_buf_index += num_bytes_read;
     }
 
-    const char SEPARATOR[2] = ",";
+    const char SEPARATOR[] = ",";
 
     // If line is a range report
     if (line_buf[1] == 'm' && line_buf[3] != 's') {
         char* token = strtok(line_buf, SEPARATOR);
 
-        int count = 0;
-        int magnitude_index = 0;
-        int range_index = 0;
+        int token_count = 0;
+        int report_index = 0;
         while (token) {
             //printf("%s\n", token);
-            if (count == 0) {
+            if (token_count == 0) {
                 token = strtok(NULL, SEPARATOR); // Ignore the "m"
-                count++;
+                token_count++;
                 continue;
             }
-            if ((count % 2) != 0) {
-                range_magnitude_array[magnitude_index] = atoi(token);
-                magnitude_index++;
+            if ((token_count % 2) == 1) {
+                range_reports[report_index].magnitude = atof(token);
             }
-            else if ((count % 2) == 0 && count != 0) {
-                range_m_array[range_index] = atof(token);
-                range_index++;
+            else if ((token_count % 2) == 0 && token_count != 0) {
+                range_reports[range_index].range_m = atof(token);
+                report_index++;
             }
 
-            count++;
+            token_count++;
             token = strtok(NULL, SEPARATOR);
         }
     }
@@ -281,30 +279,27 @@ void OPS243::read_speeds_and_ranges(float* speed_magnitude_array, float* range_m
     else if (line_buf[3] == 's') {
         char* token = strtok(line_buf, SEPARATOR);
 
-        int count = 0;
-        int magnitude_index = 0;
-        int speed_index = 0;
+        int token_count = 0;
+        int report_index = 0;
         while (token) {
-            if (count == 0) {
+            if (token_count == 0) {
                 token = strtok(NULL, SEPARATOR); // Ignore the "mps"
-                count++;
+                token_count++;
                 continue;
             }
-            if ((count % 2) != 0) {
-                speed_magnitude_array[magnitude_index] = atoi(token);
-                magnitude_index++;
+            if ((token_count % 2) == 1) {
+                speed_reports[report_index].magnitude = atof(token);
             }
-            else if ((count % 2) == 0 && count != 0) {
-                speed_mps_array[speed_index] = atof(token);
-                speed_index++;
+            else if ((token_count % 2) == 0 && token_count != 0) {
+                speed_reports[report_index].speed_mps = atof(token);
+                report_index++;
             }
 
-            count++;
+            token_count++;
             token = strtok(NULL, SEPARATOR);
         }
     }
 }
-
 
 void OPS243::turn_range_reporting_on() {
     char cmd[32] = "OD";
