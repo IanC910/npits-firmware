@@ -4,6 +4,8 @@
 
 #include <string>
 
+const std::string LOG_FILE_NAME = "npits.log";
+
 void log(std::string tag, std::string message);
 
 #endif
