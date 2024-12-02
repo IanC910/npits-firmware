@@ -2,7 +2,8 @@
 #include <termios.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include "OPS243.cpp"  // Assuming OPS243.h provides the necessary class methods
+
+#include "OPS243.h"
 
 #define OPS243_BAUD_RATE 115200
 const char RADAR_SERIAL_PORT[] = "/dev/ttyACM0";
@@ -36,8 +37,8 @@ int kbhit() {
 int main() {
     // Initialize the radar object
     OPS243 obj(RADAR_SERIAL_PORT, OPS243_BAUD_RATE);
-    obj.set_number_of_range_reports(9);
-    obj.set_number_of_speed_reports(9);
+    obj.set_number_of_range_reports(OPS243::MAX_REPORTS);
+    obj.set_number_of_speed_reports(OPS243::MAX_REPORTS);
     obj.turn_units_output_on();
     obj.turn_fmcw_magnitude_reporting_on();
     obj.turn_doppler_magnitude_reporting_on();
@@ -46,10 +47,10 @@ int main() {
     obj.turn_speed_reporting_on();
     obj.turn_range_reporting_on();
 
-    int speed_magnitudes[9];
-    int range_magnitudes[9];
-    float speeds[9];
-    float ranges[9];
+    int speed_magnitudes[OPS243::MAX_REPORTS];
+    int range_magnitudes[OPS243::MAX_REPORTS];
+    float speeds[OPS243::MAX_REPORTS];
+    float ranges[OPS243::MAX_REPORTS];
 
     // Main loop
     while (true) {
@@ -63,16 +64,13 @@ int main() {
         }
 
         // Simulate reading from the radar
-        read_serial_file(obj, speed_magnitudes, range_magnitudes, speeds, ranges);
+        obj.read_speeds_and_ranges(speed_magnitudes, range_magnitudes, speeds, ranges);
 
         // Sleep for 1ms
         usleep(1000);
     }
 
-    /// Clean up before exiting
     obj.turn_range_reporting_off();
-    //obj.turn_speed_reporting_off();
-    obj.~OPS243();
 
     return 0;
 }

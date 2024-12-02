@@ -8,30 +8,24 @@
 #include "../common/time_tools.h"
 #include "../connection_params.h"
 #include "../db/near_pass_db.h"
-#include "../near_pass_detector/near_pass_detector_types.h"
-#include "../near_pass_detector/near_pass_detector.h"
+#include "../near_pass_detection/near_pass_detection_types.h"
+#include "../near_pass_detection/NearPassDetector.h"
 
 #include "btlib.h"
-#include "le_types.h"
+#include "npits_ble_types.h"
+#include "npits_ble_params.h"
 
-#include "le_server.h"
-
-
-
-static const int LOW = 0;
-static const int HIGH = 1;
-
-enum server_state_t {
-    SS_IDLE,
-    SS_RL_REQUEST,
-    SS_NPL_REQUEST
-};
+#include "npits_ble_server.h"
 
 
+
+static bool initialized = false;
+
+static NearPassDetector* s_near_pass_detector = nullptr;
+static NearPassPredictor* s_near_pass_predictor = nullptr;
 
 static server_state_t server_state = SS_IDLE;
 static long long request_start_time_ms = 0;
-static const int REQUEST_TIMEOUT_DURATION_ms = 5000;
 
 static std::vector<Ride> ride_list;
 static std::vector<NearPass> near_pass_list;
@@ -40,7 +34,25 @@ static int near_pass_index = 0;
 
 static bool do_run_le_server = false;
 
-static NearPassDetector* near_pass_detector = nullptr;
+void npits_ble_server_init(
+    std::string devices_file,
+    NearPassDetector* near_pass_detector,
+    NearPassPredictor* near_pass_predictor
+) {
+    s_near_pass_detector = near_pass_detector;
+    s_near_pass_predictor = near_pass_predictor;
+
+    db_open();
+    db_create_rides_table();
+    db_create_near_pass_table();
+
+    if(init_blue((char*)devices_file.c_str()) == 0) {
+        printf("Couldn't init bluetooth\n");
+        exit(1);
+    }
+
+    initialized = true;
+}
 
 static void write_ride_object(Ride& ride) {
     write_ctic(localnode(), CTIC_R_ID,          (unsigned char*)(&ride.rideId),     0);
@@ -57,7 +69,7 @@ static void write_near_pass_object(NearPass& near_pass) {
     write_ctic(localnode(), CTIC_NP_RIDE_ID,        (unsigned char*)(&near_pass.rideId),        0);
 }
 
-static void le_server_write_callback(int ctic_index) {
+static void write_callback(int ctic_index) {
     unsigned char read_buf[16];
     int num_bytes = read_ctic(localnode(), ctic_index, read_buf, sizeof(read_buf));
     if(num_bytes == 0) {
@@ -151,7 +163,7 @@ static void le_server_write_callback(int ctic_index) {
                     if(r_valid == 0) {
                         write_ride_object(ride_list[ride_index]);
                         write_ctic(localnode(), CTIC_R_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
-                            printf("RL request: Wrote valid object\n");
+                        printf("RL request: Wrote valid object\n");
                         ride_index++;
 
                         if(ride_index >= ride_list.size()) {
@@ -185,7 +197,7 @@ static void le_server_write_callback(int ctic_index) {
                     if(np_valid == 0) {
                         write_near_pass_object(near_pass_list[near_pass_index]);
                         write_ctic(localnode(), CTIC_NP_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
-                            printf("NPL request: Wrote valid object\n");
+                        printf("NPL request: Wrote valid object\n");
                         near_pass_index++;
 
                         if(near_pass_index >= near_pass_list.size()) {
@@ -207,38 +219,69 @@ static void le_server_write_callback(int ctic_index) {
 
     // Non state machine ctics
     switch(ctic_index) {
-        case CTIC_WI_LATIDUDE: {
-            double latitude = *(double*)read_buf;
-            near_pass_detector->set_latitude(latitude);
+        case CTIC_GPS_LATIDUDE: {
+            if(s_near_pass_detector != nullptr) {
+                double latitude = *(double*)read_buf;
+                s_near_pass_detector->set_latitude(latitude);
+            }
             break;
         }
-        case CTIC_WI_LONGITUDE: {
-            double longitude = *(double*)read_buf;
-            near_pass_detector->set_longitude(longitude);
+        case CTIC_GPS_LONGITUDE: {
+            if(s_near_pass_detector != nullptr) {
+                double longitude = *(double*)read_buf;
+                s_near_pass_detector->set_longitude(longitude);
+            }
             break;
         }
-        case CTIC_WI_SPEED_MPS: {
-            double speed_mps = *(double*)read_buf;
-            near_pass_detector->set_speed_mps(speed_mps);
+        case CTIC_GPS_SPEED_MPS: {
+            if(s_near_pass_detector != nullptr) {
+                double speed_mps = *(double*)read_buf;
+                s_near_pass_detector->set_speed_mps(speed_mps);
+            }
             break;
         }
-        case CTIC_WI_TIME: {
+        case CTIC_GPS_TIME: {
             long time = *(long*)read_buf;
             set_time_s(time);
             break;
         }
+
         case CTIC_RC_CMD: {
             rc_cmd_t rc_cmd = *(rc_cmd_t*)read_buf;
 
             switch(rc_cmd) {
                 case RC_CMD_START_RIDE:
                     printf("LE Server: Start ride\n");
-                    near_pass_detector->start_ride();
+
+                    db_start_ride();
+
+                    if(s_near_pass_predictor != nullptr) {
+                        s_near_pass_predictor->start();
+                    }
+                    else {
+                        printf("LE Server: Warning, no predictor active\n");
+                    }
+
+                    if(s_near_pass_detector != nullptr) {
+                        s_near_pass_detector->start();
+                    }
+                    else {
+                        printf("LE Server: Warning, no detector active\n");
+                    }
+
                     break;
 
                 case RC_CMD_NONE:
                     printf("LE Server: End Ride\n");
-                    near_pass_detector->end_ride();
+                    if(s_near_pass_detector != nullptr) {
+                        s_near_pass_detector->stop();
+                    }
+                    if(s_near_pass_predictor != nullptr) {
+                        s_near_pass_predictor->stop();
+                    }
+
+                    db_end_ride();
+
                     break;
 
                 default:
@@ -252,7 +295,7 @@ static void le_server_write_callback(int ctic_index) {
     }
 }
 
-static void le_server_timer_callback() {
+static void timer_callback() {
     switch(server_state) {
         case SS_IDLE:
             break;
@@ -279,7 +322,7 @@ static void le_server_timer_callback() {
     }
 }
 
-static int le_server_callback(int client_node, int operation, int ctic_index) {
+static int server_callback(int client_node, int operation, int ctic_index) {
     switch(operation) {
         case LE_CONNECT: {
             printf("LE Server: Client Connected at node %d\n", client_node);
@@ -289,7 +332,7 @@ static int le_server_callback(int client_node, int operation, int ctic_index) {
             break;
         case LE_WRITE: {
             printf("LE Server: Client wrote ctic index %d\n", ctic_index);
-            le_server_write_callback(ctic_index);
+            write_callback(ctic_index);
             break;
         }
         case LE_DISCONNECT: {
@@ -297,7 +340,7 @@ static int le_server_callback(int client_node, int operation, int ctic_index) {
             break;
         }
         case LE_TIMER: {
-            le_server_timer_callback();
+            timer_callback();
             break;
         }
         case LE_KEYPRESS:
@@ -313,10 +356,10 @@ static int le_server_callback(int client_node, int operation, int ctic_index) {
     return SERVER_CONTINUE;
 }
 
-void le_server_run() {
-    if(init_blue((char*)LE_SERVER_DEVICES_FILE.c_str()) == 0) {
-        printf("Couldn't init bluetooth\n");
-        exit(1);
+void npits_ble_server_run() {
+    if(!initialized) {
+        printf("LE Server: Couldn't run, not initialized\n");
+        return;
     }
 
     // The following 4 lines need to happen for some reason that we don't understand
@@ -329,18 +372,16 @@ void le_server_run() {
     write_ctic(localnode(), CTIC_DEVICE_NAME, (unsigned char*)DEVICE_NAME, sizeof(DEVICE_NAME));
 
     do_run_le_server = true;
-    if(near_pass_detector == nullptr) {
-        near_pass_detector = new NearPassDetector();
-    }
 
-    db_open();
-    db_create_rides_table();
-    db_create_near_pass_table();
+    const int SERVER_CALLBACK_PERIOD_ds = 10;
 
-    le_server(le_server_callback, 10);
+    // Blocking: thread is inside le_server() until 'x' is pressed on keyboard. Then the server stops
+    // server_callback is called every SERVER_CALLBACK_PERIOD_ds deciseconds or on operation
+    le_server(server_callback, SERVER_CALLBACK_PERIOD_ds);
     close_all();
+    printf("LE server: Stopped\n");
 }
 
-void le_server_stop() {
+void npits_ble_server_stop() {
     do_run_le_server = false;
 }

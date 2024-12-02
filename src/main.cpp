@@ -1,9 +1,28 @@
 
-#include "common/time_tools.h"
-#include "bluetooth/le_server.h"
+#include "connection_params.h"
 
-#include <string>
+#include "devices/MB1242.h"
+#include "devices/OPS243.h"
+
+#include "near_pass_detection/NearPassDetector.h"
+#include "near_pass_detection/NearPassPredictor.h"
+
+#include "bluetooth/npits_ble_server.h"
 
 int main() {
-    le_server_run();
+    MB1242 ultrasonic(ULTRASONIC_I2C_DEVICE, ULTRASONIC_STATUS_GPIO_NUM);
+    OPS243 radar(RADAR_SERIAL_PORT);
+
+    NearPassDetector near_pass_detector(&ultrasonic);
+    NearPassPredictor near_pass_predictor(&radar);
+
+    npits_ble_server_init(
+        LE_SERVER_DEVICES_FILE,
+        &near_pass_detector,
+        &near_pass_predictor
+    );
+
+    npits_ble_server_run();
+
+    return 0;
 }

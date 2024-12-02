@@ -1,12 +1,15 @@
 #ifndef OPS243_H
 #define OPS243_H
 
+#include <string>
 
 class OPS243 {
 public:
     static const int REPORT_RATE_HZ = 14;
+    static const int SERIAL_BAUD_RATE = 115200;
+    static const int MAX_REPORTS = 9;
 
-    OPS243(const char serial_port[], int BAUD_RATE);
+    OPS243(const std::string serial_port);
     ~OPS243();
 
     int get_module_info(char* module_info, int length);
@@ -16,8 +19,8 @@ public:
     void output_current_speed_settings();
     void output_current_range_settings();
 
-    void set_speed_output_units();
-    void set_range_output_units();
+    void set_speed_units_to_mps();
+    void set_range_units_to_m();
 
     void set_data_precision(int precision);
     void set_minimum_speed_filter(int min_speed);
@@ -37,12 +40,11 @@ public:
 
     void turn_range_reporting_on();
     void turn_range_reporting_off();
-    
+
     void turn_speed_reporting_on();
     void turn_speed_reporting_off();
 
-    int get_serial_file();
-    void read_serial_file(OPS243& obj, int* speed_magnitudes, int* range_magnitudes, float* speeds, float* ranges);
+    void read_speeds_and_ranges(float* speed_magnitudes, float* range_magnitudes, float* speeds, float* ranges);
 
     void turn_fmcw_magnitude_reporting_on();
     void turn_fmcw_magnitude_reporting_off();
@@ -56,12 +58,12 @@ public:
 
     void turn_binary_output_on();
     void turn_binary_output_off();
-   
+
     void turn_JSON_output_on();
     void turn_JSON_output_off();
 
     void turn_units_output_on();
-    void turn_units_output_off(); 
+    void turn_units_output_off();
 private:
     int serial_file;
 };

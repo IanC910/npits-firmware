@@ -1,6 +1,6 @@
 
-#ifndef STRUCTS_H
-#define STRUCTS_H
+#ifndef NEAR_PASS_DETECTION_TYPES_H
+#define NEAR_PASS_DETECTION_TYPES_H
 
 struct NearPass {
     long time; // UNIX timestamp

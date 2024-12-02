@@ -4,12 +4,15 @@
 #include <string>
 #include <vector>
 
-#include "../near_pass_detector/near_pass_detector_types.h"
+#include "../common/time_tools.h"
+#include "../near_pass_detection/near_pass_detection_types.h"
 
 #include "near_pass_db.h"
 
-static sqlite3* db;
 static const std::string DB_NAME = "near_pass.db";
+
+static sqlite3* db;
+static int current_ride_id = 0;
 
 static std::vector<Ride>* current_ride_list;
 static std::vector<NearPass>* current_near_pass_list;
@@ -70,7 +73,8 @@ int db_create_near_pass_table() {
     return SQLITE_OK;
 }
 
-int db_start_ride(long startTime) {
+int db_start_ride() {
+    long startTime = get_time_s();
     const char* insertSQL =
         "INSERT INTO Rides (startTime, endTime) "
         "VALUES (?, NULL);";  // endTime is NULL initially
@@ -94,14 +98,15 @@ int db_start_ride(long startTime) {
     }
 
     // Get the generated rideId (last inserted row id)
-    int rideId = sqlite3_last_insert_rowid(db);
-    std::cout << "Ride started successfully with rideId: " << rideId << std::endl;
+    current_ride_id = sqlite3_last_insert_rowid(db);
+    std::cout << "Ride started successfully with rideId: " << current_ride_id << std::endl;
 
     sqlite3_finalize(stmt);
-    return rideId;
+    return current_ride_id;
 }
 
-int db_end_ride(int rideId, long endTime) {
+int db_end_ride() {
+    long endTime = get_time_s();
     const char* updateSQL =
         "UPDATE Rides SET endTime = ? WHERE rideId = ?;";
 
@@ -114,7 +119,7 @@ int db_end_ride(int rideId, long endTime) {
 
     // Bind the end time and rideId
     sqlite3_bind_int64(stmt, 1, endTime);
-    sqlite3_bind_int(stmt, 2, rideId);
+    sqlite3_bind_int(stmt, 2, current_ride_id);
 
     // Execute the statement
     rc = sqlite3_step(stmt);
@@ -124,10 +129,14 @@ int db_end_ride(int rideId, long endTime) {
         return -1;
     }
 
-    std::cout << "Ride with rideId " << rideId << " ended successfully" << std::endl;
+    std::cout << "Ride with rideId " << current_ride_id << " ended successfully" << std::endl;
 
     sqlite3_finalize(stmt);
     return SQLITE_OK;
+}
+
+int db_get_current_ride_id() {
+    return current_ride_id;
 }
 
 int db_insert_near_pass(const NearPass& nearPass) {

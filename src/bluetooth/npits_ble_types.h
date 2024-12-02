@@ -1,6 +1,6 @@
 
-#ifndef LE_PARAMS_H
-#define LE_PARAMS_H
+#ifndef NPITS_BLE_TYPES_H
+#define NPITS_BLE_TYPES_H
 
 enum ctic_t {
     // Generic Access Service
@@ -23,11 +23,11 @@ enum ctic_t {
     CTIC_NP_LONGITUDE,
     CTIC_NP_RIDE_ID,
 
-    // Give World Info Service
-    CTIC_WI_LATIDUDE,
-    CTIC_WI_LONGITUDE,
-    CTIC_WI_SPEED_MPS,
-    CTIC_WI_TIME,
+    // Give GPS Info service
+    CTIC_GPS_LATIDUDE,
+    CTIC_GPS_LONGITUDE,
+    CTIC_GPS_SPEED_MPS,
+    CTIC_GPS_TIME,
 
     // Ride Control Service
     CTIC_RC_CMD
@@ -36,6 +36,12 @@ enum ctic_t {
 enum rc_cmd_t {
     RC_CMD_NONE,
     RC_CMD_START_RIDE
+};
+
+enum server_state_t {
+    SS_IDLE,
+    SS_RL_REQUEST,
+    SS_NPL_REQUEST
 };
 
 #endif

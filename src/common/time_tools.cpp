@@ -1,22 +1,28 @@
 
 #include <stdlib.h>
-#include <time.h>
+#include <ctime>
+#include <string>
+#include <cstring>
 
 #include "time_tools.h"
 
 // Corrective offset added to all get time functions
-static time_t time_s_offset = 0;
+static time_t global_time_offset_s = 0;
 
 void set_time_s(time_t time_s) {
-    time_s_offset = time_s - get_time_s();
+    global_time_offset_s = time_s - get_time_s();
 }
+
+
 
 struct timespec get_timespec() {
     struct timespec now;
     timespec_get(&now, TIME_UTC);
-    now.tv_sec += time_s_offset;
+    now.tv_sec += global_time_offset_s;
     return now;
 }
+
+
 
 time_t get_time_s() {
     struct timespec now = get_timespec();
@@ -34,6 +40,24 @@ time_t get_time_us() {
     time_t microseconds = now.tv_sec * 1000000 + now.tv_nsec / 1000;
     return microseconds;
 }
+
+
+
+std::string get_timestamp_hms() {
+    struct timespec now = get_timespec();
+    struct tm* timeinfo = localtime(&now.tv_sec);
+    char time_buffer[32];
+    memset(time_buffer, 0, sizeof(time_buffer));
+    strftime(time_buffer, sizeof(time_buffer), "%H:%M:%S", timeinfo);
+
+    int milliseconds = now.tv_nsec / 1000000;
+    char timestamp_cstr[64];
+    snprintf(timestamp_cstr, sizeof(timestamp_cstr), "%s.%3d", time_buffer, milliseconds);
+
+    return std::string(timestamp_cstr);
+}
+
+
 
 void sleep_s(time_t sleep_time_s) {
     struct timespec sleep_time = {sleep_time_s, 0};

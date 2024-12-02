@@ -4,9 +4,11 @@
 
 #include <string>
 
+const std::string LE_SERVER_DEVICES_FILE = "bluetooth/devices.txt";
+
 const std::string ULTRASONIC_I2C_DEVICE = "/dev/i2c-1";
 const int ULTRASONIC_STATUS_GPIO_NUM = 17;
 
-const std::string LE_SERVER_DEVICES_FILE = "bluetooth/devices.txt";
+const std::string RADAR_SERIAL_PORT = "/dev/ttyACM0";
 
 #endif

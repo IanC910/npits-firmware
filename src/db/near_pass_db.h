@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "../near_pass_detector/near_pass_detector_types.h"
+#include "../near_pass_detection/near_pass_detection_types.h"
 
 // Function to open the SQLite database
 // Returns SQLITE_OK on success
@@ -23,11 +23,14 @@ int db_create_near_pass_table();
 
 // Function to start a new ride
 // Returns Ride ID on success, -1 on fail
-int db_start_ride(long startTime);
+int db_start_ride();
 
-// Function to end a ride by updating the endTime
+// Function to end a ride
 // Returns SQLITE_OK on success
-int db_end_ride(int rideId, long endTime);
+int db_end_ride();
+
+// Returns the current ride id
+int db_get_current_ride_id();
 
 // Function to insert a new NearPass record
 // Returns SQLITE_OK on success
