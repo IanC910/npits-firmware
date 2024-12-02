@@ -70,7 +70,10 @@ void NearPassPredictor::run() {
 
     do_run = true;
     while(do_run) {
-        update_speeds_and_ranges(); // Blocking
+        // Need to call twice in order to update both speeds and ranges
+        update_speeds_or_ranges();
+        sleep_ms(50);
+        update_speeds_or_ranges();
 
         log("NearPassPredictor", "Radar data:");
         printf("Range:     ");
@@ -137,13 +140,13 @@ void NearPassPredictor::config_radar() {
     radar->turn_speed_reporting_on();
 }
 
-void NearPassPredictor::update_speeds_and_ranges() {
+void NearPassPredictor::update_speeds_or_ranges() {
     if(radar == nullptr) {
         log("NearPassPredictor", "Coudn't update, radar is nullptr");
         return;
     }
 
-    radar->read_speeds_and_ranges(
+    return radar->read_new_data_line(
         range_reports,
         speed_reports
     );

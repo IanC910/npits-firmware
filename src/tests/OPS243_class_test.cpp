@@ -64,7 +64,7 @@ int main() {
         }
 
         // Simulate reading from the radar
-        obj.read_speeds_and_ranges(speed_magnitudes, range_magnitudes, speeds, ranges);
+        obj.read_new_data_line(speed_magnitudes, range_magnitudes, speeds, ranges);
 
         // Sleep for 1ms
         usleep(1000);

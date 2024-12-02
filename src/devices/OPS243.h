@@ -54,7 +54,11 @@ public:
     void turn_speed_reporting_on();
     void turn_speed_reporting_off();
 
-    void read_speeds_and_ranges(range_report_t* range_reports, speed_report_t* speed_reports);
+    // Reads the new line and updates either the range_reports OR the speed_reports, not both
+    // Returns 0 if the ranges were updated
+    // Returns 1 if the speeds were updated
+    // Blocking
+    int read_new_data_line(range_report_t* range_reports, speed_report_t* speed_reports);
 
     void turn_fmcw_magnitude_reporting_on();
     void turn_fmcw_magnitude_reporting_off();

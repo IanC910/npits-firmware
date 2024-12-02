@@ -232,7 +232,7 @@ int OPS243::get_module_info(char* module_info, int length) {
     return total_bytes;
 }
 
-void OPS243::read_speeds_and_ranges(range_report_t* range_reports, speed_report_t* speed_reports) {
+int OPS243::read_new_data_line(range_report_t* range_reports, speed_report_t* speed_reports) {
     char line_buf[256];
     memset(line_buf, 0, sizeof(line_buf));
 
@@ -248,11 +248,10 @@ void OPS243::read_speeds_and_ranges(range_report_t* range_reports, speed_report_
     }
 
     const char SEPARATOR[] = ",";
-    memset(range_reports, 0, MAX_REPORTS * sizeof(range_report_t));
-    memset(speed_reports, 0, MAX_REPORTS * sizeof(speed_report_t));
 
     // If line is a range report
     if (line_buf[1] == 'm' && line_buf[3] != 's') {
+        memset(range_reports, 0, MAX_REPORTS * sizeof(range_report_t));
         char* token = strtok(line_buf, SEPARATOR);
 
         int token_count = 0;
@@ -275,10 +274,13 @@ void OPS243::read_speeds_and_ranges(range_report_t* range_reports, speed_report_
             token_count++;
             token = strtok(NULL, SEPARATOR);
         }
+
+        return 0;
     }
 
     // If line is a speed report
     else if (line_buf[3] == 's') {
+        memset(speed_reports, 0, MAX_REPORTS * sizeof(speed_report_t));
         char* token = strtok(line_buf, SEPARATOR);
 
         int token_count = 0;
@@ -300,6 +302,8 @@ void OPS243::read_speeds_and_ranges(range_report_t* range_reports, speed_report_
             token_count++;
             token = strtok(NULL, SEPARATOR);
         }
+
+        return 1;
     }
 }
 

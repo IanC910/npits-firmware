@@ -53,7 +53,7 @@ int main() {
             }
         }
 
-        near_pass_predictor.update_speeds_and_ranges();
+        near_pass_predictor.update_speeds_or_ranges();
 
         if(near_pass_predictor.is_vehicle_approaching()) {
             OPS243::speed_report_t speed_report = near_pass_predictor.get_speed_of_highest_mag_mps();

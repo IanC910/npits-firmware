@@ -26,8 +26,10 @@ public:
     // Configures radar with a preset of settings
     void config_radar();
 
+    // Updates either speeds OR ranges, not both
+    // Returns 0 if ranges, 1 if speeds
     // Blocking
-    void update_speeds_and_ranges();
+    int update_speeds_or_ranges();
 
     bool is_vehicle_approaching();
     bool is_vehicle_in_range();
