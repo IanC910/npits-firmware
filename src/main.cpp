@@ -13,8 +13,8 @@ int main() {
     MB1242 ultrasonic(ULTRASONIC_I2C_DEVICE, ULTRASONIC_STATUS_GPIO_NUM);
     OPS243 radar(RADAR_SERIAL_PORT);
 
-    NearPassDetector near_pass_detector(&ultrasonic);
     NearPassPredictor near_pass_predictor(&radar);
+    NearPassDetector near_pass_detector(&ultrasonic, &near_pass_predictor);
 
     npits_ble_server_init(
         LE_SERVER_DEVICES_FILE,

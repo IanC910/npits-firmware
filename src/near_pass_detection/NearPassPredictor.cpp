@@ -74,35 +74,35 @@ void NearPassPredictor::run() {
         log("NearPassPredictor", "Radar data:");
         printf("Range:     ");
         for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
-            printf("%8.2f", range_reports[i].range_m);
+            printf("%16.2f", range_reports[i].range_m);
         }
         printf("\nMagnitude: ");
         for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
-            printf("%8.2f", range_reports[i].magnitude);
+            printf("%16.2f", range_reports[i].magnitude);
         }
         printf("\nSpeed:     ");
         for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
-            printf("%8.2f", speed_reports[i].speed_mps);
+            printf("%16.2f", speed_reports[i].speed_mps);
         }
         printf("\nMagnitude: ");
         for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
-            printf("%8.2f", speed_reports[i].magnitude);
+            printf("%16.2f", speed_reports[i].magnitude);
         }
         printf("\n");
 
         OPS243::speed_report_t speed_report = get_speed_of_highest_mag_mps();
-        if(speed_report != {0, 0}) {
+        if(speed_report.magnitude != 0) {
             log("NearPassPredictor",
-                std::string("Vehicle approaching! ") + 
+                std::string("Vehicle approaching! ") +
                 std::string(" Speed mps: ") + std::to_string(speed_report.speed_mps) +
                 std::string(" Magnitude: ") + std::to_string(speed_report.magnitude)
             );
         }
-            
+
         OPS243::range_report_t range_report = get_range_of_highest_mag_m();
-        if(range_report != {0, 0}) {
+        if(range_report.magnitude != 0) {
             log("NearPassPredictor",
-                std::string("Vehicle in range! ") + 
+                std::string("Vehicle in range! ") +
                 std::string(" Range m: ") + std::to_string(range_report.range_m) +
                 std::string(" Magnitude: ") + std::to_string(range_report.magnitude)
             );
@@ -150,12 +150,12 @@ void NearPassPredictor::update_speeds_and_ranges() {
 
 bool NearPassPredictor::is_vehicle_approaching() {
     OPS243::speed_report_t speed_report = get_speed_of_highest_mag_mps();
-    return (speed_report != {0, 0});
+    return (speed_report.magnitude != 0);
 }
 
 bool NearPassPredictor::is_vehicle_in_range() {
     OPS243::range_report_t range_report = get_range_of_highest_mag_m();
-    return (range_report != {0, 0});
+    return (range_report.magnitude != 0);
 }
 
 OPS243::speed_report_t NearPassPredictor::get_speed_of_highest_mag_mps() {
@@ -173,7 +173,7 @@ OPS243::speed_report_t NearPassPredictor::get_speed_of_highest_mag_mps() {
         return {0, 0};
     }
 
-    return speed_report[highest_mag_index];
+    return speed_reports[highest_mag_index];
 }
 
 OPS243::range_report_t NearPassPredictor::get_range_of_highest_mag_m() {
@@ -190,8 +190,8 @@ OPS243::range_report_t NearPassPredictor::get_range_of_highest_mag_m() {
     if(highest_mag_index == -1) {
         return {0, 0};
     }
-    
-    return range_report[highest_mag_index];
+
+    return range_reports[highest_mag_index];
 }
 
 

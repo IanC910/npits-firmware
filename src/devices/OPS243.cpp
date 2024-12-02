@@ -248,6 +248,8 @@ void OPS243::read_speeds_and_ranges(range_report_t* range_reports, speed_report_
     }
 
     const char SEPARATOR[] = ",";
+    memset(range_reports, 0, MAX_REPORTS * sizeof(range_report_t));
+    memset(speed_reports, 0, MAX_REPORTS * sizeof(speed_report_t));
 
     // If line is a range report
     if (line_buf[1] == 'm' && line_buf[3] != 's') {
@@ -266,7 +268,7 @@ void OPS243::read_speeds_and_ranges(range_report_t* range_reports, speed_report_
                 range_reports[report_index].magnitude = atof(token);
             }
             else if ((token_count % 2) == 0 && token_count != 0) {
-                range_reports[range_index].range_m = atof(token);
+                range_reports[report_index].range_m = atof(token);
                 report_index++;
             }
 
