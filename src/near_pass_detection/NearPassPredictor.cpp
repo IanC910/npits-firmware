@@ -106,6 +106,19 @@ void NearPassPredictor::run() {
                 std::string(" Speed mps: ") + std::to_string(speed_report.speed_mps) +
                 std::string(" Magnitude: ") + std::to_string(speed_report.magnitude)
             );
+
+            // Prediction logic currently assumes no range data!
+            // Assumes a range of probable distances and a grace period
+
+            const float MAX_PROBABLE_DISTANCE_m = 20;
+            const float MIN_PROBABLE_DISTANCE_m = 5;
+
+            long long min_start_time = now_ms + 1000 * (long long)(MIN_PROBABLE_DISTANCE_m / speed_report.speed_mps);
+            long long max_start_time = now_ms + 1000 * (long long)(MAX_PROBABLE_DISTANCE_m / speed_report.speed_mps);
+
+            time_window_t predicted_window;
+            predicted_start_time_ms = min_start_time;
+            predicted_end_time_ms = max_start_time + 2000; // arbitrary 2 second grace
         }
 
         OPS243::range_report_t range_report = get_range_of_highest_mag_m();
@@ -115,6 +128,10 @@ void NearPassPredictor::run() {
                 std::string(" Range m: ") + std::to_string(range_report.range_m) +
                 std::string(" Magnitude: ") + std::to_string(range_report.magnitude)
             );
+        }
+
+        if(is_near_pass_predicted_now()) {
+            log("NearPassPredictor", "Near pass is predicted now!");
         }
 
         sleep_ms(50);
@@ -157,16 +174,6 @@ void NearPassPredictor::update_speeds_or_ranges() {
     );
 }
 
-bool NearPassPredictor::is_vehicle_approaching() {
-    OPS243::speed_report_t speed_report = get_speed_of_highest_mag_mps();
-    return (speed_report.magnitude != 0);
-}
-
-bool NearPassPredictor::is_vehicle_in_range() {
-    OPS243::range_report_t range_report = get_range_of_highest_mag_m();
-    return (range_report.magnitude != 0);
-}
-
 OPS243::speed_report_t NearPassPredictor::get_speed_of_highest_mag_mps() {
     int highest_mag_index = -1;
 
@@ -201,6 +208,25 @@ OPS243::range_report_t NearPassPredictor::get_range_of_highest_mag_m() {
     }
 
     return range_reports[highest_mag_index];
+}
+
+bool NearPassPredictor::is_vehicle_approaching() {
+    OPS243::speed_report_t speed_report = get_speed_of_highest_mag_mps();
+    return (speed_report.magnitude != 0);
+}
+
+bool NearPassPredictor::is_vehicle_in_range() {
+    OPS243::range_report_t range_report = get_range_of_highest_mag_m();
+    return (range_report.magnitude != 0);
+}
+
+bool NearPassPredictor::is_near_pass_predicted_now() {
+    long long now_ms = get_time_ms();
+
+    if(now_ms >= predicted_start_time_ms && now_ms <= predicted_end_time_ms) {
+        return true;
+    }
+    return false;
 }
 
 
