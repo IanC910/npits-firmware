@@ -42,10 +42,6 @@ void npits_ble_server_init(
     s_near_pass_detector = near_pass_detector;
     s_near_pass_predictor = near_pass_predictor;
 
-    db_open();
-    db_create_rides_table();
-    db_create_near_pass_table();
-
     if(init_blue((char*)devices_file.c_str()) == 0) {
         printf("Couldn't init bluetooth\n");
         exit(1);

@@ -9,7 +9,7 @@
 
 // Function to open the SQLite database
 // Returns SQLITE_OK on success
-int db_open();
+int db_open(const std::string db_name);
 
 void db_close();
 

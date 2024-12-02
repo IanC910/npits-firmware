@@ -7,6 +7,8 @@
 #include "near_pass_detection/NearPassDetector.h"
 #include "near_pass_detection/NearPassPredictor.h"
 
+#include "db/near_pass_db.h"
+
 #include "bluetooth/npits_ble_server.h"
 
 int main() {
@@ -15,6 +17,10 @@ int main() {
 
     NearPassPredictor near_pass_predictor(&radar);
     NearPassDetector near_pass_detector(&ultrasonic, &near_pass_predictor);
+
+    db_open(NEAR_PASS_DB_FILE);
+    db_create_rides_table();
+    db_create_near_pass_table();
 
     npits_ble_server_init(
         LE_SERVER_DEVICES_FILE,
