@@ -64,6 +64,11 @@ void NearPassPredictor::run() {
         return;
     }
 
+    if(do_run) {
+        log("NearPassPredictor", "Couldn't run, already running");
+        return;
+    }
+
     log("NearPassPredictor", "Starting...");
 
     config_radar();

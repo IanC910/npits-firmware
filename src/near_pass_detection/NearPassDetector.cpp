@@ -67,6 +67,11 @@ void NearPassDetector::run() {
         return;
     }
 
+    if(do_run) {
+        log("NearPassDetector", "Couldn't run, already running");
+        return;
+    }
+
     log("NearPassDetector", "Starting...");
 
     ultrasonic->begin_sampling();
