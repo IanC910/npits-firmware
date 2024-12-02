@@ -71,6 +71,25 @@ void NearPassPredictor::run() {
     while(do_run) {
         update_speeds_and_ranges();
 
+        log("NearPassPredictor", "Radar data:");
+        printf("Range:     ");
+        for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
+            printf("%8.2f", range_reports[i].range_m);
+        }
+        printf("\nMagnitude: ");
+        for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
+            printf("%8.2f", range_reports[i].magnitude);
+        }
+        printf("\nSpeed:     ");
+        for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
+            printf("%8.2f", speed_reports[i].speed_mps);
+        }
+        printf("\nMagnitude: ");
+        for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
+            printf("%8.2f", speed_reports[i].magnitude);
+        }
+        printf("\n");
+
         OPS243::speed_report_t speed_report = get_speed_of_highest_mag_mps();
         if(speed_report != {0, 0}) {
             log("NearPassPredictor",
