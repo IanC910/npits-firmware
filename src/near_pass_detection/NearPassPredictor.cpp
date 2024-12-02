@@ -63,7 +63,7 @@ void NearPassPredictor::run() {
         return;
     }
 
-    log("NearPassPredictr", "Starting...");
+    log("NearPassPredictor", "Starting...");
 
     initialize_radar();
 
@@ -73,7 +73,7 @@ void NearPassPredictor::run() {
 
         if(is_vehicle_approaching()) {
             speed_report_t speed_report = get_speed_of_approaching_vehicle_mps();
-            log("Test",
+            log("NearPassPredictor",
                 std::string("Vehicle approaching! ") + 
                 std::string(" Speed mps: ") + std::to_string(speed_report.speed_mps) +
                 std::string(" Magnitude: ") + std::to_string(speed_report.magnitude)
@@ -82,7 +82,7 @@ void NearPassPredictor::run() {
             
         if(is_vehicle_in_range()){
             range_report_t range_report = get_distance_of_highest_mag_m();
-            log("Test",
+            log("NearPassPredictor",
                 std::string("Vehicle in range! ") + 
                 std::string(" Range m: ") + std::to_string(range_report.range_m) +
                 std::string(" Magnitude: ") + std::to_string(range_report.magnitude)
