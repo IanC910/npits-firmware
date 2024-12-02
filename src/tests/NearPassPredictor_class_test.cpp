@@ -56,7 +56,7 @@ int main() {
         near_pass_predictor.update_speeds_and_ranges();
 
         if(near_pass_predictor.is_vehicle_approaching()) {
-            OPS243::speed_report_t speed_report = near_pass_predictor.get_speed_of_approaching_vehicle_mps();
+            OPS243::speed_report_t speed_report = near_pass_predictor.get_speed_of_highest_mag_mps();
             log("Test",
                 std::string("Vehicle approaching! ") + 
                 std::string(" Speed mps: ") + std::to_string(speed_report.speed_mps) +
@@ -65,7 +65,7 @@ int main() {
         }
             
         if(near_pass_predictor.is_vehicle_in_range()){
-            OPS243::range_report_t range_report = near_pass_predictor.get_distance_of_highest_mag_m();
+            OPS243::range_report_t range_report = near_pass_predictor.get_range_of_highest_mag_m();
             log("Test",
                 std::string("Vehicle in range! ") + 
                 std::string(" Range m: ") + std::to_string(range_report.range_m) +

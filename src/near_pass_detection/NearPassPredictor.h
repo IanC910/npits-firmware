@@ -25,8 +25,8 @@ public:
     void update_speeds_and_ranges();
     bool is_vehicle_approaching();
     bool is_vehicle_in_range();
-    OPS243::speed_report_t get_speed_of_approaching_vehicle_mps();
-    OPS243::range_report_t get_distance_of_highest_mag_m();
+    OPS243::speed_report_t get_speed_of_highest_mag_mps();
+    OPS243::range_report_t get_range_of_highest_mag_m();
 
 private:
     bool flag;

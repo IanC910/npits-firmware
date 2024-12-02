@@ -71,8 +71,8 @@ void NearPassPredictor::run() {
     while(do_run) {
         update_speeds_and_ranges();
 
-        if(is_vehicle_approaching()) {
-            speed_report_t speed_report = get_speed_of_approaching_vehicle_mps();
+        OPS243::speed_report_t speed_report = get_speed_of_highest_mag_mps();
+        if(speed_report != {0, 0}) {
             log("NearPassPredictor",
                 std::string("Vehicle approaching! ") + 
                 std::string(" Speed mps: ") + std::to_string(speed_report.speed_mps) +
@@ -80,8 +80,8 @@ void NearPassPredictor::run() {
             );
         }
             
-        if(is_vehicle_in_range()){
-            range_report_t range_report = get_distance_of_highest_mag_m();
+        OPS243::range_report_t range_report = get_range_of_highest_mag_m();
+        if(range_report != {0, 0}) {
             log("NearPassPredictor",
                 std::string("Vehicle in range! ") + 
                 std::string(" Range m: ") + std::to_string(range_report.range_m) +
@@ -130,49 +130,49 @@ void NearPassPredictor::update_speeds_and_ranges() {
 }
 
 bool NearPassPredictor::is_vehicle_approaching() {
-    OPS243::speed_report_t speed_report = get_speed_of_approaching_vehicle_mps();
+    OPS243::speed_report_t speed_report = get_speed_of_highest_mag_mps();
     return (speed_report != {0, 0});
 }
 
 bool NearPassPredictor::is_vehicle_in_range() {
-    OPS243::range_report_t range_report = get_distance_of_highest_mag_m();
+    OPS243::range_report_t range_report = get_range_of_highest_mag_m();
     return (range_report != {0, 0});
 }
 
-OPS243::speed_report_t NearPassPredictor::get_speed_of_approaching_vehicle_mps() {
-    int fastest_signal_index = -1;
+OPS243::speed_report_t NearPassPredictor::get_speed_of_highest_mag_mps() {
+    int highest_mag_index = -1;
 
     for (int i = 0; i < OPS243::MAX_REPORTS; i++) {
         if (speed_reports[i].speed_mps != 0 && speed_reports[i].speed_mps >= MINIMUM_SPEED_THRESHOLD) {
-            if (speed_reports[i].magnitude > SPEED_MAGNITUDE_THRESHOLD) {
-                fastest_signal_index = i;
+            if (speed_reports[i].magnitude > SPEED_MAGNITUDE_THRESHOLD && speed_reports[i].magnitude > speed_reports[highest_mag_index].magnitude) {
+                highest_mag_index = i;
             }
 	    }
 	}
 
-    if(fastest_signal_index == -1) {
+    if(highest_mag_index == -1) {
         return {0, 0};
     }
 
-    return speed_report[fastest_signal_index];
+    return speed_report[highest_mag_index];
 }
 
-OPS243::range_report_t NearPassPredictor::get_distance_of_highest_mag_m() {
-    int nearest_signal_index = -1;
+OPS243::range_report_t NearPassPredictor::get_range_of_highest_mag_m() {
+    int highest_mag_index = -1;
 
     for (int i = 0; i < OPS243::MAX_REPORTS; i++) {
         if (range_reports[i].range_m != 0 && range_reports[i].range_m >= MINIMUM_RANGE_THRESHOLD) {
-            if (range_reports[i].magnitude > RANGE_MAGNITUDE_THRESHOLD) {
-                nearest_signal_index = i;
+            if (range_reports[i].magnitude > RANGE_MAGNITUDE_THRESHOLD && range_reports[i].magnitude > range_reports[highest_mag_index].magnitude) {
+                highest_mag_index = i;
             }
         }
     }
 
-    if(nearest_signal_index == -1) {
+    if(highest_mag_index == -1) {
         return {0, 0};
     }
     
-    return range_report[nearest_signal_index];
+    return range_report[highest_mag_index];
 }
 
 
