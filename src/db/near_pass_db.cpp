@@ -210,7 +210,7 @@ static int get_rides_callback(void* data, int argc, char** argv, char** colNames
 }
 
 int db_get_rides(std::vector<Ride>& ride_list) {
-    if(db == nullptr) {
+    if(near_pass_db == nullptr) {
         log("near_pass_db", "Couldn't get rides, db not open");
         return SQLITE_ERROR;
     }
@@ -220,7 +220,7 @@ int db_get_rides(std::vector<Ride>& ride_list) {
 
     const char* selectSQL = "SELECT * FROM Rides;";
     char* errMessage = nullptr;
-    int rc = sqlite3_exec(db, selectSQL, get_rides_callback, nullptr, &errMessage);
+    int rc = sqlite3_exec(near_pass_db, selectSQL, get_rides_callback, nullptr, &errMessage);
     if(rc != SQLITE_OK) {
         std::cout << "SQL error: " << errMessage << std::endl;
         sqlite3_free(errMessage);
@@ -245,7 +245,7 @@ static int get_near_passes_callback(void* data, int argc, char** argv, char** co
 }
 
 int db_get_near_passes(std::vector<NearPass>& near_pass_list) {
-    if(db == nullptr) {
+    if(near_pass_db == nullptr) {
         log("near_pass_db", "Couldn't get near passes, db not open");
         return SQLITE_ERROR;
     }
@@ -255,7 +255,7 @@ int db_get_near_passes(std::vector<NearPass>& near_pass_list) {
 
     const char* selectSQL = "SELECT * FROM NearPass;";
     char* errMessage = nullptr;
-    int rc = sqlite3_exec(db, selectSQL, get_near_passes_callback, nullptr, &errMessage);
+    int rc = sqlite3_exec(near_pass_db, selectSQL, get_near_passes_callback, nullptr, &errMessage);
     if (rc != SQLITE_OK) {
         std::cout << "SQL error: " << errMessage << std::endl;
         sqlite3_free(errMessage);

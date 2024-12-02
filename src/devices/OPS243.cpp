@@ -236,7 +236,7 @@ int OPS243::read_new_data_line(range_report_t* range_reports, speed_report_t* sp
     char line_buf[256];
     memset(line_buf, 0, sizeof(line_buf));
 
-    int line_buf_index = 0;
+    long unsigned line_buf_index = 0;
     while(line_buf_index < sizeof(line_buf)) {
         int num_bytes_read = read(serial_file, line_buf + line_buf_index, 1);
         if(line_buf[line_buf_index] == '\n') {
@@ -275,7 +275,7 @@ int OPS243::read_new_data_line(range_report_t* range_reports, speed_report_t* sp
             token = strtok(NULL, SEPARATOR);
         }
 
-        return 0;
+        return 1;
     }
 
     // If line is a speed report
@@ -303,8 +303,10 @@ int OPS243::read_new_data_line(range_report_t* range_reports, speed_report_t* sp
             token = strtok(NULL, SEPARATOR);
         }
 
-        return 1;
+        return 2;
     }
+
+    return 0;
 }
 
 void OPS243::turn_range_reporting_on() {

@@ -11,7 +11,7 @@ public:
     struct time_window_t {
         long long start_time_ms;
         long long end_time_ms;
-    }
+    };
 
     NearPassPredictor(OPS243* radar);
     ~NearPassPredictor();
@@ -33,7 +33,7 @@ public:
     void config_radar();
 
     // Updates either speeds OR ranges, not both
-    // Returns 0 if ranges, 1 if speeds
+    // Returns 1 if ranges, 2 if speeds, 0 if neither
     // Blocking
     int update_speeds_or_ranges();
 

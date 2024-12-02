@@ -55,8 +55,9 @@ public:
     void turn_speed_reporting_off();
 
     // Reads the new line and updates either the range_reports OR the speed_reports, not both
-    // Returns 0 if the ranges were updated
-    // Returns 1 if the speeds were updated
+    // Returns 1 if the ranges were updated
+    // Returns 2 if the speeds were updated
+    // Returns 0 if neither
     // Blocking
     int read_new_data_line(range_report_t* range_reports, speed_report_t* speed_reports);
 

@@ -9,7 +9,7 @@
 #include <termios.h>
 #include <unistd.h>
 
-#include "../time_tools.h"
+#include "../common/time_tools.h"
 #include "../common/log.h"
 
 #include "../devices/OPS243.h"
@@ -99,6 +99,8 @@ void NearPassPredictor::run() {
         }
         printf("\n");
 
+        long long now_ms = get_time_ms();
+
         OPS243::speed_report_t speed_report = get_speed_of_highest_mag_mps();
         if(speed_report.magnitude != 0) {
             log("NearPassPredictor",
@@ -116,7 +118,6 @@ void NearPassPredictor::run() {
             long long min_start_time = now_ms + 1000 * (long long)(MIN_PROBABLE_DISTANCE_m / speed_report.speed_mps);
             long long max_start_time = now_ms + 1000 * (long long)(MAX_PROBABLE_DISTANCE_m / speed_report.speed_mps);
 
-            time_window_t predicted_window;
             predicted_start_time_ms = min_start_time;
             predicted_end_time_ms = max_start_time + 2000; // arbitrary 2 second grace
         }
@@ -162,10 +163,10 @@ void NearPassPredictor::config_radar() {
     radar->turn_speed_reporting_on();
 }
 
-void NearPassPredictor::update_speeds_or_ranges() {
+int NearPassPredictor::update_speeds_or_ranges() {
     if(radar == nullptr) {
         log("NearPassPredictor", "Coudn't update, radar is nullptr");
-        return;
+        return 0;
     }
 
     return radar->read_new_data_line(
