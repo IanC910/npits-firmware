@@ -6,6 +6,9 @@ const float MIN_RANGE_m = 2.5;
 const float MAX_RANGE_m = 2.0;
 const float MIN_RANGE_MAGNITUDE = 300;
 
+Filters on radar:
+Max range, min speed
+
 
 
 rishi@raspberrypi:~/npits/src/tests $ ./sensor_coordination_test.test
