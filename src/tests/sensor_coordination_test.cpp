@@ -8,36 +8,14 @@
 
 #include "../connection_params.h"
 
+#include "../common/keyboard_tools.h"
+
 #include "../devices/MB1242.h"
 #include "../devices/OPS243.h"
 
 #include "../near_pass_detection/NearPassPredictor.h"
 #include "../near_pass_detection/NearPassDetector.h"
 
-int kbhit() {
-    struct termios oldt, newt;
-    int ch;
-    int oldf;
-
-    tcgetattr(STDIN_FILENO, &oldt);
-    newt = oldt;
-    newt.c_lflag &= ~(ICANON | ECHO);
-    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-    oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
-    fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);
-
-    ch = getchar();
-
-    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-    fcntl(STDIN_FILENO, F_SETFL, oldf);
-
-    if (ch != EOF) {
-        ungetc(ch, stdin);
-        return 1;
-    }
-
-    return 0;
-}
 
 
 int main() {
@@ -53,15 +31,7 @@ int main() {
     // Run this one here, blocking. No stop condition except ctrl+c
     near_pass_detector.start();
 
-    while(true) {
-        if (kbhit()) {
-            char ch = getchar();
-            if (ch == 'q' || ch == 'Q') {
-                std::cout << "Exiting program..." << std::endl;
-                break;
-            }
-        }
-    }
+    wait_for_key_press('q');
 
     near_pass_detector.stop();
     near_pass_predictor.stop();
