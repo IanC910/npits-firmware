@@ -40,8 +40,8 @@ int main() {
     obj.set_num_range_reports(OPS243::MAX_REPORTS);
     obj.set_num_speed_reports(OPS243::MAX_REPORTS);
     obj.turn_units_output_on();
-    obj.turn_fmcw_magnitude_reporting_on();
-    obj.turn_doppler_magnitude_reporting_on();
+    obj.turn_range_magnitude_reporting_on();
+    obj.turn_speed_magnitude_reporting_on();
     obj.turn_range_reporting_on();
     obj.set_data_precision(2);
     obj.turn_speed_reporting_on();

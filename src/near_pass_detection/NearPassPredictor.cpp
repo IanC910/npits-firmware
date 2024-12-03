@@ -172,11 +172,15 @@ void NearPassPredictor::config_radar() {
 
     radar->set_num_range_reports(OPS243::MAX_REPORTS);
     radar->set_num_speed_reports(OPS243::MAX_REPORTS);
-    radar->turn_units_output_on();
-    radar->turn_fmcw_magnitude_reporting_on();
-    radar->turn_doppler_magnitude_reporting_on();
+
     radar->set_inbound_only();
     radar->enable_peak_speed_average();
+    radar->set_min_speed_mps((int)MIN_SPEED_mps);
+    radar->set_min_speed_magnitude(MIN_SPEED_MAGNITUDE);
+
+    radar->turn_units_output_on();
+    radar->turn_range_magnitude_reporting_on();
+    radar->turn_speed_magnitude_reporting_on();
     radar->turn_range_reporting_on();
     radar->turn_speed_reporting_on();
 }

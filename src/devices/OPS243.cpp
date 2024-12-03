@@ -97,60 +97,84 @@ void OPS243::set_data_precision(int precision) {
         return;
     }
     char cmd[32];
-    sprintf(cmd, "F%d", precision);
-    write(serial_file, cmd, sizeof(cmd));
+    int num_bytes = sprintf(cmd, "F%d", precision);
+    write(serial_file, cmd, num_bytes);
 }
 
-void OPS243::set_minimum_speed_filter(int min_speed) {
+void OPS243::set_min_speed_mps(int min_speed_mps) {
     /* Sets the minumum value of speed that will be reported*/
-    /* Any number below min_speed will not be reported */
-    if (min_speed < 0) {
+    /* Any number below min_speed_mps will not be reported */
+    if (min_speed_mps < 0) {
         printf("Minimum speed must be greater than zero");
         return;
     }
 
     char cmd[32];
-    sprintf(cmd, "R>%d\r", min_speed);
-   write(serial_file, cmd, sizeof(cmd));
+    int num_bytes = sprintf(cmd, "R>%d\r", min_speed_mps);
+    write(serial_file, cmd, num_bytes);
 }
 
-void OPS243::set_maximum_speed_filter(int max_speed) {
+void OPS243::set_max_speed_mps(int max_speed_mps) {
     /* Sets the maximum value of speed that will be reported*/
-    /* Any number above max_speed will not be reported */
-    if (max_speed < 0) {
+    /* Any number above max_speed_mps will not be reported */
+    if (max_speed_mps < 0) {
         printf("Maximum speed must be greater than zero");
         return;
     }
 
     char cmd[32];
-    sprintf(cmd, "R<%d\r", max_speed);
-    write(serial_file, cmd, sizeof(cmd));
+    int num_bytes = sprintf(cmd, "R<%d\r", max_speed_mps);
+    write(serial_file, cmd, num_bytes);
 }
 
-void OPS243::set_minimum_range_filter(int min_range) {
+void OPS243::set_min_range_m(int min_range_m) {
     /* Sets the minumum value of range that will be reported*/
-    /* Any number below min_range will not be reported */
-    if (min_range < 0) {
+    /* Any number below min_range_m will not be reported */
+    if (min_range_m < 0) {
         printf("Minimum range must be greater than zero");
         return;
     }
 
     char cmd[32];
-    sprintf(cmd, "r>%d\r", min_range);
-    write(serial_file, cmd, sizeof(cmd));
+    int num_bytes = sprintf(cmd, "r>%d\r", min_range_m);
+    write(serial_file, cmd, num_bytes);
 }
 
-void OPS243::set_maximum_range_filter(int max_range) {
+void OPS243::set_max_range_m(int max_range_m) {
     /* Sets the maximum value of range that will be reported*/
-    /* Any number above max_range will not be reported */
-    if (max_range < 0) {
-        printf("Maximum range must be greater than zero");
+    /* Any number above max_range_m will not be reported */
+    if (max_range_m < 0) {
+        printf("Maximum range must be >= 0");
         return;
     }
 
     char cmd[32];
-    sprintf(cmd, "r<%d\r", max_range);
-    write(serial_file, cmd, sizeof(cmd));
+    int num_bytes = sprintf(cmd, "r<%d\r", max_range_m);
+    write(serial_file, cmd, num_bytes);
+}
+
+void OPS243::set_min_speed_magnitude(int min_speed_magnitude) {
+    char cmd[32];
+    int num_bytes = sprintf(cmd, "M>%d\r", min_speed_magnitude);
+    write(serial_file, cmd, num_bytes);
+}
+
+void OPS243::set_max_speed_magnitude(int max_speed_magnitude) {
+    char cmd[32];
+    int num_bytes = sprintf(cmd, "M<%d\r", max_speed_magnitude);
+    write(serial_file, cmd, num_bytes);
+}
+
+void OPS243::set_min_range_magnitude(int min_range_magnitude) {
+    char cmd[32];
+    int num_bytes = sprintf(cmd, "m>%d\r", min_range_magnitude);
+    write(serial_file, cmd, num_bytes);
+}
+
+void OPS243::set_max_range_magnitude(int max_range_magnitude) {
+    char cmd[32];
+    int num_bytes = sprintf(cmd, "m<%d\r", max_range_magnitude);
+    write(serial_file, cmd, num_bytes);
 }
 
 void OPS243::report_current_range_filter() {
@@ -330,22 +354,22 @@ void OPS243::turn_speed_reporting_off() {
     write(serial_file, cmd, sizeof(cmd));
 }
 
-void OPS243::turn_fmcw_magnitude_reporting_on() {
+void OPS243::turn_range_magnitude_reporting_on() {
     char cmd[] = "oM";
     write(serial_file, cmd, sizeof(cmd));
 }
 
-void OPS243::turn_fmcw_magnitude_reporting_off() {
+void OPS243::turn_range_magnitude_reporting_off() {
     char cmd[] = "om";
     write(serial_file, cmd, sizeof(cmd));
 }
 
-void OPS243::turn_doppler_magnitude_reporting_on() {
+void OPS243::turn_speed_magnitude_reporting_on() {
     char cmd[] = "OM";
     write(serial_file, cmd, sizeof(cmd));
 }
 
-void OPS243::turn_doppler_magnitude_reporting_off() {
+void OPS243::turn_speed_magnitude_reporting_off() {
     char cmd[] = "Om";
     write(serial_file, cmd, sizeof(cmd));
 }
@@ -361,8 +385,8 @@ void OPS243::set_num_speed_reports(int number_of_reports) {
         return;
     }
     char cmd[32];
-    sprintf(cmd, "O%d", number_of_reports);
-    write(serial_file, cmd, sizeof(cmd));
+    int num_bytes = sprintf(cmd, "O%d", number_of_reports);
+    write(serial_file, cmd, num_bytes);
 }
 
 void OPS243::set_num_range_reports(int number_of_reports) {
@@ -371,36 +395,36 @@ void OPS243::set_num_range_reports(int number_of_reports) {
         return;
     }
     char cmd[32];
-    sprintf(cmd, "o%d", number_of_reports);
-    write(serial_file, cmd, sizeof(cmd));
+    int num_bytes = sprintf(cmd, "o%d", number_of_reports);
+    write(serial_file, cmd, num_bytes);
 }
 
 void OPS243::turn_binary_output_on() {
-    char cmd[32] = "OB";
+    char cmd[] = "OB";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::turn_binary_output_off() {
-    char cmd[32] = "Ob";
+    char cmd[] = "Ob";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::turn_JSON_output_on() {
-    char cmd[32] = "OJ";
+    char cmd[] = "OJ";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::turn_JSON_output_off() {
-    char cmd[32] = "Oj";
+    char cmd[] = "Oj";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::turn_units_output_on() {
-    char cmd[32] = "OU";
+    char cmd[] = "OU";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::turn_units_output_off() {
-    char cmd[32] = "ou";
+    char cmd[] = "ou";
     write(serial_file, cmd, sizeof(cmd));
 }

@@ -33,10 +33,16 @@ public:
     void set_range_units_to_m();
 
     void set_data_precision(int precision);
-    void set_minimum_speed_filter(int min_speed);
-    void set_maximum_speed_filter(int max_speed);
-    void set_minimum_range_filter(int min_range);
-    void set_maximum_range_filter(int max_range);
+
+    void set_min_speed_mps(int min_speed_mps);
+    void set_max_speed_mps(int max_speed_mps);
+    void set_min_range_m(int min_range_m);
+    void set_max_range_m(int max_range_m);
+
+    void set_min_speed_magnitude(int min_speed_magnitude);
+    void set_max_speed_magnitude(int max_speed_magnitude);
+    void set_min_range_magnitude(int min_range_magnitude);
+    void set_max_range_magnitude(int max_range_magnitude);
 
     void report_current_range_filter();
     void report_current_speed_filter();
@@ -64,11 +70,11 @@ public:
     // Blocking
     int read_new_data_line(range_report_t* range_reports, speed_report_t* speed_reports);
 
-    void turn_fmcw_magnitude_reporting_on();
-    void turn_fmcw_magnitude_reporting_off();
+    void turn_range_magnitude_reporting_on();
+    void turn_range_magnitude_reporting_off();
 
-    void turn_doppler_magnitude_reporting_on();
-    void turn_doppler_magnitude_reporting_off();
+    void turn_speed_magnitude_reporting_on();
+    void turn_speed_magnitude_reporting_off();
 
     void turn_largest_report_order_on();
     void set_num_range_reports(int number_of_reports);
