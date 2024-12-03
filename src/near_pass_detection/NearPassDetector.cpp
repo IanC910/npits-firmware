@@ -96,8 +96,6 @@ void NearPassDetector::run() {
             min_distance_cm = report.distance_cm;
         }
 
-        // TODO: Figure out where to check for the prediction flag
-
         switch(near_pass_state) {
             case NPS_NONE: {
                 // Condition to enter a near pass

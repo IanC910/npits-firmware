@@ -28,7 +28,11 @@ int main() {
         &near_pass_predictor
     );
 
+    // Stops on key press 'x'
     npits_ble_server_run();
+
+    near_pass_detcetor.stop();
+    near_pass_predictor.stop();
 
     return 0;
 }

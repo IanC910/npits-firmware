@@ -32,6 +32,4 @@ int main() {
 
     near_pass_detector.stop();
     near_pass_predictor.stop();
-
-
 }
