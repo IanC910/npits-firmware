@@ -232,7 +232,7 @@ static void write_callback(int ctic_index) {
         case CTIC_GPS_SPEED_MPS: {
             if(s_near_pass_detector != nullptr) {
                 double speed_mps = *(double*)read_buf;
-                s_near_pass_detector->set_speed_mps(speed_mps);
+                s_near_pass_detector->set_cyclist_speed_mps(speed_mps);
             }
             break;
         }

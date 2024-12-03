@@ -15,8 +15,8 @@ int main() {
     MB1242 ultrasonic(ULTRASONIC_I2C_DEVICE, ULTRASONIC_STATUS_GPIO_NUM);
     OPS243 radar(RADAR_SERIAL_PORT);
 
-    NearPassPredictor near_pass_predictor(&radar);
-    NearPassDetector near_pass_detector(&ultrasonic, &near_pass_predictor);
+    NearPassDetector near_pass_detector(&ultrasonic, true);
+    NearPassPredictor near_pass_predictor(&radar, &near_pass_detector);
 
     db_open(NEAR_PASS_DB_FILE);
     db_create_rides_table();

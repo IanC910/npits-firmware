@@ -17,11 +17,16 @@
 #include "near_pass_prediction_params.h"
 #include "NearPassPredictor.h"
 
-NearPassPredictor::NearPassPredictor(OPS243* radar) {
+NearPassPredictor::NearPassPredictor(OPS243* radar, NearPassDetector* near_pass_detector = nullptr) {
     this->radar = radar;
+    this->near_pass_detector = near_pass_detector;
 
     if(radar == nullptr) {
         log("NearPassPredictor", "Warning, radar is nullptr");
+    }
+
+    if(near_pass_detector == nullptr) {
+        log("NearPassPredictor", "Warning, near pass detector is nullptr");
     }
 }
 
@@ -75,15 +80,12 @@ void NearPassPredictor::run() {
 
     do_run = true;
     while(do_run) {
-        memset(range_reports, 0, MAX_REPORTS * sizeof(range_report_t));
-        memset(speed_reports, 0, MAX_REPORTS * sizeof(speed_report_t));
-        int result = update_speeds_or_ranges();
+        int option = radar->read_new_data_line(range_reports, speed_reports);
 
         long long now_ms = get_time_ms();
 
-        log("NearPassPredictor", "Radar data:");
-
-        if(result == 1) { // Range data
+        if(option == 1) { // Range data
+            log("NearPassPredictor", "Radar range data:");
             printf("Range:     ");
             for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
                 printf("%16.2f", range_reports[i].range_m);
@@ -103,7 +105,8 @@ void NearPassPredictor::run() {
                 );
             }
         }
-        else if(result == 2) { // Speed data updated
+        else if(option == 2) { // Speed data updated
+            log("NearPassPredictor", "Radar speed data:");
             printf("\nSpeed:     ");
             for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
                 printf("%16.2f", speed_reports[i].speed_mps);
@@ -133,11 +136,21 @@ void NearPassPredictor::run() {
 
                 predicted_start_time_ms = min_start_time;
                 predicted_end_time_ms = max_start_time + 2000; // arbitrary 2 second grace
+
+                if(near_pass_detector != nullptr) {
+                    near_pass_detector->set_vehicle_speed_mps(speed_report.speed_mps);
+                }
             }
         }
 
-        if(is_near_pass_predicted_now()) {
+        bool prediction_flag = is_near_pass_predicted_now();
+
+        if(prediction_flag) {
             log("NearPassPredictor", "Near pass is predicted now!");
+        }
+
+        if(near_pass_detector != nullptr) {
+            near_pass_detector->set_prediction_flag(prediction_flag);
         }
 
         sleep_ms(20);
@@ -168,33 +181,23 @@ void NearPassPredictor::config_radar() {
     radar->turn_speed_reporting_on();
 }
 
-int NearPassPredictor::update_speeds_or_ranges() {
-    if(radar == nullptr) {
-        log("NearPassPredictor", "Coudn't update, radar is nullptr");
-        return 0;
-    }
-
-    return radar->read_new_data_line(
-        range_reports,
-        speed_reports
-    );
-}
-
 OPS243::speed_report_t NearPassPredictor::get_speed_of_highest_mag_mps() {
     int highest_mag_index = 0;
-    bool valid = false;
+    bool valid_report_found = false;
 
     for (int i = 0; i < OPS243::MAX_REPORTS; i++) {
         if (speed_reports[i].speed_mps >= MIN_SPEED_mps &&
-            speed_reports[i].magnitude > MIN_SPEED_MAGNITUDE &&
-            speed_reports[i].magnitude > speed_reports[highest_mag_index].magnitude
+            speed_reports[i].magnitude > MIN_SPEED_MAGNITUDE
         ) {
-            highest_mag_index = i;
-            valid = true;
-	    }
+            valid_report_found = true;
+
+            if(speed_reports[i].magnitude > speed_reports[highest_mag_index].magnitude) {
+                highest_mag_index = i;
+            }
+        }
 	}
 
-    if(!valid) {
+    if(!valid_report_found) {
         return {0, 0};
     }
 
@@ -203,19 +206,22 @@ OPS243::speed_report_t NearPassPredictor::get_speed_of_highest_mag_mps() {
 
 OPS243::range_report_t NearPassPredictor::get_range_of_highest_mag_m() {
     int highest_mag_index = 0;
-    bool valid = false;
+    bool valid_report_found = false;
 
     for (int i = 0; i < OPS243::MAX_REPORTS; i++) {
         if (range_reports[i].range_m >= MIN_RANGE_m &&
-            range_reports[i].magnitude > MIN_RANGE_MAGNITUDE &&
-            range_reports[i].magnitude > range_reports[highest_mag_index].magnitude
+            range_reports[i].magnitude > MIN_RANGE_MAGNITUDE
         ) {
-            highest_mag_index = i;
-            valid = true;
+            valid_report_found = true;
+
+            if(range_reports[i].magnitude > range_reports[highest_mag_index].magnitude) {
+                highest_mag_index = i;
+            }
+
         }
     }
 
-    if(!valid) {
+    if(!valid_report_found) {
         return {0, 0};
     }
 

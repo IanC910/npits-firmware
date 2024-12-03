@@ -10,7 +10,7 @@
 
 class NearPassDetector {
 public:
-    NearPassDetector(MB1242* ultrasonic, NearPassPredictor* near_pass_predictor);
+    NearPassDetector(MB1242* ultrasonic, bool use_predictor = false);
     ~NearPassDetector();
 
     // Returns 0 on success, 1 if ride already active
@@ -27,18 +27,23 @@ public:
 
     void set_latitude(double latitude);
     void set_longitude(double longitude);
-    void set_speed_mps(double speed_mps);
+    void set_cyclist_speed_mps(double cyclist_speed_mps);
+    void set_vehicle_speed_mps(double vehicle_speed_mps);
+    void set_prediction_flag(bool prediction);
 
 private:
     MB1242* ultrasonic = nullptr;
-    NearPassPredictor* near_pass_predictor = nullptr;
 
     bool do_run = false;
     std::thread* detector_thread = nullptr;
 
     double latest_latitude = 0;
     double latest_longitude = 0;
-    double latest_speed_mps = 0;
+    double latest_cyclist_speed_mps = 0;
+    double latest_vehicle_speed_mps = 0;
+
+    bool use_predictor = false;
+    bool is_near_pass_predicted_now = false;
 
     enum near_pass_state_t {
         NPS_NONE,

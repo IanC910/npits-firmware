@@ -45,6 +45,9 @@ public:
     void set_outbound_only();
     void clear_direction_control();
 
+
+    /* Speed averaging allows a means of filtering for the peak speed of an object.
+    * Some objects due to slight delays in signal path will have multiple speed reports.*/
     void enable_peak_speed_average();
     void disable_peak_speed_average();
 

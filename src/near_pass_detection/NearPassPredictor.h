@@ -6,6 +6,8 @@
 
 #include "../devices/OPS243.h"
 
+#include "NearPassDetector.h"
+
 class NearPassPredictor {
 public:
     struct time_window_t {
@@ -13,7 +15,7 @@ public:
         long long end_time_ms;
     };
 
-    NearPassPredictor(OPS243* radar);
+    NearPassPredictor(OPS243* radar, NearPassDetector* near_pass_detector = nullptr);
     ~NearPassPredictor();
 
     // === Asynchronous control ===
@@ -32,11 +34,6 @@ public:
     // Configures radar with a preset of settings
     void config_radar();
 
-    // Updates either speeds OR ranges, not both
-    // Returns 1 if ranges, 2 if speeds, 0 if neither
-    // Blocking
-    int update_speeds_or_ranges();
-
     OPS243::speed_report_t get_speed_of_highest_mag_mps();
     OPS243::range_report_t get_range_of_highest_mag_m();
 
@@ -54,6 +51,8 @@ private:
 
     OPS243::range_report_t range_reports[OPS243::MAX_REPORTS];
     OPS243::speed_report_t speed_reports[OPS243::MAX_REPORTS];
+
+    NearPassDetector* near_pass_detector = nullptr;
 
     bool do_run = false;
     std::thread* predictor_thread = nullptr;
