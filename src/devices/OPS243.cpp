@@ -110,7 +110,7 @@ void OPS243::set_minimum_speed_filter(int min_speed) {
     }
 
     char cmd[32];
-    sprintf(cmd, "R>%d\n", min_speed);
+    sprintf(cmd, "R>%d\r", min_speed);
    write(serial_file, cmd, sizeof(cmd));
 }
 
@@ -123,7 +123,7 @@ void OPS243::set_maximum_speed_filter(int max_speed) {
     }
 
     char cmd[32];
-    sprintf(cmd, "R<%d\n", max_speed);
+    sprintf(cmd, "R<%d\r", max_speed);
     write(serial_file, cmd, sizeof(cmd));
 }
 
@@ -136,7 +136,7 @@ void OPS243::set_minimum_range_filter(int min_range) {
     }
 
     char cmd[32];
-    sprintf(cmd, "r>%d\n", min_range);
+    sprintf(cmd, "r>%d\r", min_range);
     write(serial_file, cmd, sizeof(cmd));
 }
 
@@ -149,35 +149,35 @@ void OPS243::set_maximum_range_filter(int max_range) {
     }
 
     char cmd[32];
-    sprintf(cmd, "r<%d\n", max_range);
+    sprintf(cmd, "r<%d\r", max_range);
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::report_current_range_filter() {
-    char cmd[32] = "r?";
+    char cmd[] = "r?";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::report_current_speed_filter() {
-    char cmd[32] = "R?";
+    char cmd[] = "R?";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::set_inbound_only() {
     /* Set the reporting to only be for inbound directions */
-    char cmd[32] = "R+\n";
+    char cmd[] = "R+";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::set_outbound_only() {
     /* Sets the reporting to only be for outbound directions */
-    char cmd[32] = "R-\n";
+    char cmd[] = "R-";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::clear_direction_control() {
     /* Clear direction control */
-    char cmd[32] = "R|\n";
+    char cmd[] = "R|";
     write(serial_file, cmd, sizeof(cmd));
 }
 
@@ -186,13 +186,13 @@ void OPS243::clear_direction_control() {
 void OPS243::enable_peak_speed_average() {
     /* Enables speed averaging of peak detected */
     /* values across the nearest two speeds detected.*/
-    char cmd[32] = "K+\n";
+    char cmd[] = "K+";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::disable_peak_speed_average() {
     /* Disable speed averaging */
-    char cmd[32] = "K-\n";
+    char cmd[] = "K-";
     write(serial_file, cmd, sizeof(cmd));
 }
 
@@ -213,7 +213,7 @@ void OPS243::clear_buffer() {
 int OPS243::get_module_info(char* module_info, int length) {
     clear_buffer();
 
-    char cmd[32] = "??";
+    char cmd[] = "??";
     write(serial_file, cmd, sizeof(cmd));
 
     memset(module_info, '\0', length);
@@ -251,6 +251,7 @@ int OPS243::read_new_data_line(range_report_t* range_reports, speed_report_t* sp
 
     // If line is a range report
     if (line_buf[1] == 'm' && line_buf[3] != 's') {
+        memset(range_reports, 0, MAX_REPORTS * sizeof(range_report_t));
         int token_count = 0;
         int report_index = 0;
 
@@ -279,6 +280,7 @@ int OPS243::read_new_data_line(range_report_t* range_reports, speed_report_t* sp
 
     // If line is a speed report
     else if (line_buf[3] == 's') {
+        memset(speed_reports, 0, MAX_REPORTS * sizeof(speed_report_t));
         int token_count = 0;
         int report_index = 0;
 
@@ -309,42 +311,42 @@ int OPS243::read_new_data_line(range_report_t* range_reports, speed_report_t* sp
 }
 
 void OPS243::turn_range_reporting_on() {
-    char cmd[32] = "OD";
+    char cmd[] = "OD";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::turn_range_reporting_off() {
-    char cmd[32] = "Od";
+    char cmd[] = "Od";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::turn_speed_reporting_on() {
-    char cmd[32] = "OS";
+    char cmd[] = "OS";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::turn_speed_reporting_off() {
-    char cmd[32] = "Os";
+    char cmd[] = "Os";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::turn_fmcw_magnitude_reporting_on() {
-    char cmd[32] = "oM";
+    char cmd[] = "oM";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::turn_fmcw_magnitude_reporting_off() {
-    char cmd[32] = "om";
+    char cmd[] = "om";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::turn_doppler_magnitude_reporting_on() {
-    char cmd[32] = "OM";
+    char cmd[] = "OM";
     write(serial_file, cmd, sizeof(cmd));
 }
 
 void OPS243::turn_doppler_magnitude_reporting_off() {
-    char cmd[32] = "Om";
+    char cmd[] = "Om";
     write(serial_file, cmd, sizeof(cmd));
 }
 
