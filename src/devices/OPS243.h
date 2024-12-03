@@ -11,12 +11,12 @@ public:
 
     struct speed_report_t {
         float speed_mps;
-        float magnitude;
+        int magnitude;
     };
 
     struct range_report_t {
         float range_m;
-        float magnitude;
+        int magnitude;
     };
 
     OPS243(const std::string serial_port);

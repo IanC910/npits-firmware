@@ -251,28 +251,27 @@ int OPS243::read_new_data_line(range_report_t* range_reports, speed_report_t* sp
 
     // If line is a range report
     if (line_buf[1] == 'm' && line_buf[3] != 's') {
-        memset(range_reports, 0, MAX_REPORTS * sizeof(range_report_t));
-        char* token = strtok(line_buf, SEPARATOR);
-
         int token_count = 0;
         int report_index = 0;
-        while (token) {
-            //printf("%s\n", token);
-            if (token_count == 0) {
-                token = strtok(NULL, SEPARATOR); // Ignore the "m"
-                token_count++;
-                continue;
+
+        while(true) {
+            char* token = strtok(line_buf, SEPARATOR);
+            if(token == NULL) {
+                break;
             }
-            if ((token_count % 2) == 1) {
-                range_reports[report_index].magnitude = atof(token);
+
+            if(token_count == 0) {
+                // Nothing, ignore the unit
             }
-            else if ((token_count % 2) == 0 && token_count != 0) {
+            else if(token_count % 2 == 1) {
+                range_reports[report_index].magnitude = atoi(token);
+            }
+            else { // token_count is even and not 0
                 range_reports[report_index].range_m = atof(token);
                 report_index++;
             }
 
             token_count++;
-            token = strtok(NULL, SEPARATOR);
         }
 
         return 1;
@@ -280,27 +279,27 @@ int OPS243::read_new_data_line(range_report_t* range_reports, speed_report_t* sp
 
     // If line is a speed report
     else if (line_buf[3] == 's') {
-        memset(speed_reports, 0, MAX_REPORTS * sizeof(speed_report_t));
-        char* token = strtok(line_buf, SEPARATOR);
-
         int token_count = 0;
         int report_index = 0;
-        while (token) {
-            if (token_count == 0) {
-                token = strtok(NULL, SEPARATOR); // Ignore the "mps"
-                token_count++;
-                continue;
+
+        while(true) {
+            char* token = strtok(line_buf, SEPARATOR);
+            if(token == NULL) {
+                break;
             }
-            if ((token_count % 2) == 1) {
-                speed_reports[report_index].magnitude = atof(token);
+
+            if(token_count == 0) {
+                // Nothing, ignore the unit
             }
-            else if ((token_count % 2) == 0 && token_count != 0) {
-                speed_reports[report_index].speed_mps = atof(token);
+            else if(token_count % 2 == 1) {
+                speed_reports[report_index].magnitude = atoi(token);
+            }
+            else { // token_count is even and not 0
+                speed_reports[report_index].range_m = atof(token);
                 report_index++;
             }
 
             token_count++;
-            token = strtok(NULL, SEPARATOR);
         }
 
         return 2;
