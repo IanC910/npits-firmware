@@ -17,7 +17,7 @@
 #include "near_pass_prediction_params.h"
 #include "NearPassPredictor.h"
 
-NearPassPredictor::NearPassPredictor(OPS243* radar, NearPassDetector* near_pass_detector = nullptr) {
+NearPassPredictor::NearPassPredictor(OPS243* radar, NearPassDetector* near_pass_detector) {
     this->radar = radar;
     this->near_pass_detector = near_pass_detector;
 
@@ -92,17 +92,13 @@ void NearPassPredictor::run() {
             }
             printf("\nMagnitude: ");
             for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
-                printf("%16.2f", range_reports[i].magnitude);
+                printf("%19d", range_reports[i].magnitude);
             }
             printf("\n");
 
             OPS243::range_report_t range_report = get_range_of_highest_mag_m();
             if(range_report.magnitude != 0) {
-                log("NearPassPredictor",
-                    std::string("Vehicle in range! ") +
-                    std::string(" Range m: ") + std::to_string(range_report.range_m) +
-                    std::string(" Magnitude: ") + std::to_string(range_report.magnitude)
-                );
+                log("NearPassPredictor", "Vehicle in range!");
             }
         }
         else if(option == 2) { // Speed data updated
@@ -113,17 +109,13 @@ void NearPassPredictor::run() {
             }
             printf("\nMagnitude: ");
             for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
-                printf("%16.2f", speed_reports[i].magnitude);
+                printf("%19d", speed_reports[i].magnitude);
             }
             printf("\n");
 
             OPS243::speed_report_t speed_report = get_speed_of_highest_mag_mps();
             if(speed_report.magnitude != 0) {
-                log("NearPassPredictor",
-                    std::string("Vehicle approaching! ") +
-                    std::string(" Speed mps: ") + std::to_string(speed_report.speed_mps) +
-                    std::string(" Magnitude: ") + std::to_string(speed_report.magnitude)
-                );
+                log("NearPassPredictor", "Vehicle approaching!");
 
                 // Prediction logic currently assumes no range data!
                 // Assumes a range of probable distances and a grace period
@@ -221,7 +213,6 @@ OPS243::range_report_t NearPassPredictor::get_range_of_highest_mag_m() {
             if(range_reports[i].magnitude > range_reports[highest_mag_index].magnitude) {
                 highest_mag_index = i;
             }
-
         }
     }
 

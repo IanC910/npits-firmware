@@ -6,7 +6,6 @@
 #include <thread>
 
 #include "../devices/MB1242.h"
-#include "NearPassPredictor.h"
 
 class NearPassDetector {
 public:

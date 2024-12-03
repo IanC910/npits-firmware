@@ -321,7 +321,7 @@ int OPS243::read_new_data_line(range_report_t* range_reports, speed_report_t* sp
                 speed_reports[report_index].magnitude = atoi(token);
             }
             else { // token_count is even and not 0
-                speed_reports[report_index].range_m = atof(token);
+                speed_reports[report_index].speed_mps = atof(token);
                 report_index++;
             }
 

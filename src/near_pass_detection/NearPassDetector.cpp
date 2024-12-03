@@ -15,7 +15,7 @@
 
 
 
-NearPassDetector::NearPassDetector(MB1242* ultrasonic, bool use_predictor = false) {
+NearPassDetector::NearPassDetector(MB1242* ultrasonic, bool use_predictor) {
     this->ultrasonic = ultrasonic;
     this->use_predictor = use_predictor;
 
@@ -148,7 +148,7 @@ void NearPassDetector::run() {
                         ) {
                             log("NearPassDetector", "Near pass valid");
 
-                            if(use_predictor && was_near_pass_predicted_at_start_time || !use_predictor) {
+                            if((use_predictor && was_near_pass_predicted_at_start_time) || !use_predictor) {
                                 log("NearPassDetector", "Logging near pass");
                                 NearPass near_pass;
                                 near_pass.time          = (long)(near_pass_start_time_ms / 1000);

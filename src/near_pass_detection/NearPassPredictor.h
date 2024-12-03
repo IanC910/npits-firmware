@@ -1,3 +1,4 @@
+
 #ifndef NEAR_PASS_PREDICTOR_H
 #define NEAR_PASS_PREDICTOR_H
 
