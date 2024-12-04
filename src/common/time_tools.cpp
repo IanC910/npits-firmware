@@ -52,7 +52,7 @@ std::string get_timestamp_hms() {
 
     int milliseconds = now.tv_nsec / 1000000;
     char timestamp_cstr[64];
-    snprintf(timestamp_cstr, sizeof(timestamp_cstr), "%s.%3d", time_buffer, milliseconds);
+    snprintf(timestamp_cstr, sizeof(timestamp_cstr), "%s.%03d", time_buffer, milliseconds);
 
     return std::string(timestamp_cstr);
 }

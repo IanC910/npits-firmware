@@ -11,7 +11,7 @@ void npits_ble_server_init(
     NearPassPredictor* near_pass_predictor
 );
 
-// Runs the BLE server. Blocking
+// Runs the BLE server. Blocking. Stops on key press 'x' or call to npits_ble_server_stop()
 void npits_ble_server_run();
 
 // Stops the BLE server. Non-blocking

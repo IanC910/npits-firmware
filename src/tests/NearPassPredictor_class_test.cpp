@@ -7,6 +7,7 @@
 #include <string>
 
 #include "../common/log.h"
+#include "../devices/OPS243.h"
 #include "../near_pass_detection/NearPassPredictor.h"
 
 // Function to check for keyboard 'q' press
@@ -41,7 +42,7 @@ int main() {
     NearPassPredictor near_pass_predictor(&radar);
 
     // Initialize the sensor with custom settings
-    near_pass_predictor.initialize_radar();
+    near_pass_predictor.config_radar();
     
     while (true) {
         if (kbhit()) {
@@ -52,10 +53,10 @@ int main() {
             }
         }
 
-        near_pass_predictor.update_speeds_and_ranges();
+        near_pass_predictor.update_speeds_or_ranges();
 
         if(near_pass_predictor.is_vehicle_approaching()) {
-            NearPassPredictor::speed_report_t speed_report = near_pass_predictor.get_speed_of_approaching_vehicle_mps();
+            OPS243::speed_report_t speed_report = near_pass_predictor.get_speed_of_highest_mag_mps();
             log("Test",
                 std::string("Vehicle approaching! ") + 
                 std::string(" Speed mps: ") + std::to_string(speed_report.speed_mps) +
@@ -64,7 +65,7 @@ int main() {
         }
             
         if(near_pass_predictor.is_vehicle_in_range()){
-            NearPassPredictor::range_report_t range_report = near_pass_predictor.get_distance_of_highest_mag_m();
+            OPS243::range_report_t range_report = near_pass_predictor.get_range_of_highest_mag_m();
             log("Test",
                 std::string("Vehicle in range! ") + 
                 std::string(" Range m: ") + std::to_string(range_report.range_m) +

@@ -11,7 +11,7 @@
 
 int main() {
     // Open the database
-    if (db_open() != SQLITE_OK) {
+    if (db_open("near_pass.db") != SQLITE_OK) {
         return 1;
     }
 

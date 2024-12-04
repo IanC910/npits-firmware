@@ -1,0 +1,780 @@
+04:02:59.556 [NearPassPredictor] Warning, near pass detector is nullptr
+04:02:59.558 [NearPassPredictor] Starting...
+04:02:59.558 [NearPassDetector] Starting...
+04:02:59.558 [MB1242] Starting...
+04:02:59.568 [NearPassPredictor] Radar range data:
+Range:                 2.10           24.60           21.80           30.00           17.40            5.40           28.60           19.10           27.20
+Magnitude:              314              74              56              48              46              40              39              33              33
+04:02:59.568 [NearPassPredictor] Vehicle in range!
+04:02:59.588 [NearPassPredictor] Radar timeout
+04:02:59.608 [NearPassPredictor] Radar timeout
+1733284979615: 765 cm
+04:02:59.629 [NearPassPredictor] Radar timeout
+04:02:59.649 [NearPassPredictor] Radar timeout
+04:02:59.669 [NearPassPredictor] Radar timeout
+1733284979677: 765 cm
+04:02:59.690 [NearPassPredictor] Radar timeout
+04:02:59.710 [NearPassPredictor] Radar timeout
+04:02:59.731 [NearPassPredictor] Radar timeout
+1733284979739: 765 cm
+04:02:59.751 [NearPassPredictor] Radar timeout
+04:02:59.772 [NearPassPredictor] Radar timeout
+04:02:59.792 [NearPassPredictor] Radar timeout
+1733284979800: 765 cm
+04:02:59.812 [NearPassPredictor] Radar timeout
+04:02:59.833 [NearPassPredictor] Radar timeout
+04:02:59.853 [NearPassPredictor] Radar speed data:
+Speed:                 4.10            1.70            0.70            2.30            1.20           24.70            2.80            7.30            5.50
+Magnitude:                5               0               0               0               0               0               0               0               0
+1733284979862: 765 cm
+04:02:59.874 [NearPassPredictor] Radar range data:
+Range:                 2.10           10.50           34.10           30.00           24.50            5.50           19.40           21.80           17.40
+Magnitude:              327              61              45              43              41              39              39              33              27
+04:02:59.874 [NearPassPredictor] Vehicle in range!
+04:02:59.894 [NearPassPredictor] Radar speed data:
+Speed:                 4.50            6.50           18.70           26.10            7.40           24.50           17.40           17.80           24.00
+Magnitude:                7               0               0               0               0               0               0               0               0
+04:02:59.915 [NearPassPredictor] Radar range data:
+Range:                 2.10           10.50           30.00           34.10           19.70            5.50           56.90          137.00           13.60
+Magnitude:              336              89              78              66              45              38              30              29              24
+04:02:59.915 [NearPassPredictor] Vehicle in range!
+1733284979924: 765 cm
+04:02:59.936 [NearPassPredictor] Radar speed data:
+Speed:                 4.70           19.90            1.30           22.40           14.10           15.00            2.40           28.30            9.60
+Magnitude:                8               0               0               0               0               0               0               0               0
+04:02:59.956 [NearPassPredictor] Radar range data:
+Range:                 2.10           10.50           34.10           29.60           30.60           19.70            5.50           56.90          137.00
+Magnitude:              342             105              74              60              50              49              37              36              32
+04:02:59.956 [NearPassPredictor] Vehicle in range!
+04:02:59.977 [NearPassPredictor] Radar speed data:
+Speed:                 5.00            5.70           27.80           20.90           18.80           13.70           24.00           14.60            2.20
+Magnitude:                9               1               0               0               0               0               0               0               0
+1733284979986: 765 cm
+04:02:59.997 [NearPassPredictor] Radar range data:
+Range:                 2.10           10.20           34.10           29.00           19.70           56.60          137.00           30.60            5.50
+Magnitude:              344              98              79              68              51              42              35              33              29
+04:02:59.998 [NearPassPredictor] Vehicle in range!
+04:03:00.030 [NearPassPredictor] Radar speed data:
+Speed:                 5.30            5.70           24.80           14.00           28.00           30.10           17.50           10.90            0.50
+Magnitude:                9               1               0               0               0               0               0               0               0
+1733284980048: 765 cm
+04:03:00.055 [NearPassPredictor] Radar range data:
+Range:                 2.10           10.20           34.10           28.60           19.70           30.60           56.60          137.00           59.20
+Magnitude:              343              81              80              77              50              43              42              40              31
+04:03:00.055 [NearPassPredictor] Vehicle in range!
+1733284980110: 765 cm
+04:03:00.127 [NearPassPredictor] Radar speed data:
+Speed:                 5.60            0.70           21.20           20.80           30.60            2.20           26.30           28.40            8.60
+Magnitude:                9               1               1               1               0               0               0               0               0
+04:03:00.154 [NearPassPredictor] Radar range data:
+Range:                 2.10           34.10           10.20           27.60           19.70           30.30           56.60          137.00           52.80
+Magnitude:              345              81              80              62              52              46              43              41              31
+04:03:00.154 [NearPassPredictor] Vehicle in range!
+1733284980172: 765 cm
+04:03:00.225 [NearPassPredictor] Radar speed data:
+Speed:                 5.90           25.20           24.80           17.80           28.40            5.50           15.80           19.90           29.50
+Magnitude:                9               1               1               0               0               0               0               0               0
+1733284980234: 765 cm
+04:03:00.251 [NearPassPredictor] Radar range data:
+Range:                 2.10           10.20           34.10           27.30           19.70           56.60           30.60          137.00           13.30
+Magnitude:              346              90              88              85              49              48              47              40              34
+04:03:00.251 [NearPassPredictor] Vehicle in range!
+1733284980296: 765 cm
+04:03:00.323 [NearPassPredictor] Radar speed data:
+Speed:                 6.20           18.90            2.20            6.70           21.30           24.00           28.30           27.30           20.80
+Magnitude:               15               1               1               0               0               0               0               0               0
+04:03:00.350 [NearPassPredictor] Radar range data:
+Range:                 2.10           26.60           10.50           34.10           56.60           30.60           19.70           13.30          137.00
+Magnitude:              352             104              96              89              49              48              47              37              36
+04:03:00.350 [NearPassPredictor] Vehicle in range!
+1733284980358: 765 cm
+04:03:00.421 [NearPassPredictor] Radar speed data:
+Speed:                 6.40           23.70           21.20           18.90           13.60           30.30            8.90           26.70           28.50
+Magnitude:               18               1               0               0               0               0               0               0               0
+1733284980420: 765 cm
+04:03:00.448 [NearPassPredictor] Radar range data:
+Range:                 2.10           25.90           10.20           34.10           19.70           30.60           56.60          137.00           52.80
+Magnitude:              356             130              86              85              51              47              45              37              33
+04:03:00.448 [NearPassPredictor] Vehicle in range!
+1733284980482: 765 cm
+04:03:00.519 [NearPassPredictor] Radar speed data:
+Speed:                 6.70            2.10           14.90            9.50           28.90           12.30            1.50           19.70           11.80
+Magnitude:               14               1               1               1               1               0               0               0               0
+1733284980543: 765 cm
+04:03:00.546 [NearPassPredictor] Radar range data:
+Range:                 2.10           25.60           34.10            9.90           19.70           30.60           56.60          137.00           59.30
+Magnitude:              357              96              83              75              49              45              42              37              31
+04:03:00.546 [NearPassPredictor] Vehicle in range!
+1733284980605: 765 cm
+04:03:00.617 [NearPassPredictor] Radar speed data:
+Speed:                 6.90           11.90           14.90           21.10           22.90           13.10            3.60            9.20            1.40
+Magnitude:                5               1               1               1               0               0               0               0               0
+04:03:00.644 [NearPassPredictor] Radar range data:
+Range:                 2.10           34.10            9.50           24.50           25.90           19.70           30.30          137.00           56.60
+Magnitude:              360              80              78              65              52              49              41              40              36
+04:03:00.644 [NearPassPredictor] Vehicle in range!
+1733284980667: 765 cm
+04:03:00.715 [NearPassPredictor] Radar speed data:
+Speed:                 7.20           20.80           30.60           27.40           19.80           17.80           17.10           18.90           24.20
+Magnitude:               14               1               1               1               0               0               0               0               0
+1733284980729: 765 cm
+04:03:00.742 [NearPassPredictor] Radar range data:
+Range:                 2.10           23.80            9.20           34.10           19.70          137.00           30.30           58.90           56.90
+Magnitude:              364              86              80              79              52              44              39              37              34
+04:03:00.742 [NearPassPredictor] Vehicle in range!
+1733284980791: 765 cm
+04:03:00.813 [NearPassPredictor] Radar speed data:
+Speed:                 7.40            7.00            3.60           18.30           27.40           12.00           29.00            5.70           25.80
+Magnitude:               10               2               1               1               1               1               1               1               0
+04:03:00.840 [NearPassPredictor] Radar range data:
+Range:                 2.10            9.20           34.10           23.80           19.70          137.00           58.90           30.30           11.90
+Magnitude:              367              81              80              78              55              47              37              37              34
+04:03:00.840 [NearPassPredictor] Vehicle in range!
+1733284980852: 765 cm
+04:03:00.911 [NearPassPredictor] Radar speed data:
+Speed:                 7.50            7.20           19.80            5.70            3.00           14.70           27.40            6.60           29.00
+Magnitude:               10               5               1               1               1               0               0               0               0
+1733284980914: 765 cm
+04:03:00.938 [NearPassPredictor] Radar range data:
+Range:                 2.10            9.20           34.10           21.80           19.70           23.50          137.00           58.90           30.30
+Magnitude:              368              82              78              68              56              55              44              40              36
+04:03:00.938 [NearPassPredictor] Vehicle in range!
+1733284980976: 765 cm
+04:03:01.009 [NearPassPredictor] Radar speed data:
+Speed:                 7.50           12.00           17.10           21.30           30.20            5.30            9.20           19.60           11.30
+Magnitude:                7               1               1               0               0               0               0               0               0
+04:03:01.036 [NearPassPredictor] Radar range data:
+Range:                 2.10            9.20           34.10           21.80           19.70          137.30           58.90           30.30           11.90
+Magnitude:              368              81              75              59              56              39              38              35              33
+04:03:01.036 [NearPassPredictor] Vehicle in range!
+1733284981038: 765 cm
+1733284981100: 765 cm
+04:03:01.107 [NearPassPredictor] Radar speed data:
+Speed:                 7.40            4.00           14.80           12.30           20.30            1.50            2.10            5.70           12.00
+Magnitude:                7               1               1               0               0               0               0               0               0
+04:03:01.134 [NearPassPredictor] Radar range data:
+Range:                 2.10            9.20           34.10           20.40           21.80           58.90           30.30           80.40          137.30
+Magnitude:              372              83              74              55              52              40              36              36              35
+04:03:01.134 [NearPassPredictor] Vehicle in range!
+1733284981162: 765 cm
+04:03:01.205 [NearPassPredictor] Radar speed data:
+Speed:                 7.40            1.30           22.60           15.00           28.30           15.50           10.60           12.70            2.80
+Magnitude:               11               1               1               0               0               0               0               0               0
+1733284981224: 765 cm
+04:03:01.232 [NearPassPredictor] Radar range data:
+Range:                 2.10            9.20           34.10           19.70           80.40           58.90           21.10           21.80           30.30
+Magnitude:              370              82              75              67              44              42              36              35              34
+04:03:01.232 [NearPassPredictor] Vehicle in range!
+1733284981285: 765 cm
+04:03:01.303 [NearPassPredictor] Radar speed data:
+Speed:                 7.40           19.70            6.30           15.00           18.80            3.00            9.20           30.70           12.90
+Magnitude:                7               0               0               0               0               0               0               0               0
+04:03:01.330 [NearPassPredictor] Radar range data:
+Range:                 2.10            9.20           34.10           19.10           80.40           58.90           20.80           48.10           11.90
+Magnitude:              368              79              74              70              53              44              40              32              31
+04:03:01.330 [NearPassPredictor] Vehicle in range!
+1733284981347: 765 cm
+04:03:01.401 [NearPassPredictor] Radar speed data:
+Speed:                 7.40           17.20            1.10           30.80            9.60            5.90           20.40           28.40            5.70
+Magnitude:               29               1               1               0               0               0               0               0               0
+04:03:01.401 [NearPassPredictor] Vehicle approaching!
+04:03:01.401 [NearPassPredictor] Near pass is predicted now!
+1733284981409: 765 cm
+04:03:01.428 [NearPassPredictor] Radar range data:
+Range:                 2.10           18.40            9.20           34.10           80.70           20.50           58.90           11.90           48.00
+Magnitude:              360             159              76              73              63              44              41              33              33
+04:03:01.428 [NearPassPredictor] Vehicle in range!
+04:03:01.428 [NearPassPredictor] Near pass is predicted now!
+1733284981471: 765 cm
+04:03:01.500 [NearPassPredictor] Radar speed data:
+Speed:                 7.40           27.90           26.10           16.40            6.40           17.60            4.60           15.50           12.40
+Magnitude:               26               0               0               0               0               0               0               0               0
+04:03:01.500 [NearPassPredictor] Vehicle approaching!
+04:03:01.500 [NearPassPredictor] Near pass is predicted now!
+04:03:01.527 [NearPassPredictor] Radar range data:
+Range:                 2.10           18.00           34.10            9.20           80.70           20.10           10.60           58.90           48.10
+Magnitude:              357             182              73              73              67              45              42              40              34
+04:03:01.527 [NearPassPredictor] Vehicle in range!
+04:03:01.527 [NearPassPredictor] Near pass is predicted now!
+1733284981533: 765 cm
+04:03:01.598 [NearPassPredictor] Radar speed data:
+Speed:                 7.40            6.60            6.30            6.90           11.30            1.10           16.10           23.00           11.90
+Magnitude:               14               0               0               0               0               0               0               0               0
+04:03:01.598 [NearPassPredictor] Near pass is predicted now!
+1733284981595: 765 cm
+04:03:01.625 [NearPassPredictor] Radar range data:
+Range:                 2.10           17.70           34.10            9.20           80.70           19.80           58.90           10.60           48.10
+Magnitude:              359             122              74              72              68              52              40              37              35
+04:03:01.625 [NearPassPredictor] Vehicle in range!
+04:03:01.625 [NearPassPredictor] Near pass is predicted now!
+1733284981657: 765 cm
+04:03:01.696 [NearPassPredictor] Radar speed data:
+Speed:                 7.50           17.40            9.50           14.80            1.10            3.80            6.60            3.00            8.70
+Magnitude:                6               1               0               0               0               0               0               0               0
+04:03:01.696 [NearPassPredictor] Near pass is predicted now!
+04:03:01.723 [NearPassPredictor] Radar range data:
+Range:                 2.10           16.40            9.20           34.10           19.70           80.40           58.90           48.10           11.90
+Magnitude:              365              84              78              73              62              61              39              34              32
+04:03:01.723 [NearPassPredictor] Vehicle in range!
+04:03:01.723 [NearPassPredictor] Near pass is predicted now!
+1733284981718: 765 cm
+1733284981780: 765 cm
+04:03:01.794 [NearPassPredictor] Radar speed data:
+Speed:                 7.60            7.20            4.00            5.90           30.60            6.60           17.60           26.30           19.00
+Magnitude:               12               1               1               1               1               1               0               0               0
+04:03:01.794 [NearPassPredictor] Near pass is predicted now!
+04:03:01.821 [NearPassPredictor] Radar range data:
+Range:                 2.10            9.20           34.10           16.70           15.30           19.80           80.70           58.90           68.10
+Magnitude:              364              78              74              65              64              62              57              33              32
+04:03:01.821 [NearPassPredictor] Vehicle in range!
+04:03:01.821 [NearPassPredictor] Near pass is predicted now!
+1733284981842: 765 cm
+04:03:01.892 [NearPassPredictor] Radar speed data:
+Speed:                 7.90           18.90           29.00           13.40            8.60           30.50            1.30           10.10            5.90
+Magnitude:                9               1               1               0               0               0               0               0               0
+04:03:01.892 [NearPassPredictor] Near pass is predicted now!
+1733284981904: 765 cm
+04:03:01.919 [NearPassPredictor] Radar range data:
+Range:                 2.10           34.10            9.50           15.00           19.80           80.70           56.60           17.70           59.00
+Magnitude:              364              76              76              75              57              55              40              39              35
+04:03:01.919 [NearPassPredictor] Vehicle in range!
+04:03:01.919 [NearPassPredictor] Near pass is predicted now!
+1733284981966: 765 cm
+04:03:01.990 [NearPassPredictor] Radar speed data:
+Speed:                 8.00           20.00            6.40           22.40            7.40           11.90            1.20           17.40           14.30
+Magnitude:               24               0               0               0               0               0               0               0               0
+04:03:01.990 [NearPassPredictor] Near pass is predicted now!
+04:03:02.017 [NearPassPredictor] Radar range data:
+Range:                 2.10           13.60            9.50           34.10           19.80           80.70           56.90           58.90           30.30
+Magnitude:              367             166              77              76              56              49              41              37              35
+04:03:02.017 [NearPassPredictor] Vehicle in range!
+04:03:02.017 [NearPassPredictor] Near pass is predicted now!
+1733284982023: 765 cm
+04:03:02.087 [NearPassPredictor] Radar speed data:
+Speed:                 8.30            7.40            5.70            3.90           12.10           11.00            3.40           19.80            9.30
+Magnitude:               47               1               1               1               0               0               0               0               0
+04:03:02.087 [NearPassPredictor] Vehicle approaching!
+04:03:02.087 [NearPassPredictor] Near pass is predicted now!
+1733284982085: 765 cm
+04:03:02.114 [NearPassPredictor] Radar range data:
+Range:                 2.10           13.30            9.20           34.10           19.80           58.90           16.30           80.70           56.90
+Magnitude:              371             179              78              75              58              45              42              39              36
+04:03:02.114 [NearPassPredictor] Vehicle in range!
+04:03:02.114 [NearPassPredictor] Near pass is predicted now!
+1733284982147: 765 cm
+04:03:02.184 [NearPassPredictor] Radar speed data:
+Speed:                 8.50            7.50           30.60           22.80           18.30           11.00           27.40           14.10            7.10
+Magnitude:               43               1               1               0               0               0               0               0               0
+04:03:02.185 [NearPassPredictor] Vehicle approaching!
+04:03:02.185 [NearPassPredictor] Near pass is predicted now!
+1733284982209: 765 cm
+04:03:02.212 [NearPassPredictor] Radar range data:
+Range:                 2.10           11.90           34.10            9.50           15.00           19.80           80.70           58.60           38.80
+Magnitude:              366             271              77              72              64              64              43              41              32
+04:03:02.212 [NearPassPredictor] Vehicle in range!
+04:03:02.212 [NearPassPredictor] Near pass is predicted now!
+1733284982270: 765 cm
+04:03:02.282 [NearPassPredictor] Radar speed data:
+Speed:                 8.70            7.50            3.50           16.90            9.50           28.30            1.20           12.30           28.60
+Magnitude:               46               2               1               0               0               0               0               0               0
+04:03:02.283 [NearPassPredictor] Vehicle approaching!
+04:03:02.283 [NearPassPredictor] Near pass is predicted now!
+04:03:02.310 [NearPassPredictor] Radar range data:
+Range:                 2.10           11.60           34.10            9.50           19.80           58.30           80.70           22.10           31.70
+Magnitude:              366             229              70              67              66              47              44              34              32
+04:03:02.310 [NearPassPredictor] Vehicle in range!
+04:03:02.310 [NearPassPredictor] Near pass is predicted now!
+1733284982332: 765 cm
+04:03:02.382 [NearPassPredictor] Radar speed data:
+Speed:                 8.90            7.60            3.50            7.20           17.70            4.00            6.70           17.20            6.10
+Magnitude:               39               2               1               1               0               0               0               0               0
+04:03:02.382 [NearPassPredictor] Vehicle approaching!
+04:03:02.382 [NearPassPredictor] Near pass is predicted now!
+1733284982394: 765 cm
+04:03:02.409 [NearPassPredictor] Radar range data:
+Range:                 2.10           10.90            9.60           34.10           19.80           57.90           80.70           51.80           29.00
+Magnitude:              356             182             131              64              61              51              46              35              33
+04:03:02.409 [NearPassPredictor] Vehicle in range!
+04:03:02.409 [NearPassPredictor] Near pass is predicted now!
+1733284982456: 765 cm
+04:03:02.480 [NearPassPredictor] Radar speed data:
+Speed:                 9.10            7.70            3.50           19.90           22.80           25.50           11.80            5.50            1.70
+Magnitude:               78               3               1               1               1               1               1               0               0
+04:03:02.480 [NearPassPredictor] Vehicle approaching!
+04:03:02.480 [NearPassPredictor] Near pass is predicted now!
+04:03:02.506 [NearPassPredictor] Radar range data:
+Range:                 2.10            9.50            3.40           80.70           34.10           19.80           58.30           51.80           38.80
+Magnitude:              339             176              60              59              58              57              55              38              34
+04:03:02.506 [NearPassPredictor] Vehicle in range!
+04:03:02.506 [NearPassPredictor] Near pass is predicted now!
+1733284982518: 765 cm
+04:03:02.576 [NearPassPredictor] Radar speed data:
+Speed:                 9.20            7.70            3.50            6.40           17.10            7.40           22.60            7.10           14.00
+Magnitude:               18               1               1               1               1               0               0               0               0
+04:03:02.576 [NearPassPredictor] Near pass is predicted now!
+1733284982580: 765 cm
+04:03:02.603 [NearPassPredictor] Radar range data:
+Range:                 2.10            9.90            3.40           12.30           34.10           80.70           19.80           57.90           51.80
+Magnitude:              340             122              67              66              65              61              55              50              39
+04:03:02.604 [NearPassPredictor] Vehicle in range!
+04:03:02.604 [NearPassPredictor] Near pass is predicted now!
+1733284982642: 765 cm
+04:03:02.673 [NearPassPredictor] Radar speed data:
+Speed:                 9.30            8.00            7.30            3.90            6.40           28.40           14.80            3.20           17.20
+Magnitude:               14               1               1               1               0               0               0               0               0
+04:03:02.673 [NearPassPredictor] Near pass is predicted now!
+04:03:02.699 [NearPassPredictor] Radar range data:
+Range:                 2.10            9.50            7.20           80.70           19.80           57.30           51.80           68.20           34.00
+Magnitude:              338             150             145              58              57              47              43              39              37
+04:03:02.699 [NearPassPredictor] Vehicle in range!
+04:03:02.699 [NearPassPredictor] Near pass is predicted now!
+1733284982704: 765 cm
+04:03:02.771 [NearPassPredictor] Radar speed data:
+Speed:                 9.60            7.50            8.00           15.60            5.70           11.80           24.70            2.00           27.70
+Magnitude:               65               1               1               1               0               0               0               0               0
+04:03:02.771 [NearPassPredictor] Vehicle approaching!
+04:03:02.771 [NearPassPredictor] Near pass is predicted now!
+1733284982766: 765 cm
+04:03:02.798 [NearPassPredictor] Radar range data:
+Range:                 2.10            6.50            9.50           11.90           57.20           19.80           80.70           51.80           37.10
+Magnitude:              345             150             110              94              61              57              50              47              41
+04:03:02.798 [NearPassPredictor] Vehicle in range!
+04:03:02.798 [NearPassPredictor] Near pass is predicted now!
+1733284982827: 765 cm
+04:03:02.870 [NearPassPredictor] Radar speed data:
+Speed:                 9.60            7.30           18.90           18.10            3.90           15.60           17.70           24.00            8.00
+Magnitude:               50               3               1               1               1               0               0               0               0
+04:03:02.870 [NearPassPredictor] Vehicle approaching!
+04:03:02.870 [NearPassPredictor] Near pass is predicted now!
+1733284982889: 765 cm
+04:03:02.897 [NearPassPredictor] Radar range data:
+Range:                 2.10            5.10            6.80            9.50           12.20           57.60           19.80           80.70           51.50
+Magnitude:              354             275             138              91              79              73              55              52              44
+04:03:02.898 [NearPassPredictor] Vehicle in range!
+04:03:02.898 [NearPassPredictor] Near pass is predicted now!
+1733284982951: 765 cm
+04:03:02.968 [NearPassPredictor] Radar speed data:
+Speed:                 9.80            9.20            7.50            3.90            2.80            8.60            4.50            6.80            1.00
+Magnitude:               32               5               1               1               1               1               1               0               0
+04:03:02.968 [NearPassPredictor] Vehicle approaching!
+04:03:02.968 [NearPassPredictor] Near pass is predicted now!
+04:03:02.995 [NearPassPredictor] Radar range data:
+Range:                 2.10            4.80            6.80           57.60           12.20            9.50           19.80           80.70           51.40
+Magnitude:              352             310             132              77              72              69              61              58              42
+04:03:02.995 [NearPassPredictor] Vehicle in range!
+04:03:02.995 [NearPassPredictor] Near pass is predicted now!
+1733284983013: 765 cm
+04:03:03.066 [NearPassPredictor] Radar speed data:
+Speed:                 9.80            7.90           12.30            4.10           16.00            6.70           19.10            0.90           28.40
+Magnitude:               77               1               1               1               1               1               1               1               0
+04:03:03.066 [NearPassPredictor] Vehicle approaching!
+04:03:03.067 [NearPassPredictor] Near pass is predicted now!
+1733284983075: 765 cm
+04:03:03.093 [NearPassPredictor] Radar range data:
+Range:                 2.10            3.40            5.10           19.80           57.60           12.30           80.70           51.40            9.20
+Magnitude:              333             216             211             104              74              63              58              45              42
+04:03:03.094 [NearPassPredictor] Vehicle in range!
+04:03:03.094 [NearPassPredictor] Near pass is predicted now!
+1733284983137: 765 cm
+04:03:03.164 [NearPassPredictor] Radar speed data:
+Speed:                 9.50            9.80           15.90           17.00           12.50            8.80           14.70           11.40            6.60
+Magnitude:               31              18               1               1               1               1               1               1               1
+04:03:03.164 [NearPassPredictor] Vehicle approaching!
+04:03:03.164 [NearPassPredictor] Near pass is predicted now!
+04:03:03.191 [NearPassPredictor] Radar range data:
+Range:                 2.70            5.10           19.80           57.60           12.30           51.40           80.70          137.00           10.20
+Magnitude:              377             122              99              89              69              63              59              37              35
+04:03:03.192 [NearPassPredictor] Vehicle in range!
+04:03:03.192 [NearPassPredictor] Near pass is predicted now!
+1733284983199: 765 cm
+04:03:03.263 [NearPassPredictor] Radar speed data:
+Speed:                 9.70            9.30            9.00           15.70           11.90           10.90            7.30           17.00           12.30
+Magnitude:               45              20               4               1               1               1               1               0               0
+04:03:03.264 [NearPassPredictor] Vehicle approaching!
+04:03:03.264 [NearPassPredictor] Near pass is predicted now!
+1733284983261: 765 cm
+04:03:03.291 [NearPassPredictor] Radar range data:
+Range:                 2.10           19.80           57.60           12.30            5.10           51.50           80.70          137.00           10.20
+Magnitude:              389             100              97              87              85              76              56              40              39
+04:03:03.291 [NearPassPredictor] Vehicle in range!
+04:03:03.291 [NearPassPredictor] Near pass is predicted now!
+1733284983323: 765 cm
+04:03:03.361 [NearPassPredictor] Radar speed data:
+Speed:                 9.70            9.30            9.10            8.20            7.50            6.90           10.60           11.00           12.30
+Magnitude:               67              18              14               4               2               1               1               1               1
+04:03:03.362 [NearPassPredictor] Vehicle approaching!
+04:03:03.362 [NearPassPredictor] Near pass is predicted now!
+04:03:03.388 [NearPassPredictor] Radar range data:
+Range:                 2.10           57.20           19.80           11.90           37.10           51.50           33.70           80.70           10.20
+Magnitude:              410             100              83              75              71              65              54              53              47
+04:03:03.389 [NearPassPredictor] Vehicle in range!
+04:03:03.389 [NearPassPredictor] Near pass is predicted now!
+1733284983385: 765 cm
+1733284983446: 765 cm
+04:03:03.459 [NearPassPredictor] Radar speed data:
+Speed:                 9.50            7.30            9.80            9.10            7.90            8.50            8.80           16.80           11.60
+Magnitude:               16              13               5               3               2               2               2               1               1
+04:03:03.459 [NearPassPredictor] Near pass is predicted now!
+04:03:03.486 [NearPassPredictor] Radar range data:
+Range:                 2.00            3.40           57.20           19.80           11.90           10.60           13.60           37.10           80.70
+Magnitude:              382              95              90              74              71              69              64              61              56
+04:03:03.487 [NearPassPredictor] Vehicle in range!
+04:03:03.487 [NearPassPredictor] Near pass is predicted now!
+1733284983508: 765 cm
+04:03:03.557 [NearPassPredictor] Radar speed data:
+Speed:                 9.50            8.70            7.80            7.40            8.40            4.90            6.50            5.70            2.70
+Magnitude:               23              12               5               5               3               1               1               1               1
+04:03:03.557 [NearPassPredictor] Near pass is predicted now!
+1733284983570: 765 cm
+04:03:03.584 [NearPassPredictor] Radar range data:
+Range:                 2.00           13.60           10.60           57.20           19.80           80.70           51.80           37.10           38.80
+Magnitude:              413             100              82              75              68              61              56              54              48
+04:03:03.585 [NearPassPredictor] Vehicle in range!
+04:03:03.585 [NearPassPredictor] Near pass is predicted now!
+1733284983591:  97 cm
+04:03:03.601 [NearPassDetector] Near pass potentially started
+1733284983613:  94 cm
+1733284983634:  95 cm
+04:03:03.653 [NearPassPredictor] Radar speed data:
+Speed:                 9.10            5.60            7.20            8.00            6.80            6.50            7.50            9.60            6.10
+Magnitude:                7               4               3               3               2               2               2               2               1
+04:03:03.653 [NearPassPredictor] Near pass is predicted now!
+1733284983655:  93 cm
+04:03:03.679 [NearPassPredictor] Radar range data:
+Range:                 2.10           10.60           12.30           57.20           80.80           33.70           19.80           51.80           37.10
+Magnitude:              366              97              83              70              63              60              57              55              53
+04:03:03.679 [NearPassPredictor] Vehicle in range!
+04:03:03.679 [NearPassPredictor] Near pass is predicted now!
+1733284983676:  94 cm
+1733284983697:  93 cm
+04:03:03.702 [NearPassDetector] In near pass
+1733284983719:  92 cm
+1733284983740:  91 cm
+04:03:03.751 [NearPassPredictor] Radar speed data:
+Speed:                 7.50            3.10            7.90            4.60            5.00            5.40            2.50            6.30            5.90
+Magnitude:                4               1               1               1               1               1               0               0               0
+04:03:03.751 [NearPassPredictor] Near pass is predicted now!
+1733284983761:  90 cm
+04:03:03.778 [NearPassPredictor] Radar range data:
+Range:                 2.10           10.60           11.90           57.20           34.00           80.80           19.80           51.80           38.80
+Magnitude:              367              98              83              67              66              65              54              52              46
+04:03:03.778 [NearPassPredictor] Vehicle in range!
+04:03:03.778 [NearPassPredictor] Near pass is predicted now!
+1733284983782:  91 cm
+1733284983803:  90 cm
+1733284983825:  90 cm
+04:03:03.850 [NearPassPredictor] Radar speed data:
+Speed:                 6.70            4.50            5.10            3.70            6.10            2.80            2.60           18.30           20.70
+Magnitude:                1               1               1               1               1               1               1               0               0
+04:03:03.850 [NearPassPredictor] Near pass is predicted now!
+1733284983846:  91 cm
+1733284983867:  92 cm
+04:03:03.877 [NearPassPredictor] Radar range data:
+Range:                 2.10           10.60           11.90           34.10           80.70           57.20           19.80           51.80           38.80
+Magnitude:              352             103              89              63              62              61              52              49              47
+04:03:03.877 [NearPassPredictor] Vehicle in range!
+04:03:03.877 [NearPassPredictor] Near pass is predicted now!
+1733284983888:  91 cm
+1733284983910:  93 cm
+1733284983931:  93 cm
+04:03:03.948 [NearPassPredictor] Radar speed data:
+Speed:                 6.20            2.80           24.40            5.70            3.30           18.80            2.10           19.80            9.20
+Magnitude:                0               0               0               0               0               0               0               0               0
+04:03:03.948 [NearPassPredictor] Near pass is predicted now!
+1733284983952:  96 cm
+1733284983973: 100 cm
+04:03:03.975 [NearPassPredictor] Radar range data:
+Range:                 2.10           10.20           11.90           80.70           34.10           19.80           57.20           51.80           68.50
+Magnitude:              345             103              91              59              58              54              53              49              41
+04:03:03.975 [NearPassPredictor] Vehicle in range!
+04:03:03.975 [NearPassPredictor] Near pass is predicted now!
+1733284984035: 765 cm
+04:03:04.044 [NearPassDetector] Near pass potentially over
+04:03:04.046 [NearPassPredictor] Radar speed data:
+Speed:                14.30           17.10           20.80           26.00            0.60           20.30            6.60           18.30           18.70
+Magnitude:                1               1               0               0               0               0               0               0               0
+04:03:04.046 [NearPassPredictor] Near pass is predicted now!
+04:03:04.073 [NearPassPredictor] Radar range data:
+Range:                 2.10           11.90           10.60           34.10           19.80           80.70           51.80           57.20           37.10
+Magnitude:              342              86              82              61              51              51              46              46              39
+04:03:04.073 [NearPassPredictor] Vehicle in range!
+04:03:04.073 [NearPassPredictor] Near pass is predicted now!
+1733284984097: 765 cm
+04:03:04.143 [NearPassPredictor] Radar speed data:
+Speed:                 9.40           22.00           17.20            6.40            2.10            3.80            5.90           14.30           23.50
+Magnitude:                1               0               0               0               0               0               0               0               0
+04:03:04.143 [NearPassPredictor] Near pass is predicted now!
+1733284984159: 765 cm
+04:03:04.165 [NearPassDetector] Near pass over
+04:03:04.166 [NearPassDetector] Near pass valid
+04:03:04.166 [NearPassDetector] Logging near pass
+04:03:04.166 [near_pass_db] Couldn't insert near pass, db not open
+04:03:04.170 [NearPassPredictor] Radar range data:
+Range:                 2.10           11.90           10.60           34.10           19.80           80.40           57.20           51.80           37.10
+Magnitude:              341              73              65              63              52              48              46              44              37
+04:03:04.170 [NearPassPredictor] Vehicle in range!
+04:03:04.170 [NearPassPredictor] Near pass is predicted now!
+1733284984221: 765 cm
+04:03:04.242 [NearPassPredictor] Radar speed data:
+Speed:                11.30           15.00           14.10            8.90           10.00           26.70            1.60           16.30           13.00
+Magnitude:                1               0               0               0               0               0               0               0               0
+04:03:04.242 [NearPassPredictor] Near pass is predicted now!
+04:03:04.269 [NearPassPredictor] Radar range data:
+Range:                 2.10            3.40           34.10           11.90            9.50           57.60           19.80           51.80           80.70
+Magnitude:              345              77              66              62              58              54              53              48              47
+04:03:04.269 [NearPassPredictor] Vehicle in range!
+04:03:04.269 [NearPassPredictor] Near pass is predicted now!
+1733284984282: 765 cm
+04:03:04.340 [NearPassPredictor] Radar speed data:
+Speed:                26.70           28.40           11.90           27.40            6.70           30.10           20.80           13.60            7.50
+Magnitude:                0               0               0               0               0               0               0               0               0
+04:03:04.340 [NearPassPredictor] Near pass is predicted now!
+1733284984344: 765 cm
+04:03:04.367 [NearPassPredictor] Radar range data:
+Range:                 2.10            3.40           34.10            9.50           57.60           19.80           11.90           51.80           80.70
+Magnitude:              348              79              69              64              61              53              52              51              49
+04:03:04.367 [NearPassPredictor] Vehicle in range!
+04:03:04.367 [NearPassPredictor] Near pass is predicted now!
+1733284984406: 765 cm
+04:03:04.439 [NearPassPredictor] Radar speed data:
+Speed:                26.00           14.40            6.40           30.00           15.00           12.30            7.70           19.00           25.10
+Magnitude:                0               0               0               0               0               0               0               0               0
+04:03:04.439 [NearPassPredictor] Near pass is predicted now!
+04:03:04.465 [NearPassPredictor] Radar range data:
+Range:                 2.10            3.40           34.10            9.50           57.90           19.80           51.80           80.70           11.90
+Magnitude:              346              83              69              67              66              54              51              49              47
+04:03:04.465 [NearPassPredictor] Vehicle in range!
+04:03:04.465 [NearPassPredictor] Near pass is predicted now!
+1733284984468: 765 cm
+04:03:04.536 [NearPassPredictor] Radar speed data:
+Speed:                22.30            9.60            6.70           26.10           30.60           22.00           22.70            1.90           17.40
+Magnitude:                0               0               0               0               0               0               0               0               0
+04:03:04.536 [NearPassPredictor] Near pass is predicted now!
+1733284984530: 765 cm
+04:03:04.563 [NearPassPredictor] Radar range data:
+Range:                 2.10            3.40           34.10           57.90            9.20           20.10           51.80           80.70           11.90
+Magnitude:              345              83              69              65              65              53              50              47              46
+04:03:04.563 [NearPassPredictor] Vehicle in range!
+04:03:04.563 [NearPassPredictor] Near pass is predicted now!
+1733284984592: 765 cm
+04:03:04.634 [NearPassPredictor] Radar speed data:
+Speed:                23.90           29.40            9.20           25.20            6.60            2.50           28.30           14.30           11.90
+Magnitude:                0               0               0               0               0               0               0               0               0
+04:03:04.634 [NearPassPredictor] Near pass is predicted now!
+1733284984654: 765 cm
+04:03:04.661 [NearPassPredictor] Radar range data:
+Range:                 2.10            3.40           34.10           57.90            9.20           19.80           11.90           51.80           80.70
+Magnitude:              344              84              67              63              60              55              49              48              47
+04:03:04.661 [NearPassPredictor] Vehicle in range!
+04:03:04.661 [NearPassPredictor] Near pass is predicted now!
+1733284984716: 765 cm
+04:03:04.732 [NearPassPredictor] Radar speed data:
+Speed:                12.30           17.00            7.70           26.10           23.70           29.40           20.30           13.60           25.60
+Magnitude:                0               0               0               0               0               0               0               0               0
+04:03:04.732 [NearPassPredictor] Near pass is predicted now!
+04:03:04.759 [NearPassPredictor] Radar range data:
+Range:                 2.10            3.40           34.10           57.60            9.20           19.80           11.90           80.40           51.80
+Magnitude:              344              81              65              58              55              54              54              46              44
+04:03:04.759 [NearPassPredictor] Vehicle in range!
+04:03:04.759 [NearPassPredictor] Near pass is predicted now!
+1733284984778: 765 cm
+04:03:04.830 [NearPassPredictor] Radar speed data:
+Speed:                 9.10           16.50           17.50           19.40            4.10            6.40           23.10            1.30            2.40
+Magnitude:                0               0               0               0               0               0               0               0               0
+04:03:04.830 [NearPassPredictor] Near pass is predicted now!
+1733284984840: 765 cm
+04:03:04.857 [NearPassPredictor] Radar range data:
+Range:                 2.10            3.40           34.10           11.90           19.80           57.60            9.20           80.40           51.80
+Magnitude:              343              78              64              59              54              53              50              46              42
+04:03:04.857 [NearPassPredictor] Vehicle in range!
+04:03:04.857 [NearPassPredictor] Near pass is predicted now!
+1733284984902: 765 cm
+04:03:04.928 [NearPassPredictor] Radar speed data:
+Speed:                20.90           28.40           30.80            2.20           18.80           19.80            1.00           26.90            8.90
+Magnitude:                0               0               0               0               0               0               0               0               0
+04:03:04.928 [NearPassPredictor] Near pass is predicted now!
+04:03:04.955 [NearPassPredictor] Radar range data:
+Range:                 2.10            3.40           34.10           11.90           19.80           57.60            9.20           80.40           51.80
+Magnitude:              342              75              64              61              54              50              48              47              40
+04:03:04.955 [NearPassPredictor] Vehicle in range!
+04:03:04.955 [NearPassPredictor] Near pass is predicted now!
+1733284984964: 765 cm
+04:03:05.026 [NearPassPredictor] Radar speed data:
+Speed:                27.60            9.20           28.30            2.40           21.00           21.20           12.50           17.10           29.40
+Magnitude:                1               0               0               0               0               0               0               0               0
+04:03:05.026 [NearPassPredictor] Near pass is predicted now!
+1733284985025: 765 cm
+04:03:05.053 [NearPassPredictor] Radar range data:
+Range:                 2.10            3.40           34.10           11.90           19.80           57.60            9.20           80.40           51.80
+Magnitude:              341              74              63              61              55              52              48              46              42
+04:03:05.053 [NearPassPredictor] Vehicle in range!
+04:03:05.053 [NearPassPredictor] Near pass is predicted now!
+1733284985087: 765 cm
+04:03:05.124 [NearPassPredictor] Radar speed data:
+Speed:                19.80            2.20           14.00           18.70           28.20           26.20            0.80           25.70            5.10
+Magnitude:                0               0               0               0               0               0               0               0               0
+04:03:05.124 [NearPassPredictor] Near pass is predicted now!
+04:03:05.151 [NearPassPredictor] Radar range data:
+Range:                 2.10            3.40           34.10           57.60           11.60            9.20           19.80           51.80           80.40
+Magnitude:              341              79              65              57              56              54              53              45              45
+04:03:05.151 [NearPassPredictor] Vehicle in range!
+04:03:05.151 [NearPassPredictor] Near pass is predicted now!
+1733284985149: 765 cm
+1733284985211: 765 cm
+04:03:05.222 [NearPassPredictor] Radar speed data:
+Speed:                 5.90            6.50           19.80            0.40           23.90           12.40            2.10            4.40           20.40
+Magnitude:                0               0               0               0               0               0               0               0               0
+04:03:05.222 [NearPassPredictor] Near pass is predicted now!
+04:03:05.249 [NearPassPredictor] Radar range data:
+Range:                 2.10            3.40           34.10           57.90            9.20           20.10           51.80           11.90           80.70
+Magnitude:              344              83              68              64              61              54              50              50              47
+04:03:05.249 [NearPassPredictor] Vehicle in range!
+04:03:05.249 [NearPassPredictor] Near pass is predicted now!
+1733284985273: 765 cm
+04:03:05.320 [NearPassPredictor] Radar speed data:
+Speed:                11.80           17.10           21.80           23.80            9.40           12.40           21.00            0.80           14.30
+Magnitude:                1               1               0               0               0               0               0               0               0
+04:03:05.320 [NearPassPredictor] Near pass is predicted now!
+1733284985335: 765 cm
+04:03:05.347 [NearPassPredictor] Radar range data:
+Range:                 2.10            3.40           58.30           34.10            9.50           19.80           51.80           80.70           11.90
+Magnitude:              344              81              74              71              65              53              52              50              46
+04:03:05.347 [NearPassPredictor] Vehicle in range!
+04:03:05.347 [NearPassPredictor] Near pass is predicted now!
+1733284985397: 765 cm
+04:03:05.418 [NearPassPredictor] Radar speed data:
+Speed:                 4.70            7.80            3.40           12.10           26.30           21.70            1.40           23.30           25.00
+Magnitude:                0               0               0               0               0               0               0               0               0
+04:03:05.418 [NearPassPredictor] Near pass is predicted now!
+04:03:05.445 [NearPassPredictor] Radar range data:
+Range:                 2.10           58.30            3.40           34.10            9.50           19.80           80.70           51.80           11.90
+Magnitude:              340              82              79              71              63              55              55              53              45
+04:03:05.445 [NearPassPredictor] Vehicle in range!
+04:03:05.445 [NearPassPredictor] Near pass is predicted now!
+1733284985458: 765 cm
+04:03:05.514 [NearPassPredictor] Radar speed data:
+Speed:                26.70            4.00            6.90            5.20           24.60            8.00           17.70            9.10           19.80
+Magnitude:                1               1               0               0               0               0               0               0               0
+04:03:05.514 [NearPassPredictor] Near pass is predicted now!
+1733284985520: 765 cm
+04:03:05.541 [NearPassPredictor] Radar range data:
+Range:                 2.10           58.30            3.40           34.10           80.70            9.90           19.80           51.80           11.90
+Magnitude:              333              87              73              67              59              58              55              51              49
+04:03:05.541 [NearPassPredictor] Vehicle in range!
+04:03:05.542 [NearPassPredictor] Near pass is predicted now!
+1733284985582: 765 cm
+04:03:05.613 [NearPassPredictor] Radar speed data:
+Speed:                20.90            2.10           16.90           27.30            0.40           19.00           15.40            6.70            5.30
+Magnitude:                1               1               0               0               0               0               0               0               0
+04:03:05.614 [NearPassPredictor] Near pass is predicted now!
+04:03:05.641 [NearPassPredictor] Radar range data:
+Range:                 2.10           58.30            3.40           34.10           80.80            9.90           11.90           19.80           51.80
+Magnitude:              328              86              69              62              61              56              55              52              48
+04:03:05.641 [NearPassPredictor] Vehicle in range!
+04:03:05.641 [NearPassPredictor] Near pass is predicted now!
+1733284985644: 765 cm
+1733284985706: 765 cm
+04:03:05.710 [NearPassPredictor] Radar speed data:
+Speed:                 9.30           17.20           23.50           13.10            0.50           30.60           14.10           19.80            2.10
+Magnitude:                1               1               1               0               0               0               0               0               0
+04:03:05.710 [NearPassPredictor] Near pass is predicted now!
+04:03:05.736 [NearPassPredictor] Radar range data:
+Range:                 2.10           58.30            3.40           34.10           80.70           11.90           10.20           19.80           51.80
+Magnitude:              334              84              70              63              63              58              56              52              44
+04:03:05.736 [NearPassPredictor] Vehicle in range!
+04:03:05.736 [NearPassPredictor] Near pass is predicted now!
+1733284985768: 765 cm
+04:03:05.808 [NearPassPredictor] Radar speed data:
+Speed:                26.20           13.30           30.10            7.70           12.30            2.70            1.20           25.40           28.40
+Magnitude:                1               0               0               0               0               0               0               0               0
+04:03:05.808 [NearPassPredictor] Near pass is predicted now!
+04:03:05.835 [NearPassPredictor] Radar range data:
+Range:                 2.10           58.30           34.10           80.70           11.90           10.20           19.80           51.80           38.90
+Magnitude:              340              82              67              63              59              56              52              45              36
+04:03:05.835 [NearPassPredictor] Vehicle in range!
+04:03:05.835 [NearPassPredictor] Near pass is predicted now!
+1733284985830: 765 cm
+1733284985892: 765 cm
+04:03:05.906 [NearPassPredictor] Radar speed data:
+Speed:                15.10           30.60           17.30            2.30            7.30           29.80           26.10           22.00           14.70
+Magnitude:                1               0               0               0               0               0               0               0               0
+04:03:05.906 [NearPassPredictor] Near pass is predicted now!
+04:03:05.930 [NearPassPredictor] Radar range data:
+Range:                 2.10           58.30           34.10           80.70           11.90            9.20           19.80           10.20           51.80
+Magnitude:              340              80              72              61              58              51              51              50              45
+04:03:05.930 [NearPassPredictor] Vehicle in range!
+04:03:05.930 [NearPassPredictor] Near pass is predicted now!
+1733284985954: 765 cm
+04:03:06.002 [NearPassPredictor] Radar speed data:
+Speed:                 3.90           14.40           23.80           28.20           30.70           20.30           20.70           17.10            9.60
+Magnitude:                0               0               0               0               0               0               0               0               0
+04:03:06.002 [NearPassPredictor] Near pass is predicted now!
+1733284986016: 765 cm
+04:03:06.029 [NearPassPredictor] Radar range data:
+Range:                 2.10           58.30           34.10            9.20           11.90           80.70           19.80           51.80           29.30
+Magnitude:              343              80              72              61              59              58              49              46              39
+04:03:06.029 [NearPassPredictor] Vehicle in range!
+04:03:06.029 [NearPassPredictor] Near pass is predicted now!
+1733284986077: 765 cm
+04:03:06.100 [NearPassPredictor] Radar speed data:
+Speed:                18.80            5.70           26.30           23.30            3.40            8.70           12.00           21.40           27.70
+Magnitude:                0               0               0               0               0               0               0               0               0
+04:03:06.100 [NearPassPredictor] Near pass is predicted now!
+04:03:06.127 [NearPassPredictor] Radar range data:
+Range:                 2.10           58.30           34.10            9.20           11.90           80.70           19.80           51.80           29.30
+Magnitude:              343              81              70              68              57              55              50              47              39
+04:03:06.127 [NearPassPredictor] Vehicle in range!
+04:03:06.127 [NearPassPredictor] Near pass is predicted now!
+1733284986139: 765 cm
+04:03:06.198 [NearPassPredictor] Radar speed data:
+Speed:                 8.90           17.00           17.60            4.00           22.80           26.60           22.30           20.00           28.90
+Magnitude:                1               0               0               0               0               0               0               0               0
+04:03:06.198 [NearPassPredictor] Near pass is predicted now!
+1733284986201: 765 cm
+04:03:06.225 [NearPassPredictor] Radar range data:
+Range:                 2.10           58.20            9.20           34.10           11.90           80.70           19.80           51.80           29.00
+Magnitude:              345              81              73              66              55              53              51              48              40
+04:03:06.225 [NearPassPredictor] Vehicle in range!
+04:03:06.225 [NearPassPredictor] Near pass is predicted now!
+1733284986263: 765 cm
+04:03:06.294 [NearPassPredictor] Radar speed data:
+Speed:                19.90            8.80           26.60           13.00            0.70            6.20           10.30           22.80           27.90
+Magnitude:                0               0               0               0               0               0               0               0               0
+04:03:06.294 [NearPassPredictor] Near pass is predicted now!
+04:03:06.321 [NearPassPredictor] Radar range data:
+Range:                 2.10           57.90            9.20           34.10           11.90           19.80           80.40           51.80           29.00
+Magnitude:              342              82              77              62              57              53              51              49              40
+04:03:06.322 [NearPassPredictor] Vehicle in range!
+04:03:06.322 [NearPassPredictor] Near pass is predicted now!
+1733284986325: 765 cm
+04:03:06.392 [NearPassPredictor] Radar speed data:
+Speed:                27.80            4.40           24.60            8.50           13.60           30.10           18.90           17.60           28.80
+Magnitude:                0               0               0               0               0               0               0               0               0
+04:03:06.392 [NearPassPredictor] Near pass is predicted now!
+1733284986387: 765 cm
+04:03:06.419 [NearPassPredictor] Radar range data:
+Range:                 2.10           57.90            9.20           34.10           11.90           19.80           51.80           80.40           29.00
+Magnitude:              338              83              80              62              57              55              49              49              39
+04:03:06.420 [NearPassPredictor] Vehicle in range!
+04:03:06.420 [NearPassPredictor] Near pass is predicted now!
+1733284986449: 765 cm
+04:03:06.490 [NearPassPredictor] Radar speed data:
+Speed:                 6.30           18.00            2.40            8.00           14.00           29.00           17.10           24.40            1.20
+Magnitude:                0               0               0               0               0               0               0               0               0
+04:03:06.491 [NearPassPredictor] Near pass is predicted now!
+1733284986511: 765 cm
+04:03:06.515 [NearPassDetector] Stopping...
+04:03:06.517 [NearPassPredictor] Radar range data:
+Range:                 2.10            9.20           57.90           34.10           11.90           19.80           51.80           80.40           29.00
+Magnitude:              340              85              84              67              58              57              48              47              37
+04:03:06.517 [NearPassPredictor] Vehicle in range!
+04:03:06.517 [NearPassPredictor] Near pass is predicted now!
+04:03:06.573 [MB1242] Stopping...
+04:03:06.573 [MB1242] Stopped
+04:03:06.573 [NearPassDetector] Stopped
+04:03:06.588 [NearPassPredictor] Radar speed data:
+Speed:                25.50            9.50           11.90           23.80           10.30           11.20           24.50            1.30            4.00
+Magnitude:                0               0               0               0               0               0               0               0               0
+04:03:06.588 [NearPassPredictor] Near pass is predicted now!
+04:03:06.608 [NearPassPredictor] Stopping...
+04:03:06.609 [NearPassPredictor] Stopped

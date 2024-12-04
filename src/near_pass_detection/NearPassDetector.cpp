@@ -15,21 +15,19 @@
 
 
 
-NearPassDetector::NearPassDetector(MB1242* ultrasonic, NearPassPredictor* near_pass_predictor) {
+NearPassDetector::NearPassDetector(MB1242* ultrasonic, bool use_predictor) {
     this->ultrasonic = ultrasonic;
-    this->near_pass_predictor = near_pass_predictor;
+    this->use_predictor = use_predictor;
 
     if(ultrasonic == nullptr) {
         log("NearPassDetector", "Warning, ultrasonic is nullptr");
     }
-
-    if(near_pass_predictor == nullptr) {
-        log("NearPassDetector", "Warning, near pass predictor is nullptr");
-    }
 }
 
 NearPassDetector::~NearPassDetector() {
-    stop();
+    if(detector_thread != nullptr) {
+        stop();
+    }
 }
 
 int NearPassDetector::start() {
@@ -48,6 +46,7 @@ int NearPassDetector::start() {
 
 int NearPassDetector::stop() {
     if(detector_thread == nullptr) {
+        log("NearPassDetector", "Couldn't stop, wasn't running");
         return 1;
     }
 
@@ -56,6 +55,7 @@ int NearPassDetector::stop() {
         detector_thread->join();
         delete detector_thread;
         detector_thread = nullptr;
+        log("NearPassDetector", "Stopped");
     }
 
     return 0;
@@ -64,6 +64,11 @@ int NearPassDetector::stop() {
 void NearPassDetector::run() {
     if(ultrasonic == nullptr) {
         log("NearPassDetector", "Couldn't run, ultrasonic is nullptr");
+        return;
+    }
+
+    if(do_run) {
+        log("NearPassDetector", "Couldn't run, already running");
         return;
     }
 
@@ -76,6 +81,7 @@ void NearPassDetector::run() {
     long long near_pass_start_time_ms = get_time_ms();
     long long near_pass_end_time_ms = 0;
     int min_distance_cm = MB1242::MAX_DISTANCE_cm;
+    bool was_near_pass_predicted_at_start_time = false;
 
     do_run = true;
     while(do_run) {
@@ -94,8 +100,6 @@ void NearPassDetector::run() {
             min_distance_cm = report.distance_cm;
         }
 
-        // TODO: Figure out where to check for the prediction flag
-
         switch(near_pass_state) {
             case NPS_NONE: {
                 // Condition to enter a near pass
@@ -103,6 +107,7 @@ void NearPassDetector::run() {
                     log("NearPassDetector", "Near pass potentially started");
                     near_pass_state = NPS_POTENTIALLY_STARTED;
                     near_pass_start_time_ms = report.time_stamp_ms;
+                    was_near_pass_predicted_at_start_time = is_near_pass_predicted_now;
                 }
                 break;
             }
@@ -145,16 +150,23 @@ void NearPassDetector::run() {
                         if(near_pass_duration_ms >= NEAR_PASS_MIN_DURATION_ms &&
                             near_pass_duration_ms <= NEAR_PASS_MAX_DURATION_ms
                         ) {
-                            log("NearPassDetector", "Near pass valid, logging");
-                            NearPass near_pass;
-                            near_pass.time          = (long)(near_pass_start_time_ms / 1000);
-                            near_pass.distance_cm   = min_distance_cm;
-                            near_pass.speed_mps     = latest_speed_mps;
-                            near_pass.latitude      = latest_latitude;
-                            near_pass.longitude     = latest_longitude;
-                            near_pass.rideId        = db_get_current_ride_id();
+                            log("NearPassDetector", "Near pass valid");
 
-                            db_insert_near_pass(near_pass);
+                            if((use_predictor && was_near_pass_predicted_at_start_time) || !use_predictor) {
+                                log("NearPassDetector", "Logging near pass");
+                                NearPass near_pass;
+                                near_pass.time          = (long)(near_pass_start_time_ms / 1000);
+                                near_pass.distance_cm   = min_distance_cm;
+                                near_pass.speed_mps     = latest_cyclist_speed_mps + latest_vehicle_speed_mps;
+                                near_pass.latitude      = latest_latitude;
+                                near_pass.longitude     = latest_longitude;
+                                near_pass.rideId        = db_get_current_ride_id();
+
+                                db_insert_near_pass(near_pass);
+                            }
+                            else if(use_predictor) {
+                                log("NearPassDetector", "Not logging near pass, near pass wasn't predicted");
+                            }
                         }
 
                         // Reset necessary params
@@ -173,6 +185,8 @@ void NearPassDetector::run() {
         } // switch(state)
     } // while(do_run)
 
+    log("NearPassDetector", "Stopping...");
+
     ultrasonic->stop_sampling();
 }
 
@@ -188,6 +202,14 @@ void NearPassDetector::set_longitude(double longitude) {
     latest_longitude = longitude;
 }
 
-void NearPassDetector::set_speed_mps(double speed_mps) {
-    latest_speed_mps = speed_mps;
+void NearPassDetector::set_cyclist_speed_mps(double cyclist_speed_mps) {
+    latest_cyclist_speed_mps = cyclist_speed_mps;
+}
+
+void NearPassDetector::set_vehicle_speed_mps(double vehicle_speed_mps) {
+    latest_vehicle_speed_mps = vehicle_speed_mps;
+}
+
+void NearPassDetector::set_prediction_flag(bool prediction) {
+    is_near_pass_predicted_now = prediction;
 }

@@ -9,6 +9,16 @@ public:
     static const int SERIAL_BAUD_RATE = 115200;
     static const int MAX_REPORTS = 9;
 
+    struct speed_report_t {
+        float speed_mps;
+        int magnitude;
+    };
+
+    struct range_report_t {
+        float range_m;
+        int magnitude;
+    };
+
     OPS243(const std::string serial_port);
     ~OPS243();
 
@@ -23,10 +33,16 @@ public:
     void set_range_units_to_m();
 
     void set_data_precision(int precision);
-    void set_minimum_speed_filter(int min_speed);
-    void set_maximum_speed_filter(int max_speed);
-    void set_minimum_range_filter(int min_range);
-    void set_maximum_range_filter(int max_range);
+
+    void set_min_speed_mps(int min_speed_mps);
+    void set_max_speed_mps(int max_speed_mps);
+    void set_min_range_m(int min_range_m);
+    void set_max_range_m(int max_range_m);
+
+    void set_min_speed_magnitude(int min_speed_magnitude);
+    void set_max_speed_magnitude(int max_speed_magnitude);
+    void set_min_range_magnitude(int min_range_magnitude);
+    void set_max_range_magnitude(int max_range_magnitude);
 
     void report_current_range_filter();
     void report_current_speed_filter();
@@ -35,6 +51,9 @@ public:
     void set_outbound_only();
     void clear_direction_control();
 
+
+    /* Speed averaging allows a means of filtering for the peak speed of an object.
+    * Some objects due to slight delays in signal path will have multiple speed reports.*/
     void enable_peak_speed_average();
     void disable_peak_speed_average();
 
@@ -44,17 +63,22 @@ public:
     void turn_speed_reporting_on();
     void turn_speed_reporting_off();
 
-    void read_speeds_and_ranges(float* speed_magnitudes, float* range_magnitudes, float* speeds, float* ranges);
+    // Reads the new line and updates either the range_reports OR the speed_reports, not both
+    // Returns 1 if the ranges were updated
+    // Returns 2 if the speeds were updated
+    // Returns 0 if neither
+    // Blocking
+    int read_new_data_line(range_report_t* range_reports, speed_report_t* speed_reports);
 
-    void turn_fmcw_magnitude_reporting_on();
-    void turn_fmcw_magnitude_reporting_off();
+    void turn_range_magnitude_reporting_on();
+    void turn_range_magnitude_reporting_off();
 
-    void turn_doppler_magnitude_reporting_on();
-    void turn_doppler_magnitude_reporting_off();
+    void turn_speed_magnitude_reporting_on();
+    void turn_speed_magnitude_reporting_off();
 
     void turn_largest_report_order_on();
-    void set_number_of_range_reports(int number_of_reports);
-    void set_number_of_speed_reports(int number_of_reports);
+    void set_num_range_reports(int number_of_reports);
+    void set_num_speed_reports(int number_of_reports);
 
     void turn_binary_output_on();
     void turn_binary_output_off();

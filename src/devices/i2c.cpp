@@ -15,7 +15,6 @@ int i2c_open_file(const char* i2c_device) {
     int i2c_file = open(i2c_device, O_RDWR);
     if(i2c_file < 0) {
         printf("I2C Error: Can't open I2C file: %s\n", strerror(errno));
-        exit(i2c_file);
     }
     return i2c_file;
 }

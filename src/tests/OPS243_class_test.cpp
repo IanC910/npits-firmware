@@ -37,11 +37,11 @@ int kbhit() {
 int main() {
     // Initialize the radar object
     OPS243 obj(RADAR_SERIAL_PORT, OPS243_BAUD_RATE);
-    obj.set_number_of_range_reports(OPS243::MAX_REPORTS);
-    obj.set_number_of_speed_reports(OPS243::MAX_REPORTS);
+    obj.set_num_range_reports(OPS243::MAX_REPORTS);
+    obj.set_num_speed_reports(OPS243::MAX_REPORTS);
     obj.turn_units_output_on();
-    obj.turn_fmcw_magnitude_reporting_on();
-    obj.turn_doppler_magnitude_reporting_on();
+    obj.turn_range_magnitude_reporting_on();
+    obj.turn_speed_magnitude_reporting_on();
     obj.turn_range_reporting_on();
     obj.set_data_precision(2);
     obj.turn_speed_reporting_on();
@@ -64,7 +64,7 @@ int main() {
         }
 
         // Simulate reading from the radar
-        obj.read_speeds_and_ranges(speed_magnitudes, range_magnitudes, speeds, ranges);
+        obj.read_new_data_line(speed_magnitudes, range_magnitudes, speeds, ranges);
 
         // Sleep for 1ms
         usleep(1000);
