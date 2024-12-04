@@ -4,6 +4,7 @@
 #include <chrono>
 #include <string>
 
+#include "../common/log.h"
 #include "../common/time_tools.h"
 #include "gpio.h"
 #include "i2c.h"
@@ -18,7 +19,9 @@ MB1242::MB1242(const std::string i2c_device, int status_gpio_num) {
 }
 
 MB1242::~MB1242() {
-    stop_sampling();
+    if(sampler_thread != nullptr) {
+        stop_sampling();
+    }
     i2c_close_file(i2c_file);
 }
 
@@ -34,6 +37,7 @@ void MB1242::begin_sampling() {
 
 void MB1242::stop_sampling() {
     if(!do_run_sampler || i2c_file < 0) {
+        log("MB1242", "Couldn't stop, wasn't running");
         return;
     }
     do_run_sampler = false;
@@ -41,6 +45,7 @@ void MB1242::stop_sampling() {
         sampler_thread->join();
         delete sampler_thread;
         sampler_thread = nullptr;
+        log("MB1242", "Stopped");
     }
 }
 
@@ -92,6 +97,8 @@ int MB1242::update_report() {
 }
 
 void MB1242::run_sampler() {
+    log("MB1242", "Starting...");
+
     while(do_run_sampler) {
         initiate_distance_reading();
 
@@ -101,4 +108,6 @@ void MB1242::run_sampler() {
 
         update_report();
     }
+
+    log("MB1242", "Stopping...");
 }

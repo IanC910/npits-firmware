@@ -31,7 +31,9 @@ NearPassPredictor::NearPassPredictor(OPS243* radar, NearPassDetector* near_pass_
 }
 
 NearPassPredictor::~NearPassPredictor() {
-    stop();
+    if(predictor_thread != nullptr) {
+        stop();
+    }
 }
 
 int NearPassPredictor::start() {
@@ -50,6 +52,7 @@ int NearPassPredictor::start() {
 
 int NearPassPredictor::stop() {
     if(predictor_thread == nullptr) {
+        log("NearPassPredictor", "Couldn't stop, wasn't running");
         return 1;
     }
 
@@ -58,6 +61,7 @@ int NearPassPredictor::stop() {
         predictor_thread->join();
         delete predictor_thread;
         predictor_thread = nullptr;
+        log("NearPassPredictor", "Stopped");
     }
 
     return 0;
@@ -84,7 +88,10 @@ void NearPassPredictor::run() {
 
         long long now_ms = get_time_ms();
 
-        if(option == 1) { // Range data
+        if(option == 0) {
+            log("NearPassPredictor", "Radar timeout");
+        }
+        else if(option == 1) { // Range data
             log("NearPassPredictor", "Radar range data:");
             printf("Range:     ");
             for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
@@ -148,6 +155,8 @@ void NearPassPredictor::run() {
         sleep_ms(20);
     }
 
+    log("NearPassPredictor", "Stopping...");
+
     radar->turn_range_reporting_off();
     radar->turn_speed_reporting_off();
 }
@@ -167,14 +176,22 @@ void NearPassPredictor::config_radar() {
 
     radar->set_inbound_only();
     radar->enable_peak_speed_average();
-    radar->set_min_speed_mps((int)MIN_SPEED_mps);
-    radar->set_min_speed_magnitude(MIN_SPEED_MAGNITUDE);
+    radar->set_min_speed_mps(0);
+    radar->set_min_speed_magnitude(0);
 
     radar->turn_units_output_on();
     radar->turn_range_magnitude_reporting_on();
     radar->turn_speed_magnitude_reporting_on();
     radar->turn_range_reporting_on();
     radar->turn_speed_reporting_on();
+}
+
+int NearPassPredictor::update_speeds_or_ranges() {
+    if(radar == nullptr) {
+        log("NearPassPredictor", "Couldn't update, radar is nullptr");
+    }
+
+    return radar->read_new_data_line(range_reports, speed_reports);
 }
 
 OPS243::speed_report_t NearPassPredictor::get_speed_of_highest_mag_mps() {

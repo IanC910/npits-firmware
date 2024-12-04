@@ -25,7 +25,9 @@ NearPassDetector::NearPassDetector(MB1242* ultrasonic, bool use_predictor) {
 }
 
 NearPassDetector::~NearPassDetector() {
-    stop();
+    if(detector_thread != nullptr) {
+        stop();
+    }
 }
 
 int NearPassDetector::start() {
@@ -44,6 +46,7 @@ int NearPassDetector::start() {
 
 int NearPassDetector::stop() {
     if(detector_thread == nullptr) {
+        log("NearPassDetector", "Couldn't stop, wasn't running");
         return 1;
     }
 
@@ -52,6 +55,7 @@ int NearPassDetector::stop() {
         detector_thread->join();
         delete detector_thread;
         detector_thread = nullptr;
+        log("NearPassDetector", "Stopped");
     }
 
     return 0;
@@ -180,6 +184,8 @@ void NearPassDetector::run() {
                 break;
         } // switch(state)
     } // while(do_run)
+
+    log("NearPassDetector", "Stopping...");
 
     ultrasonic->stop_sampling();
 }

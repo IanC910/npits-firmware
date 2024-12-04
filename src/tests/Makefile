@@ -53,7 +53,7 @@ NearPassDetector_class_test:
 	$(CCF) NearPassDetector_class_test.cpp $(COMMON) $(DEVICES) $(NEAR_PASS_DETECTION) $(DB) -o NearPassDetector_class_test.test -lgpiod -lsqlite3
 
 NearPassPredictor_class_test:
-	$(CCF) NearPassPredictor_class_test.cpp $(COMMON) ../devices/OPS243.cpp ../near_pass_detection/NearPassPredictor.cpp -o NearPassPredictor_class_test.test
+	$(CCF) NearPassPredictor_class_test.cpp $(COMMON) $(DEVICES) $(NEAR_PASS_DETECTION) $(DB) -o NearPassPredictor_class_test.test -lsqlite3 -lgpiod
 
 OPS241_class_test:
 	$(CCF) OPS241_class_test.cpp ../devices/OPS241.cpp -o OPS241_class_test.test

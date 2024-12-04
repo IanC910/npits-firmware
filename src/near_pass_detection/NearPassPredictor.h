@@ -35,6 +35,8 @@ public:
     // Configures radar with a preset of settings
     void config_radar();
 
+    int update_speeds_or_ranges();
+
     OPS243::speed_report_t get_speed_of_highest_mag_mps();
     OPS243::range_report_t get_range_of_highest_mag_m();
 

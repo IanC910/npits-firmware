@@ -13,6 +13,8 @@
 #include <termios.h>
 #include <unistd.h>
 
+#include "../common/time_tools.h"
+
 #include "OPS243.h"
 
 OPS243::OPS243(const std::string serial_port) {
@@ -105,7 +107,7 @@ void OPS243::set_min_speed_mps(int min_speed_mps) {
     /* Sets the minumum value of speed that will be reported*/
     /* Any number below min_speed_mps will not be reported */
     if (min_speed_mps < 0) {
-        printf("Minimum speed must be greater than zero");
+        printf("Minimum speed must be >= 0");
         return;
     }
 
@@ -118,7 +120,7 @@ void OPS243::set_max_speed_mps(int max_speed_mps) {
     /* Sets the maximum value of speed that will be reported*/
     /* Any number above max_speed_mps will not be reported */
     if (max_speed_mps < 0) {
-        printf("Maximum speed must be greater than zero");
+        printf("Maximum speed must be >= 0");
         return;
     }
 
@@ -131,7 +133,7 @@ void OPS243::set_min_range_m(int min_range_m) {
     /* Sets the minumum value of range that will be reported*/
     /* Any number below min_range_m will not be reported */
     if (min_range_m < 0) {
-        printf("Minimum range must be greater than zero");
+        printf("Minimum range must be >= 0");
         return;
     }
 
@@ -260,7 +262,10 @@ int OPS243::read_new_data_line(range_report_t* range_reports, speed_report_t* sp
     char line_buf[256];
     memset(line_buf, 0, sizeof(line_buf));
 
+    int TIMEOUT_DURATION_ms = 1000;
+
     long unsigned line_buf_index = 0;
+    long long start_time_ms = get_time_ms();
     while(line_buf_index < sizeof(line_buf)) {
         int num_bytes_read = read(serial_file, line_buf + line_buf_index, 1);
         if(line_buf[line_buf_index] == '\n') {
@@ -269,6 +274,10 @@ int OPS243::read_new_data_line(range_report_t* range_reports, speed_report_t* sp
         }
 
         line_buf_index += num_bytes_read;
+
+        if(get_time_ms() - start_time_ms > TIMEOUT_DURATION_ms) {
+            return 0;
+        }
     }
 
     const char SEPARATOR[] = ",";
