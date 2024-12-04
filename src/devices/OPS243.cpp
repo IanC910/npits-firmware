@@ -298,7 +298,7 @@ int OPS243::read_new_data_line(range_report_t* range_reports, speed_report_t* sp
                 // Nothing, ignore the unit
             }
             else if(token_count % 2 == 1) {
-                range_reports[report_index].magnitude = atoi(token);
+                range_reports[report_index].magnitude = (int)atof(token);
             }
             else { // token_count is even and not 0
                 range_reports[report_index].range_m = atof(token);
@@ -328,7 +328,7 @@ int OPS243::read_new_data_line(range_report_t* range_reports, speed_report_t* sp
                 // Nothing, ignore the unit
             }
             else if(token_count % 2 == 1) {
-                speed_reports[report_index].magnitude = atoi(token);
+                speed_reports[report_index].magnitude = (int)atof(token);
             }
             else { // token_count is even and not 0
                 speed_reports[report_index].speed_mps = atof(token);

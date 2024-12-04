@@ -102,11 +102,6 @@ void NearPassPredictor::run() {
                 printf("%16d", range_reports[i].magnitude);
             }
             printf("\n");
-
-            OPS243::range_report_t range_report = get_range_of_highest_mag_m();
-            if(range_report.magnitude != 0) {
-                log("NearPassPredictor", "Vehicle in range!");
-            }
         }
         else if(option == 2) { // Speed data updated
             log("NearPassPredictor", "Radar speed data:");
@@ -119,29 +114,27 @@ void NearPassPredictor::run() {
                 printf("%16d", speed_reports[i].magnitude);
             }
             printf("\n");
-
-            OPS243::speed_report_t speed_report = get_speed_of_highest_mag_mps();
-            if(speed_report.magnitude != 0) {
-                log("NearPassPredictor", "Vehicle approaching!");
-
-                // Prediction logic currently assumes no range data!
-                // Assumes a range of probable distances and a grace period
-
-                const float MAX_PROBABLE_DISTANCE_m = 20;
-                const float MIN_PROBABLE_DISTANCE_m = 5;
-
-                long long min_start_time = now_ms + 1000 * (long long)(MIN_PROBABLE_DISTANCE_m / speed_report.speed_mps);
-                long long max_start_time = now_ms + 1000 * (long long)(MAX_PROBABLE_DISTANCE_m / speed_report.speed_mps);
-
-                predicted_start_time_ms = min_start_time;
-                predicted_end_time_ms = max_start_time + 2000; // arbitrary 2 second grace
-
-                if(near_pass_detector != nullptr) {
-                    near_pass_detector->set_vehicle_speed_mps(speed_report.speed_mps);
-                }
-            }
         }
 
+        OPS243::range_report_t range_report = get_range_of_highest_mag_m();
+        if(range_report.magnitude != 0) {
+            log("NearPassPredictor", "Vehicle in range!");
+        }
+
+        OPS243::speed_report_t speed_report = get_speed_of_highest_mag_mps();
+        if(speed_report.magnitude != 0) {
+            log("NearPassPredictor", "Vehicle approaching!");
+        }
+
+        // Make a prediction if valid
+        if(range_report.magnitude != 0 && speed_report.magnitude != 0) {
+            predicted_start_time_ms = now_ms;
+            predicted_end_time_ms = now_ms + 2000;
+
+            near_pass_detector->set_vehicle_speed_mps(speed_report.speed_mps);
+        }
+
+        // Check if currently in the window
         bool prediction_flag = is_near_pass_predicted_now();
 
         if(prediction_flag) {
