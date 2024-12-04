@@ -178,11 +178,11 @@ int db_insert_near_pass(const NearPass& nearPass) {
     }
 
     // Bind values to the prepared statement
-    sqlite3_bind_double(stmt, 1, nearPass.time);
-    sqlite3_bind_double(stmt, 2, nearPass.distance_cm);
+    sqlite3_bind_int64(stmt, 1, nearPass.time);
+    sqlite3_bind_int(stmt, 2, nearPass.distance_cm);
     sqlite3_bind_double(stmt, 3, nearPass.speed_mps);
     sqlite3_bind_double(stmt, 4, nearPass.latitude);
-    sqlite3_bind_int64(stmt, 5, nearPass.longitude);
+    sqlite3_bind_double(stmt, 5, nearPass.longitude);
     sqlite3_bind_int(stmt, 6, nearPass.rideId);
 
     // Execute the statement
