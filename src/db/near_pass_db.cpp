@@ -202,7 +202,10 @@ static int get_rides_callback(void* data, int argc, char** argv, char** colNames
     Ride ride;
     ride.rideId     = atoi(argv[0]);
     ride.startTime  = strtol(argv[1], nullptr, 10);
-    ride.endTime    = strtol(argv[2], nullptr, 10);
+    ride.endTime    = 0;
+    if(argc >= 3) {
+        ride.endTime = strtol(argv[2], nullptr, 10);
+    }
 
     current_ride_list->push_back(ride);
 
