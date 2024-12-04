@@ -99,7 +99,7 @@ void NearPassPredictor::run() {
             }
             printf("\nMagnitude: ");
             for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
-                printf("%19d", range_reports[i].magnitude);
+                printf("%16d", range_reports[i].magnitude);
             }
             printf("\n");
 
@@ -110,13 +110,13 @@ void NearPassPredictor::run() {
         }
         else if(option == 2) { // Speed data updated
             log("NearPassPredictor", "Radar speed data:");
-            printf("\nSpeed:     ");
+            printf("Speed:     ");
             for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
                 printf("%16.2f", speed_reports[i].speed_mps);
             }
             printf("\nMagnitude: ");
             for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
-                printf("%19d", speed_reports[i].magnitude);
+                printf("%16d", speed_reports[i].magnitude);
             }
             printf("\n");
 

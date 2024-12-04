@@ -288,8 +288,8 @@ int OPS243::read_new_data_line(range_report_t* range_reports, speed_report_t* sp
         int token_count = 0;
         int report_index = 0;
 
+        char* token = strtok(line_buf, SEPARATOR);
         while(true) {
-            char* token = strtok(line_buf, SEPARATOR);
             if(token == NULL) {
                 break;
             }
@@ -306,6 +306,7 @@ int OPS243::read_new_data_line(range_report_t* range_reports, speed_report_t* sp
             }
 
             token_count++;
+            token = strtok(NULL, SEPARATOR);
         }
 
         return 1;
@@ -317,8 +318,8 @@ int OPS243::read_new_data_line(range_report_t* range_reports, speed_report_t* sp
         int token_count = 0;
         int report_index = 0;
 
+        char* token = strtok(line_buf, SEPARATOR);
         while(true) {
-            char* token = strtok(line_buf, SEPARATOR);
             if(token == NULL) {
                 break;
             }
@@ -335,6 +336,7 @@ int OPS243::read_new_data_line(range_report_t* range_reports, speed_report_t* sp
             }
 
             token_count++;
+            token = strtok(NULL, SEPARATOR);
         }
 
         return 2;
