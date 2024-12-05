@@ -40,6 +40,9 @@ le_server_simple_test:
 
 
 # Tests
+db_query_during_ride_test:
+	$(CCF) db_query_during_ride_test.cpp $(COMMON) $(DB) -o db_query_during_ride_test.test -lsqlite3
+
 MB1242_direct_test:
 	$(CCF) MB1242_direct_test.cpp $(COMMON) $(DEVICES) -o MB1242_direct_test.test -lgpiod
 
