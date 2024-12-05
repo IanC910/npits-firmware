@@ -38,8 +38,12 @@ string http_get(const string &url)
 }
 
 // Function to check if the GoPro is recording
-bool is_recording()
+bool gopro_is_recording()
 {
+    if(!gopro_isConnected()) {
+        return false;
+    }
+
     string status_url = "http://" + gopro_ip + "/gp/gpControl/status";
     string response = http_get(status_url);
 
@@ -76,7 +80,7 @@ void gopro_stop_recording()
 }
 
 // Function to add a HiLight tag
-void add_hilight_tag()
+void gopro_add_hilight_tag()
 {
     if(gopro_isConnected()) {
         string hilight_url = "http://" + gopro_ip + "/gp/gpControl/command/storage/tag_moment";

@@ -32,7 +32,7 @@ string http_get(const string &url) {
 }
 
 // Function to check if the GoPro is recording
-bool is_recording() {
+bool gopro_is_recording() {
     string status_url = "http://" + gopro_ip + "/gp/gpControl/status";
     string response = http_get(status_url);
 
@@ -141,7 +141,7 @@ void extract_hilight_segment(const string &video_path, int hilight_time_ms) {
 }
 
 int main() {
-    if (is_recording()) {
+    if (gopro_is_recording()) {
         cout << "Recording is ongoing..." << endl;
 
         // Add HiLight tag

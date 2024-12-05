@@ -161,7 +161,7 @@ void NearPassDetector::run() {
                                 near_pass.rideId        = db_get_current_ride_id();
 
                                 db_insert_near_pass(near_pass);
-                                add_hilight_tag();
+                                gopro_add_hilight_tag();
                             }
                             else if(use_predictor) {
                                 log("NearPassDetector", "Not logging near pass, near pass wasn't predicted");
