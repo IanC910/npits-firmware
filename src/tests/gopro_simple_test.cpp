@@ -47,7 +47,7 @@ bool is_recording() {
 }
 
 // Function to retrieve the latest media file with retries
-Json::Value get_latest_media() {
+Json::Value gopro_get_latest_media() {
     string media_url = "http://" + gopro_ip + "/gp/gpMediaList";
     for (int i = 0; i < 5; ++i) { // Retry up to 5 times
         string response = http_get(media_url);
@@ -158,7 +158,7 @@ int main() {
         cout << "Recording stopped." << endl;
 
         // Retrieve the latest media
-        Json::Value latest_media = get_latest_media();
+        Json::Value latest_media = gopro_get_latest_media();
         if (!latest_media.isNull()) {
             string folder = latest_media["d"].asString();
             string filename = latest_media["fs"][latest_media["fs"].size() - 1]["n"].asString();
@@ -203,4 +203,4 @@ int main() {
     return 0;
 }
 
- 
+

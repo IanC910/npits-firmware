@@ -3,11 +3,9 @@
 #include <cstring>
 #include "wifi.h"
 
-#define SSID "GP25425765"
-
 using namespace std;
 
-string gopro_getWiFiSSID() {
+string getWiFiSSID() {
     const char* command = "iwgetid -r"; // Command to get the SSID
     char buffer[128];
     string result;
@@ -35,12 +33,8 @@ string gopro_getWiFiSSID() {
     return result;
 }
 
-bool gopro_isConnected() {
-    return gopro_getWiFiSSID() == SSID;
-}
-
 // int main() {
-//     string ssid = gopro_getWiFiSSID();
+//     string ssid = getWiFiSSID();
 
 //     if (!ssid.empty()) {
 //         cout << "Connected to Wi-Fi network: " << ssid << endl;

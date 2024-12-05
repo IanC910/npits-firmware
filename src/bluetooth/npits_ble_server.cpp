@@ -47,7 +47,7 @@ void npits_ble_server_init(
     s_near_pass_predictor = near_pass_predictor;
 
     if(init_blue((char*)devices_file.c_str()) == 0) {
-        printf("Couldn't init bluetooth\n");
+        log("LE Server", "Error: Couldn't init bluetooth");
         exit(1);
     }
 
@@ -73,7 +73,7 @@ static void write_callback(int ctic_index) {
     unsigned char read_buf[16];
     int num_bytes = read_ctic(localnode(), ctic_index, read_buf, sizeof(read_buf));
     if(num_bytes == 0) {
-        printf("LE Server: Client wrote 0 bytes\n");
+        log("LE Server", "Client wrote 0 bytes");
     }
 
     // State change logic
@@ -84,7 +84,7 @@ static void write_callback(int ctic_index) {
             switch(ctic_index) {
                 case CTIC_RL_REQUEST: {
                     int rl_request = *(int*)read_buf;
-                    printf("RL request: %d\n", rl_request);
+                    log("RL request", "Request flag: " + std::to_string(rl_request));
                     if(rl_request) {
                         request_start_time_ms = get_time_ms();
                         ride_index = 0;
@@ -95,16 +95,16 @@ static void write_callback(int ctic_index) {
                         if(ride_list.size() > 0) {
                             write_ride_object(ride_list[ride_index]);
                             write_ctic(localnode(), CTIC_R_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
-                            printf("RL request: Wrote valid object\n");
+                            log("RL request", "Wrote ride object " + std::to_string(ride_index));
                             ride_index++;
                             server_state = SS_RL_REQUEST;
                         }
                         else {
-                            printf("RL request: No objects to return\n");
+                            log("RL request", "No objects to return");
                         }
 
                         if(ride_index >= ride_list.size()) {
-                            printf("RL request: Done\n");
+                            log("RL request", "Done");
                             write_ctic(localnode(), CTIC_RL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
                             server_state = SS_IDLE;
                         }
@@ -113,7 +113,7 @@ static void write_callback(int ctic_index) {
                 }
                 case CTIC_NPL_REQUEST: {
                     int npl_request = *(int*)read_buf;
-                    printf("NPL request: %d\n", npl_request);
+                    log("NPL request", "Request flag: " + std::to_string(npl_request));
                     if(npl_request) {
                         request_start_time_ms = get_time_ms();
                         near_pass_index = 0;
@@ -124,16 +124,16 @@ static void write_callback(int ctic_index) {
                         if(near_pass_list.size() > 0) {
                             write_near_pass_object(near_pass_list[near_pass_index]);
                             write_ctic(localnode(), CTIC_NP_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
-                            printf("NPL request: Wrote valid object\n");
+                            log("NPL request", "Wrote near pass object " + std::to_string(near_pass_index));
                             near_pass_index++;
                             server_state = SS_NPL_REQUEST;
                         }
                         else {
-                            printf("NPL request: No objects to return\n");
+                            log("NPL request", "No objects to return");
                         }
 
                         if(near_pass_index >= near_pass_list.size()) {
-                            printf("NPL request: Done\n");
+                            log("NPL request", "Done");
                             write_ctic(localnode(), CTIC_NPL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
                             server_state = SS_IDLE;
                         }
@@ -152,7 +152,7 @@ static void write_callback(int ctic_index) {
                 case CTIC_RL_REQUEST: {
                     int rl_request = *(int*)read_buf;
                     if(rl_request == 0) {
-                        printf("RL Request: Cancelled\n");
+                        log("RL Request", "Cancelled");
                         write_ctic(localnode(), CTIC_R_VALID, (unsigned char*)(&LOW), sizeof(LOW));
                         server_state = SS_IDLE;
                     }
@@ -163,11 +163,11 @@ static void write_callback(int ctic_index) {
                     if(r_valid == 0) {
                         write_ride_object(ride_list[ride_index]);
                         write_ctic(localnode(), CTIC_R_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
-                        printf("RL request: Wrote valid object\n");
+                        log("RL request", "Wrote ride object " + std::to_string(ride_index));
                         ride_index++;
 
                         if(ride_index >= ride_list.size()) {
-                            printf("RL request: Done\n");
+                            log("RL request", "Done");
                             write_ctic(localnode(), CTIC_RL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
                             server_state = SS_IDLE;
                         }
@@ -186,7 +186,7 @@ static void write_callback(int ctic_index) {
                 case CTIC_NPL_REQUEST: {
                     int npl_request = *(int*)read_buf;
                     if(npl_request == 0) {
-                        printf("NPL request: Cancelled\n");
+                        log("NPL request", "Cancelled");
                         write_ctic(localnode(), CTIC_NP_VALID, (unsigned char*)(&LOW), sizeof(LOW));
                         server_state = SS_IDLE;
                     }
@@ -197,11 +197,11 @@ static void write_callback(int ctic_index) {
                     if(np_valid == 0) {
                         write_near_pass_object(near_pass_list[near_pass_index]);
                         write_ctic(localnode(), CTIC_NP_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
-                        printf("NPL request: Wrote valid object\n");
+                        log("NPL request", "Wrote near pass object " + std::to_string(near_pass_index));
                         near_pass_index++;
 
                         if(near_pass_index >= near_pass_list.size()) {
-                            printf("NPL request: Done\n");
+                            log("NPL request", "Done");
                             write_ctic(localnode(), CTIC_NPL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
                             server_state = SS_IDLE;
                         }
@@ -255,37 +255,37 @@ static void write_callback(int ctic_index) {
 
             switch(rc_cmd) {
                 case RC_CMD_START_RIDE:
-                    printf("LE Server: Start ride\n");
+                    log("LE Server", "Client started ride");
 
                     db_start_ride();
 
                     if(gopro_isConnected()) {
                         log("LE Server", "GoPro is connected");
+                        gopro_start_recording();
                     }
                     else {
                         log("LE Server", "No GoPro connected");
                     }
 
-                    start_recording();
-
                     if(s_near_pass_predictor != nullptr) {
                         s_near_pass_predictor->start();
                     }
                     else {
-                        printf("LE Server: Warning, no predictor active\n");
+                        log("LE Server", "Warning: No predictor active");
                     }
 
                     if(s_near_pass_detector != nullptr) {
                         s_near_pass_detector->start();
                     }
                     else {
-                        printf("LE Server: Warning, no detector active\n");
+                        log("LE Server", "Warning: No detector active");
                     }
 
                     break;
 
                 case RC_CMD_NONE:
-                    printf("LE Server: End Ride\n");
+                    log("LE Server", "Client ended ride");
+
                     if(s_near_pass_detector != nullptr) {
                         s_near_pass_detector->stop();
                     }
@@ -294,13 +294,15 @@ static void write_callback(int ctic_index) {
                     }
 
                     db_end_ride();
-                    stop_recording();
-                    post_process_ride();
+
+                    gopro_stop_recording();
+
+                    // gopro_post_process_ride();
 
                     break;
 
                 default:
-                    printf("LE Server: Unknown ride control command %d, ignored\n", rc_cmd);
+                    log("LE Server", "Unknown ride control command " + std::to_string((int)rc_cmd));
                     break;
             }
             break;
@@ -316,7 +318,7 @@ static void timer_callback() {
             break;
         case SS_RL_REQUEST: {
             if(get_time_ms() - request_start_time_ms >= REQUEST_TIMEOUT_DURATION_ms) {
-                printf("RL request: Timeout\n");
+                log("RL request", "Timeout");
                 server_state = SS_IDLE;
                 write_ctic(localnode(), CTIC_RL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
                 write_ctic(localnode(), CTIC_R_VALID, (unsigned char*)(&LOW), sizeof(LOW));
@@ -325,7 +327,7 @@ static void timer_callback() {
         }
         case SS_NPL_REQUEST: {
             if(get_time_ms() - request_start_time_ms >= REQUEST_TIMEOUT_DURATION_ms) {
-                printf("NPL request: Timeout\n");
+                log("NPL request", "Timeout");
                 server_state = SS_IDLE;
                 write_ctic(localnode(), CTIC_NPL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
                 write_ctic(localnode(), CTIC_NP_VALID, (unsigned char*)(&LOW), sizeof(LOW));
@@ -337,23 +339,25 @@ static void timer_callback() {
     }
 
     db_update_current_ride_end_time();
+
+    // TODO: update phone on gopro connection status
 }
 
 static int server_callback(int client_node, int operation, int ctic_index) {
     switch(operation) {
         case LE_CONNECT: {
-            printf("LE Server: Client Connected at node %d\n", client_node);
+            log("LE Server", "Client Connected at node " + std::to_string(client_node));
             break;
         }
         case LE_READ:
             break;
         case LE_WRITE: {
-            printf("LE Server: Client wrote ctic index %d\n", ctic_index);
+            log("LE Server", "Client wrote ctic index " + std::to_string(ctic_index));
             write_callback(ctic_index);
             break;
         }
         case LE_DISCONNECT: {
-            printf("LE Server: Client Disconnected from node %d\n", client_node);
+            log("LE Server", "Client Disconnected from node " + std::to_string(client_node));
             break;
         }
         case LE_TIMER: {
@@ -375,7 +379,7 @@ static int server_callback(int client_node, int operation, int ctic_index) {
 
 void npits_ble_server_run() {
     if(!initialized) {
-        printf("LE Server: Couldn't run, not initialized\n");
+        log("LE Server", "Warning: Couldn't run, not initialized");
         return;
     }
 
@@ -396,7 +400,7 @@ void npits_ble_server_run() {
     // server_callback is called every SERVER_CALLBACK_PERIOD_ds deciseconds or on operation
     le_server(server_callback, SERVER_CALLBACK_PERIOD_ds);
     close_all();
-    printf("LE server: Stopped\n");
+    log("LE server", "Stopped");
 }
 
 void npits_ble_server_stop() {

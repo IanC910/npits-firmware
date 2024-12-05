@@ -4,7 +4,6 @@
 #include <string>
 
 // Function to retrieve the SSID of the connected Wi-Fi network
-std::string gopro_getWiFiSSID();
-bool gopro_isConnected();
+std::string getWiFiSSID();
 
 #endif

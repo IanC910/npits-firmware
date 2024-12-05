@@ -53,7 +53,7 @@ bool is_recording()
 }
 
 // Function to start recording
-void start_recording()
+void gopro_start_recording()
 {
     if(gopro_isConnected()) {
         string start_url = "http://" + gopro_ip + "/gp/gpControl/command/shutter?p=1";
@@ -63,7 +63,7 @@ void start_recording()
 }
 
 // Function to stop recording
-void stop_recording()
+void gopro_stop_recording()
 {
     if(gopro_isConnected()) {
 
@@ -84,7 +84,7 @@ void add_hilight_tag()
 }
 
 // Function to retrieve the latest media file with retries
-Json::Value get_latest_media()
+Json::Value gopro_get_latest_media()
 {
     string media_url = "http://" + gopro_ip + "/gp/gpMediaList";
     for (int i = 0; i < 5; ++i)
@@ -187,7 +187,7 @@ void extract_hilight_segment(const string &video_path, int hilight_time_ms)
 }
 
 // Function to process HiLights after recording
-void process_hilight_clips(const string &folder, const string &filename)
+void gopro_process_hilight_clips(const string &folder, const string &filename)
 {
     string video_url = "http://" + gopro_ip + ":8080/videos/DCIM/" + folder + "/" + filename;
     string video_path = "HiLight_" + filename;
@@ -209,10 +209,10 @@ void process_hilight_clips(const string &folder, const string &filename)
 }
 
 // Function to handle all post-processing after a ride ends
-void post_process_ride() {
+void gopro_post_process_ride() {
     if(gopro_isConnected()) {
         // Retrieve the latest media file
-        Json::Value latest_media = get_latest_media();
+        Json::Value latest_media = gopro_get_latest_media();
         if (!latest_media.isNull()) {
             // Extract folder and filename from media information
             string folder = latest_media["d"].asString();
@@ -221,9 +221,13 @@ void post_process_ride() {
             cout << "Post-processing ride. Folder: " << folder << ", File: " << filename << endl;
 
             // Process HiLights
-            process_hilight_clips(folder, filename);
+            gopro_process_hilight_clips(folder, filename);
         } else {
             cout << "No media found for post-processing." << endl;
         }
     }
+}
+
+bool gopro_isConnected() {
+    return getWiFiSSID() == GOPRO_SSID;
 }
