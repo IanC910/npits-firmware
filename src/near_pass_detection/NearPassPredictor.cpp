@@ -88,33 +88,33 @@ void NearPassPredictor::run() {
 
         long long now_ms = get_time_ms();
 
-        if(option == 0) {
-            log("NearPassPredictor", "Radar timeout");
-        }
-        else if(option == 1) { // Range data
-            log("NearPassPredictor", "Radar range data:");
-            printf("Range:     ");
-            for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
-                printf("%16.2f", range_reports[i].range_m);
-            }
-            printf("\nMagnitude: ");
-            for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
-                printf("%16d", range_reports[i].magnitude);
-            }
-            printf("\n");
-        }
-        else if(option == 2) { // Speed data updated
-            log("NearPassPredictor", "Radar speed data:");
-            printf("Speed:     ");
-            for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
-                printf("%16.2f", speed_reports[i].speed_mps);
-            }
-            printf("\nMagnitude: ");
-            for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
-                printf("%16d", speed_reports[i].magnitude);
-            }
-            printf("\n");
-        }
+        // if(option == 0) {
+        //     log("NearPassPredictor", "Radar timeout");
+        // }
+        // else if(option == 1) { // Range data
+        //     log("NearPassPredictor", "Radar range data:");
+        //     printf("Range:     ");
+        //     for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
+        //         printf("%16.2f", range_reports[i].range_m);
+        //     }
+        //     printf("\nMagnitude: ");
+        //     for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
+        //         printf("%16d", range_reports[i].magnitude);
+        //     }
+        //     printf("\n");
+        // }
+        // else if(option == 2) { // Speed data updated
+        //     log("NearPassPredictor", "Radar speed data:");
+        //     printf("Speed:     ");
+        //     for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
+        //         printf("%16.2f", speed_reports[i].speed_mps);
+        //     }
+        //     printf("\nMagnitude: ");
+        //     for(int i = 0; i < OPS243::MAX_REPORTS; i++) {
+        //         printf("%16d", speed_reports[i].magnitude);
+        //     }
+        //     printf("\n");
+        // }
 
         OPS243::range_report_t range_report = get_range_of_highest_mag_m();
         if(range_report.magnitude != 0) {
