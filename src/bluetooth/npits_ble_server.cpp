@@ -316,6 +316,8 @@ static void timer_callback() {
         default:
             break;
     }
+
+    db_update_current_ride_end_time();
 }
 
 static int server_callback(int client_node, int operation, int ctic_index) {
