@@ -24,10 +24,10 @@ DEVICE = NPITS      TYPE = MESH     NODE = 1    ADDRESS = B8:27:EB:36:C5:9E
 
     ; Give World Info
     PRIMARY_SERVICE = 2100
-        LECHAR = WI Latitude       PERMIT = 14     SIZE = 08   UUID = 2110 ; Phone writes
-        LECHAR = WI Longitude      PERMIT = 14     SIZE = 08   UUID = 2111 ; Phone writes
-        LECHAR = WI Speed mps      PERMIT = 14     SIZE = 08   UUID = 2112 ; Phone writes
-        LECHAR = WI Time           PERMIT = 14     SIZE = 08   UUID = 2113 ; Phone writes
+        LECHAR = WI Latitude       PERMIT = 16     SIZE = 08   UUID = 2110 ; Phone writes
+        LECHAR = WI Longitude      PERMIT = 16     SIZE = 08   UUID = 2111 ; Phone writes
+        LECHAR = WI Speed mps      PERMIT = 16     SIZE = 08   UUID = 2112 ; Phone writes
+        LECHAR = WI Time           PERMIT = 16     SIZE = 08   UUID = 2113 ; Phone writes
 
     ; Ride Control
     PRIMARY_SERVICE = 2200
