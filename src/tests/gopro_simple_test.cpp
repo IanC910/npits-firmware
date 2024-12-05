@@ -12,7 +12,7 @@
 
 using namespace std;
 
-const string gopro_ip = "10.5.5.9";
+const string GOPRO_IP = "10.5.5.9";
 
 // Function to perform an HTTP GET request and return the response as a string
 string http_get(const string &url) {
@@ -33,7 +33,7 @@ string http_get(const string &url) {
 
 // Function to check if the GoPro is recording
 bool gopro_is_recording() {
-    string status_url = "http://" + gopro_ip + "/gp/gpControl/status";
+    string status_url = "http://" + GOPRO_IP + "/gp/gpControl/status";
     string response = http_get(status_url);
 
     Json::CharReaderBuilder builder;
@@ -48,7 +48,7 @@ bool gopro_is_recording() {
 
 // Function to retrieve the latest media file with retries
 Json::Value gopro_get_latest_media() {
-    string media_url = "http://" + gopro_ip + "/gp/gpMediaList";
+    string media_url = "http://" + GOPRO_IP + "/gp/gpMediaList";
     for (int i = 0; i < 5; ++i) { // Retry up to 5 times
         string response = http_get(media_url);
 
@@ -96,7 +96,7 @@ string generate_unique_filename(const string& base_name) {
 
 // Function to fetch HiLight timestamps from the video metadata
 vector<int> get_hilight_timestamps(const string& folder, const string& filename) {
-    string media_info_url = "http://" + gopro_ip + ":8080/gopro/media/info?path=" + folder + "/" + filename;
+    string media_info_url = "http://" + GOPRO_IP + ":8080/gopro/media/info?path=" + folder + "/" + filename;
     string response = http_get(media_info_url);
 
     Json::CharReaderBuilder builder;
@@ -115,7 +115,7 @@ vector<int> get_hilight_timestamps(const string& folder, const string& filename)
 }
 
 // Function to extract a 10-second HiLight segment using ffmpeg with precise seeking
-void extract_hilight_segment(const string &video_path, int hilight_time_ms) {
+void gopro_extract_hilight_segment(const string &video_path, int hilight_time_ms) {
     // Convert HiLight time from milliseconds to seconds
     double hilight_time = hilight_time_ms / 1000.0;
 
@@ -145,7 +145,7 @@ int main() {
         cout << "Recording is ongoing..." << endl;
 
         // Add HiLight tag
-        string hilight_url = "http://" + gopro_ip + "/gp/gpControl/command/storage/tag_moment";
+        string hilight_url = "http://" + GOPRO_IP + "/gp/gpControl/command/storage/tag_moment";
         http_get(hilight_url);
         cout << "HiLight tag added." << endl;
 
@@ -153,7 +153,7 @@ int main() {
         this_thread::sleep_for(chrono::seconds(5));
 
         // Stop recording
-        string stop_url = "http://" + gopro_ip + "/gp/gpControl/command/shutter?p=0";
+        string stop_url = "http://" + GOPRO_IP + "/gp/gpControl/command/shutter?p=0";
         http_get(stop_url);
         cout << "Recording stopped." << endl;
 
@@ -162,7 +162,7 @@ int main() {
         if (!latest_media.isNull()) {
             string folder = latest_media["d"].asString();
             string filename = latest_media["fs"][latest_media["fs"].size() - 1]["n"].asString();
-            string video_url = "http://" + gopro_ip + ":8080/videos/DCIM/" + folder + "/" + filename;
+            string video_url = "http://" + GOPRO_IP + ":8080/videos/DCIM/" + folder + "/" + filename;
 
             // Download the video
             string video_path = "HiLight_" + filename;
@@ -170,7 +170,7 @@ int main() {
                 cout << "Video " << filename << " downloaded successfully!" << endl;
 
                 // Retrieve HiLight tags for the specific media file
-                string media_info_url = "http://" + gopro_ip + ":8080/gopro/media/info?path=" + folder + "/" + filename;
+                string media_info_url = "http://" + GOPRO_IP + ":8080/gopro/media/info?path=" + folder + "/" + filename;
                 string media_info_response = http_get(media_info_url);
 
                 Json::CharReaderBuilder builder;
@@ -183,7 +183,7 @@ int main() {
                         int hilight_time_ms = media_info_json["hi"][0].asInt();
 
                         // Extract HiLight segment
-                        extract_hilight_segment(video_path, hilight_time_ms);
+                        gopro_extract_hilight_segment(video_path, hilight_time_ms);
                     } else {
                         cout << "No HiLight tags found in the media." << endl;
                     }

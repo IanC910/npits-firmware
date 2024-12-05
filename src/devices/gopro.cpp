@@ -1,6 +1,4 @@
 #include <iostream>
-#include <curl/curl.h>
-#include <jsoncpp/json/json.h>
 #include <fstream>
 #include <sstream>
 #include <thread>
@@ -9,33 +7,16 @@
 #include <ctime>
 #include <vector>
 #include <iomanip>
+
+#include <curl/curl.h>
+#include <jsoncpp/json/json.h>
+
 #include "gopro.h"
 #include "wifi.h"
 
 using namespace std;
 
-const string gopro_ip = "10.5.5.9";
-
-// Function to perform an HTTP GET request and return the response as a string
-string http_get(const string &url)
-{
-    CURL *curl = curl_easy_init();
-    string response;
-    if (curl)
-    {
-        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION,
-            +[](char *ptr, size_t size, size_t nmemb, string *data) {
-                data->append(ptr, size * nmemb);
-                return size * nmemb;
-            }
-        );
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
-        curl_easy_perform(curl);
-        curl_easy_cleanup(curl);
-    }
-    return response;
-}
+const string GOPRO_IP = "10.5.5.9";
 
 // Function to check if the GoPro is recording
 bool gopro_is_recording()
@@ -44,7 +25,7 @@ bool gopro_is_recording()
         return false;
     }
 
-    string status_url = "http://" + gopro_ip + "/gp/gpControl/status";
+    string status_url = "http://" + GOPRO_IP + "/gp/gpControl/status";
     string response = http_get(status_url);
 
     Json::CharReaderBuilder builder;
@@ -62,7 +43,7 @@ bool gopro_is_recording()
 void gopro_start_recording()
 {
     if(gopro_is_connected()) {
-        string start_url = "http://" + gopro_ip + "/gp/gpControl/command/shutter?p=1";
+        string start_url = "http://" + GOPRO_IP + "/gp/gpControl/command/shutter?p=1";
         http_get(start_url);
         cout << "GoPro recording started." << endl;
     }
@@ -73,7 +54,7 @@ void gopro_stop_recording()
 {
     if(gopro_is_connected()) {
 
-        string stop_url = "http://" + gopro_ip + "/gp/gpControl/command/shutter?p=0";
+        string stop_url = "http://" + GOPRO_IP + "/gp/gpControl/command/shutter?p=0";
         http_get(stop_url);
         cout << "GoPro recording stopped." << endl;
     }
@@ -83,7 +64,7 @@ void gopro_stop_recording()
 void gopro_add_hilight_tag()
 {
     if(gopro_is_connected()) {
-        string hilight_url = "http://" + gopro_ip + "/gp/gpControl/command/storage/tag_moment";
+        string hilight_url = "http://" + GOPRO_IP + "/gp/gpControl/command/storage/tag_moment";
         http_get(hilight_url);
         cout << "HiLight tag added." << endl;
     }
@@ -92,7 +73,7 @@ void gopro_add_hilight_tag()
 // Function to retrieve the latest media file with retries
 Json::Value gopro_get_latest_media()
 {
-    string media_url = "http://" + gopro_ip + "/gp/gpMediaList";
+    string media_url = "http://" + GOPRO_IP + "/gp/gpMediaList";
     for (int i = 0; i < 5; ++i)
     { // Retry up to 5 times
         string response = http_get(media_url);
@@ -114,27 +95,6 @@ Json::Value gopro_get_latest_media()
     return Json::nullValue;
 }
 
-// Function to download a file from a URL
-bool download_file(const string &url, const string &filename)
-{
-    CURL *curl = curl_easy_init();
-    if (curl)
-    {
-        FILE *fp = fopen(filename.c_str(), "wb");
-        if (!fp)
-            return false;
-
-        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
-        curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
-        curl_easy_perform(curl);
-        curl_easy_cleanup(curl);
-        fclose(fp);
-        return true;
-    }
-    return false;
-}
-
 // Function to generate a unique filename based on timestamp
 string generate_unique_filename(const string &base_name)
 {
@@ -148,7 +108,7 @@ string generate_unique_filename(const string &base_name)
 // Function to fetch HiLight timestamps from the video metadata
 vector<int> get_hilight_timestamps(const string &folder, const string &filename)
 {
-    string media_info_url = "http://" + gopro_ip + ":8080/gopro/media/info?path=" + folder + "/" + filename;
+    string media_info_url = "http://" + GOPRO_IP + ":8080/gopro/media/info?path=" + folder + "/" + filename;
     string response = http_get(media_info_url);
 
     Json::CharReaderBuilder builder;
@@ -170,7 +130,7 @@ vector<int> get_hilight_timestamps(const string &folder, const string &filename)
 }
 
 // Function to extract a 10-second HiLight segment using ffmpeg with precise seeking
-void extract_hilight_segment(const string &video_path, int hilight_time_ms)
+void gopro_extract_hilight_segment(const string &video_path, int hilight_time_ms)
 {
     double hilight_time = hilight_time_ms / 1000.0;
     double start_time = max(0.0, hilight_time - 5.0);
@@ -195,7 +155,7 @@ void extract_hilight_segment(const string &video_path, int hilight_time_ms)
 // Function to process HiLights after recording
 void gopro_process_hilight_clips(const string &folder, const string &filename)
 {
-    string video_url = "http://" + gopro_ip + ":8080/videos/DCIM/" + folder + "/" + filename;
+    string video_url = "http://" + GOPRO_IP + ":8080/videos/DCIM/" + folder + "/" + filename;
     string video_path = "HiLight_" + filename;
 
     if (download_file(video_url, video_path))
@@ -205,7 +165,7 @@ void gopro_process_hilight_clips(const string &folder, const string &filename)
         vector<int> hilight_timestamps = get_hilight_timestamps(folder, filename);
         for (int timestamp : hilight_timestamps)
         {
-            extract_hilight_segment(video_path, timestamp);
+            gopro_extract_hilight_segment(video_path, timestamp);
         }
     }
     else
@@ -235,5 +195,5 @@ void gopro_post_process_ride() {
 }
 
 bool gopro_is_connected() {
-    return getWiFiSSID() == GOPRO_SSID;
+    return get_wifi_ssid() == GOPRO_WIFI_SSID;
 }

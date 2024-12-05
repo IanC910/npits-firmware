@@ -1,11 +1,15 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
+
+#include <curl/curl.h>
+#include <jsoncpp/json/json.h>
+
 #include "wifi.h"
 
 using namespace std;
 
-string getWiFiSSID() {
+string get_wifi_ssid() {
     const char* command = "iwgetid -r"; // Command to get the SSID
     char buffer[128];
     string result;
@@ -33,21 +37,42 @@ string getWiFiSSID() {
     return result;
 }
 
-// int main() {
-//     string ssid = getWiFiSSID();
+string http_get(const string &url)
+{
+    CURL *curl = curl_easy_init();
+    string response;
+    if (curl)
+    {
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION,
+            +[](char *ptr, size_t size, size_t nmemb, string *data) {
+                data->append(ptr, size * nmemb);
+                return size * nmemb;
+            }
+        );
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+        curl_easy_perform(curl);
+        curl_easy_cleanup(curl);
+    }
+    return response;
+}
 
-//     if (!ssid.empty()) {
-//         cout << "Connected to Wi-Fi network: " << ssid << endl;
-//     } else {
-//         cout << "Not connected to any Wi-Fi network or unable to retrieve SSID." << endl;
-//     }
+bool download_file(const string &url, const string &filename)
+{
+    CURL *curl = curl_easy_init();
+    if (curl)
+    {
+        FILE *fp = fopen(filename.c_str(), "wb");
+        if (!fp)
+            return false;
 
-//     if(gopro_is_connected()) {
-//         cout << "true";
-//     }
-//     else {
-//         cout << "false";
-//     }
-
-//     return 0;
-// }
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+        curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
+        curl_easy_perform(curl);
+        curl_easy_cleanup(curl);
+        fclose(fp);
+        return true;
+    }
+    return false;
+}
