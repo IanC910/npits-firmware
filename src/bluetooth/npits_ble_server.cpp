@@ -29,7 +29,9 @@ static NearPassDetector* s_near_pass_detector = nullptr;
 static NearPassPredictor* s_near_pass_predictor = nullptr;
 
 static server_state_t server_state = SS_IDLE;
-static long long request_start_time_ms = 0;
+static long long time_of_last_client_activity_ms = 0;
+
+static bool prev_gopro_connection_status = false;
 
 static std::vector<Ride> ride_list;
 static std::vector<NearPass> near_pass_list;
@@ -86,7 +88,7 @@ static void write_callback(int ctic_index) {
                     int rl_request = *(int*)read_buf;
                     log("RL request", "Request flag: " + std::to_string(rl_request));
                     if(rl_request) {
-                        request_start_time_ms = get_time_ms();
+                        time_of_last_client_activity_ms = get_time_ms();
                         ride_index = 0;
                         db_get_rides(ride_list);
 
@@ -115,7 +117,7 @@ static void write_callback(int ctic_index) {
                     int npl_request = *(int*)read_buf;
                     log("NPL request", "Request flag: " + std::to_string(npl_request));
                     if(npl_request) {
-                        request_start_time_ms = get_time_ms();
+                        time_of_last_client_activity_ms = get_time_ms();
                         near_pass_index = 0;
                         db_get_near_passes(near_pass_list);
 
@@ -159,6 +161,7 @@ static void write_callback(int ctic_index) {
                     break;
                 }
                 case CTIC_R_VALID: {
+                    time_of_last_client_activity_ms = get_time_ms();
                     int r_valid = *(int*)read_buf;
                     if(r_valid == 0) {
                         write_ride_object(ride_list[ride_index]);
@@ -193,6 +196,7 @@ static void write_callback(int ctic_index) {
                     break;
                 }
                 case CTIC_NP_VALID: {
+                    time_of_last_client_activity_ms = get_time_ms();
                     int np_valid = *(int*)read_buf;
                     if(np_valid == 0) {
                         write_near_pass_object(near_pass_list[near_pass_index]);
@@ -317,7 +321,7 @@ static void timer_callback() {
         case SS_IDLE:
             break;
         case SS_RL_REQUEST: {
-            if(get_time_ms() - request_start_time_ms >= REQUEST_TIMEOUT_DURATION_ms) {
+            if(get_time_ms() - time_of_last_client_activity_ms >= REQUEST_TIMEOUT_DURATION_ms) {
                 log("RL request", "Timeout");
                 server_state = SS_IDLE;
                 write_ctic(localnode(), CTIC_RL_REQUEST, (unsigned char*)(&LOW), 0);
@@ -326,7 +330,7 @@ static void timer_callback() {
             break;
         }
         case SS_NPL_REQUEST: {
-            if(get_time_ms() - request_start_time_ms >= REQUEST_TIMEOUT_DURATION_ms) {
+            if(get_time_ms() - time_of_last_client_activity_ms >= REQUEST_TIMEOUT_DURATION_ms) {
                 log("NPL request", "Timeout");
                 server_state = SS_IDLE;
                 write_ctic(localnode(), CTIC_NPL_REQUEST, (unsigned char*)(&LOW), 0);
@@ -340,12 +344,14 @@ static void timer_callback() {
 
     db_update_current_ride_end_time();
 
-    if(gopro_is_connected()) {
+    bool gopro_connection_status = gopro_is_connected();
+    if(gopro_connection_status && !prev_gopro_connection_status) {
         write_ctic(localnode(), CTIC_GOPRO_STATUS, (unsigned char*)(&HIGH), 0);
     }
-    else {
+    else if(!gopro_connection_status && prev_gopro_connection_status) {
         write_ctic(localnode(), CTIC_GOPRO_STATUS, (unsigned char*)(&LOW), 0);
     }
+    prev_gopro_connection_status = gopro_connection_status;
 }
 
 static int server_callback(int client_node, int operation, int ctic_index) {
