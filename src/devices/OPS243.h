@@ -22,6 +22,9 @@ public:
     OPS243(const std::string serial_port);
     ~OPS243();
 
+    bool connect_to_port(const std::string serial_port);
+    bool is_connected();
+
     int get_module_info(char* module_info, int length);
     int read_buffer(char* read_buf, int length);
     void clear_buffer();
@@ -89,6 +92,7 @@ public:
     void turn_units_output_on();
     void turn_units_output_off();
 private:
+    bool is_connected_local = false;
     int serial_file;
 };
 
