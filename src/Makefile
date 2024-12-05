@@ -20,6 +20,8 @@ TARGET = npits.exe
 
 npits:
 	g++ $(CFLAGS) main.cpp $(ALL_SOURCES) -o $(TARGET) $(LIB_FLAGS)
+	chmod 644 $(TARGET)
+	chmod +x $(TARGET)
 
 clean:
 	rm -f $(TARGET)
