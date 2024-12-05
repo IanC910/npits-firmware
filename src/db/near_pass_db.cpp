@@ -52,7 +52,7 @@ int db_create_rides_table() {
         return rc;
     }
     std::cout << "Rides table created successfully" << std::endl;
-    return 1;
+    return SQLITE_OK;
 }
 
 int db_create_near_pass_table() {
