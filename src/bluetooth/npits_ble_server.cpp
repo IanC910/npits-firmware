@@ -31,6 +31,8 @@ static NearPassPredictor* s_near_pass_predictor = nullptr;
 static server_state_t server_state = SS_IDLE;
 static long long request_start_time_ms = 0;
 
+static bool prev_gopro_connection_status = false;
+
 static std::vector<Ride> ride_list;
 static std::vector<NearPass> near_pass_list;
 static int ride_index = 0;
@@ -340,12 +342,14 @@ static void timer_callback() {
 
     db_update_current_ride_end_time();
 
-    if(gopro_is_connected()) {
+    bool gopro_connection_status = gopro_is_connected();
+    if(gopro_connection_status && !prev_gopro_connection_status) {
         write_ctic(localnode(), CTIC_GOPRO_STATUS, (unsigned char*)(&HIGH), 0);
     }
-    else {
+    else if(!gopro_connection_status && prev_gopro_connection_status) {
         write_ctic(localnode(), CTIC_GOPRO_STATUS, (unsigned char*)(&LOW), 0);
     }
+    prev_gopro_connection_status = gopro_connection_status;
 }
 
 static int server_callback(int client_node, int operation, int ctic_index) {
