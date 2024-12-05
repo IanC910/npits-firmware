@@ -5,6 +5,8 @@ Description=NPITS systemd service.
 Type=simple
 WorkingDirectory=/home/rishi/npits-main/src/
 ExecStart=/home/rishi/npits-main/src/npits.exe
+RestartSec=10s
+Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
