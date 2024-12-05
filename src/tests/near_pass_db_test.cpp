@@ -22,8 +22,7 @@ int main() {
     }
 
     // Start a new ride (example)
-    long startTime = 1617282000;  // Example start time (UNIX timestamp)
-    int rideId = db_start_ride(startTime);
+    int rideId = db_start_ride();
     if (rideId == -1) {
         db_close();
         return 1;
@@ -39,21 +38,18 @@ int main() {
     }
 
     // End the ride (example)
-    long endTime = 1617285600;  // Example end time (UNIX timestamp)
-    if (db_end_ride(rideId, endTime) != 0) {
+    if (db_end_ride() != 0) {
         db_close();
         return 1;
     }
 
-    long startTime2 = 1617289000;  // Example start time (UNIX timestamp)
-    int rideId2 = db_start_ride(startTime2);
+    int rideId2 = db_start_ride();
     if (rideId2 == -1) {
         db_close();
         return 1;
     }
 
-    long endTime2 = 1617290000;
-    if(db_end_ride(rideId2, endTime2) != 0) {
+    if(db_end_ride() != 0) {
         db_close();
         return 1;
     }

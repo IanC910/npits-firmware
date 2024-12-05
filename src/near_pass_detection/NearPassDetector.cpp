@@ -91,11 +91,6 @@ void NearPassDetector::run() {
 
         MB1242::report report = ultrasonic->get_latest_report();
 
-        printf("%lld: %3d cm\n",
-            report.time_stamp_ms,
-            report.distance_cm
-        );
-
         if(report.distance_cm < min_distance_cm) {
             min_distance_cm = report.distance_cm;
         }

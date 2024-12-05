@@ -50,7 +50,7 @@ MB1242_async_test:
 	$(CCF) MB1242_async_test.cpp $(COMMON) $(DEVICES) -o MB1242_async_test.test -lgpiod
 
 near_pass_db_test:
-	$(CCF) near_pass_db_test.cpp $(DB) -o near_pass_db_test.test -lsqlite3
+	$(CCF) near_pass_db_test.cpp $(COMMON) $(DB) -o near_pass_db_test.test -lsqlite3
 
 NearPassDetector_class_test:
 	$(CCF) NearPassDetector_class_test.cpp $(COMMON) $(DEVICES) $(NEAR_PASS_DETECTION) $(DB) -o NearPassDetector_class_test.test -lgpiod -lsqlite3
