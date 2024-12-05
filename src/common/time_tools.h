@@ -7,7 +7,7 @@
 
 void set_time_s(time_t time_s);
 
-struct timespec get_timespec();
+struct timespec get_timespec_with_offset();
 
 // Returns UNIX time, i.e. time since the epoch, Jan 1, 1970
 time_t get_time_s();
