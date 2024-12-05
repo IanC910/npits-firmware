@@ -10,12 +10,14 @@
 static time_t global_time_offset_s = 0;
 
 void set_time_s(time_t time_s) {
-    global_time_offset_s = time_s - get_time_s();
+    struct timespec now;
+    timespec_get(&now, TIME_UTC);
+    global_time_offset_s = time_s - now.tv_sec;
 }
 
 
 
-struct timespec get_timespec() {
+struct timespec get_timespec_with_offset() {
     struct timespec now;
     timespec_get(&now, TIME_UTC);
     now.tv_sec += global_time_offset_s;
@@ -25,18 +27,18 @@ struct timespec get_timespec() {
 
 
 time_t get_time_s() {
-    struct timespec now = get_timespec();
+    struct timespec now = get_timespec_with_offset();
     return now.tv_sec;
 }
 
 time_t get_time_ms() {
-    struct timespec now = get_timespec();
+    struct timespec now = get_timespec_with_offset();
     time_t milliseconds = now.tv_sec * 1000 + now.tv_nsec / 1000000;
     return milliseconds;
 }
 
 time_t get_time_us() {
-    struct timespec now = get_timespec();
+    struct timespec now = get_timespec_with_offset();
     time_t microseconds = now.tv_sec * 1000000 + now.tv_nsec / 1000;
     return microseconds;
 }
@@ -44,7 +46,7 @@ time_t get_time_us() {
 
 
 std::string get_timestamp_hms() {
-    struct timespec now = get_timespec();
+    struct timespec now = get_timespec_with_offset();
     struct tm* timeinfo = localtime(&now.tv_sec);
     char time_buffer[32];
     memset(time_buffer, 0, sizeof(time_buffer));
