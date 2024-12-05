@@ -1,12 +1,10 @@
-#ifndef WIFI_SSID_H
-#define WIFI_SSID_H
-
-#include "wifi.hpp"
+#ifndef WIFI
+#define WIFI
 
 #include <string>
 
 // Function to retrieve the SSID of the connected Wi-Fi network
 std::string gopro_getWiFiSSID();
-std:string gopro_isConnected();
+std::bool gopro_isConnected();
 
-#endif // WIFI_SSID_H
+#endif

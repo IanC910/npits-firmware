@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
+#include "wifi.h"
 
 #define SSID "GP25425765"
 

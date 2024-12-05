@@ -10,6 +10,7 @@
 #include <vector>
 #include <iomanip>
 #include "gopro.h"
+#include "wifi.h"
 
 using namespace std;
 
@@ -54,25 +55,32 @@ bool is_recording()
 // Function to start recording
 void start_recording()
 {
-    string start_url = "http://" + gopro_ip + "/gp/gpControl/command/shutter?p=1";
-    http_get(start_url);
-    cout << "GoPro recording started." << endl;
+    if(gopro_isConnected()) {
+        string start_url = "http://" + gopro_ip + "/gp/gpControl/command/shutter?p=1";
+        http_get(start_url);
+        cout << "GoPro recording started." << endl;
+    }
 }
 
 // Function to stop recording
 void stop_recording()
 {
-    string stop_url = "http://" + gopro_ip + "/gp/gpControl/command/shutter?p=0";
-    http_get(stop_url);
-    cout << "GoPro recording stopped." << endl;
+    if(gopro_isConnected()) {
+
+        string stop_url = "http://" + gopro_ip + "/gp/gpControl/command/shutter?p=0";
+        http_get(stop_url);
+        cout << "GoPro recording stopped." << endl;
+    }
 }
 
 // Function to add a HiLight tag
 void add_hilight_tag()
 {
-    string hilight_url = "http://" + gopro_ip + "/gp/gpControl/command/storage/tag_moment";
-    http_get(hilight_url);
-    cout << "HiLight tag added." << endl;
+    if(gopro_isConnected()) {
+        string hilight_url = "http://" + gopro_ip + "/gp/gpControl/command/storage/tag_moment";
+        http_get(hilight_url);
+        cout << "HiLight tag added." << endl;
+    }
 }
 
 // Function to retrieve the latest media file with retries
@@ -202,18 +210,20 @@ void process_hilight_clips(const string &folder, const string &filename)
 
 // Function to handle all post-processing after a ride ends
 void post_process_ride() {
-    // Retrieve the latest media file
-    Json::Value latest_media = get_latest_media();
-    if (!latest_media.isNull()) {
-        // Extract folder and filename from media information
-        string folder = latest_media["d"].asString();
-        string filename = latest_media["fs"][latest_media["fs"].size() - 1]["n"].asString();
+    if(gopro_isConnected()) {
+        // Retrieve the latest media file
+        Json::Value latest_media = get_latest_media();
+        if (!latest_media.isNull()) {
+            // Extract folder and filename from media information
+            string folder = latest_media["d"].asString();
+            string filename = latest_media["fs"][latest_media["fs"].size() - 1]["n"].asString();
 
-        cout << "Post-processing ride. Folder: " << folder << ", File: " << filename << endl;
+            cout << "Post-processing ride. Folder: " << folder << ", File: " << filename << endl;
 
-        // Process HiLights
-        process_hilight_clips(folder, filename);
-    } else {
-        cout << "No media found for post-processing." << endl;
+            // Process HiLights
+            process_hilight_clips(folder, filename);
+        } else {
+            cout << "No media found for post-processing." << endl;
+        }
     }
 }

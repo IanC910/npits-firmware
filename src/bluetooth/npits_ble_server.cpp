@@ -17,6 +17,9 @@
 
 #include "npits_ble_server.h"
 
+#include "../devices/gopro.h"
+#include "../devices/wifi.h"
+
 
 
 static bool initialized = false;
@@ -250,6 +253,7 @@ static void write_callback(int ctic_index) {
                     printf("LE Server: Start ride\n");
 
                     db_start_ride();
+                    start_recording();
 
                     if(s_near_pass_predictor != nullptr) {
                         s_near_pass_predictor->start();
@@ -277,6 +281,8 @@ static void write_callback(int ctic_index) {
                     }
 
                     db_end_ride();
+                    stop_recording();
+                    post_process_ride();
 
                     break;
 
