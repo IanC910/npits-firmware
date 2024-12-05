@@ -24,10 +24,12 @@ string http_get(const string &url)
     if (curl)
     {
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, +[](char *ptr, size_t size, size_t nmemb, string *data)
-                                                      {
-            data->append(ptr, size * nmemb);
-            return size * nmemb; });
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION,
+            +[](char *ptr, size_t size, size_t nmemb, string *data) {
+                data->append(ptr, size * nmemb);
+                return size * nmemb;
+            }
+        );
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
         curl_easy_perform(curl);
         curl_easy_cleanup(curl);
