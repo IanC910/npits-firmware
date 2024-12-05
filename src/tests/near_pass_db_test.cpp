@@ -29,8 +29,8 @@ int main() {
     }
 
     // Insert new NearPass records that reference the inserted Ride
-    NearPass np1 = {1617282000, 500, 60.0, 37.7749, -122.4194, rideId};
-    NearPass np2 = {1617285600, 300, 45.0, 34.0522, -118.2437, rideId};
+    NearPass np1 = {1617282000, 500, 60.0, 37.774949, -122.419497, rideId};
+    NearPass np2 = {1617285600, 300, 45.0, 34.052205, -118.243715, rideId};
 
     if (db_insert_near_pass(np1) != SQLITE_OK || db_insert_near_pass(np2) != SQLITE_OK) {
         db_close();

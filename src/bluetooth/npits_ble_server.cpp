@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "../common/time_tools.h"
+#include "../common/log.h"
 #include "../connection_params.h"
 #include "../db/near_pass_db.h"
 #include "../near_pass_detection/near_pass_detection_types.h"
@@ -219,6 +220,7 @@ static void write_callback(int ctic_index) {
             if(s_near_pass_detector != nullptr) {
                 double latitude = *(double*)read_buf;
                 s_near_pass_detector->set_latitude(latitude);
+                log("BLE Server", "Latitude: " + std::to_string(latitude));
             }
             break;
         }
@@ -226,6 +228,7 @@ static void write_callback(int ctic_index) {
             if(s_near_pass_detector != nullptr) {
                 double longitude = *(double*)read_buf;
                 s_near_pass_detector->set_longitude(longitude);
+                log("BLE Server", "Longitude: " + std::to_string(longitude));
             }
             break;
         }
@@ -233,12 +236,14 @@ static void write_callback(int ctic_index) {
             if(s_near_pass_detector != nullptr) {
                 double speed_mps = *(double*)read_buf;
                 s_near_pass_detector->set_cyclist_speed_mps(speed_mps);
+                log("BLE Server", "Speed mps: " + std::to_string(speed_mps));
             }
             break;
         }
         case CTIC_GPS_TIME: {
             long time = *(long*)read_buf;
             set_time_s(time);
+            log("BLE Server", "Time: " + std::to_string(time));
             break;
         }
 
