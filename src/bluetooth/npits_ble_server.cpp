@@ -94,7 +94,7 @@ static void write_callback(int ctic_index) {
                         // If 0 or 1 objects, go back to idle
                         if(ride_list.size() > 0) {
                             write_ride_object(ride_list[ride_index]);
-                            write_ctic(localnode(), CTIC_R_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
+                            write_ctic(localnode(), CTIC_R_VALID, (unsigned char*)(&HIGH), 0);
                             log("RL request", "Wrote ride object " + std::to_string(ride_index));
                             ride_index++;
                             server_state = SS_RL_REQUEST;
@@ -105,7 +105,7 @@ static void write_callback(int ctic_index) {
 
                         if(ride_index >= ride_list.size()) {
                             log("RL request", "Done");
-                            write_ctic(localnode(), CTIC_RL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
+                            write_ctic(localnode(), CTIC_RL_REQUEST, (unsigned char*)(&LOW), 0);
                             server_state = SS_IDLE;
                         }
                     }
@@ -123,7 +123,7 @@ static void write_callback(int ctic_index) {
                         // If 0 or 1 objects, go back to idle
                         if(near_pass_list.size() > 0) {
                             write_near_pass_object(near_pass_list[near_pass_index]);
-                            write_ctic(localnode(), CTIC_NP_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
+                            write_ctic(localnode(), CTIC_NP_VALID, (unsigned char*)(&HIGH), 0);
                             log("NPL request", "Wrote near pass object " + std::to_string(near_pass_index));
                             near_pass_index++;
                             server_state = SS_NPL_REQUEST;
@@ -134,7 +134,7 @@ static void write_callback(int ctic_index) {
 
                         if(near_pass_index >= near_pass_list.size()) {
                             log("NPL request", "Done");
-                            write_ctic(localnode(), CTIC_NPL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
+                            write_ctic(localnode(), CTIC_NPL_REQUEST, (unsigned char*)(&LOW), 0);
                             server_state = SS_IDLE;
                         }
                     }
@@ -153,7 +153,7 @@ static void write_callback(int ctic_index) {
                     int rl_request = *(int*)read_buf;
                     if(rl_request == 0) {
                         log("RL Request", "Cancelled");
-                        write_ctic(localnode(), CTIC_R_VALID, (unsigned char*)(&LOW), sizeof(LOW));
+                        write_ctic(localnode(), CTIC_R_VALID, (unsigned char*)(&LOW), 0);
                         server_state = SS_IDLE;
                     }
                     break;
@@ -162,13 +162,13 @@ static void write_callback(int ctic_index) {
                     int r_valid = *(int*)read_buf;
                     if(r_valid == 0) {
                         write_ride_object(ride_list[ride_index]);
-                        write_ctic(localnode(), CTIC_R_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
+                        write_ctic(localnode(), CTIC_R_VALID, (unsigned char*)(&HIGH), 0);
                         log("RL request", "Wrote ride object " + std::to_string(ride_index));
                         ride_index++;
 
                         if(ride_index >= ride_list.size()) {
                             log("RL request", "Done");
-                            write_ctic(localnode(), CTIC_RL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
+                            write_ctic(localnode(), CTIC_RL_REQUEST, (unsigned char*)(&LOW), 0);
                             server_state = SS_IDLE;
                         }
                     }
@@ -187,7 +187,7 @@ static void write_callback(int ctic_index) {
                     int npl_request = *(int*)read_buf;
                     if(npl_request == 0) {
                         log("NPL request", "Cancelled");
-                        write_ctic(localnode(), CTIC_NP_VALID, (unsigned char*)(&LOW), sizeof(LOW));
+                        write_ctic(localnode(), CTIC_NP_VALID, (unsigned char*)(&LOW), 0);
                         server_state = SS_IDLE;
                     }
                     break;
@@ -196,13 +196,13 @@ static void write_callback(int ctic_index) {
                     int np_valid = *(int*)read_buf;
                     if(np_valid == 0) {
                         write_near_pass_object(near_pass_list[near_pass_index]);
-                        write_ctic(localnode(), CTIC_NP_VALID, (unsigned char*)(&HIGH), sizeof(HIGH));
+                        write_ctic(localnode(), CTIC_NP_VALID, (unsigned char*)(&HIGH), 0);
                         log("NPL request", "Wrote near pass object " + std::to_string(near_pass_index));
                         near_pass_index++;
 
                         if(near_pass_index >= near_pass_list.size()) {
                             log("NPL request", "Done");
-                            write_ctic(localnode(), CTIC_NPL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
+                            write_ctic(localnode(), CTIC_NPL_REQUEST, (unsigned char*)(&LOW), 0);
                             server_state = SS_IDLE;
                         }
                     }
@@ -320,8 +320,8 @@ static void timer_callback() {
             if(get_time_ms() - request_start_time_ms >= REQUEST_TIMEOUT_DURATION_ms) {
                 log("RL request", "Timeout");
                 server_state = SS_IDLE;
-                write_ctic(localnode(), CTIC_RL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
-                write_ctic(localnode(), CTIC_R_VALID, (unsigned char*)(&LOW), sizeof(LOW));
+                write_ctic(localnode(), CTIC_RL_REQUEST, (unsigned char*)(&LOW), 0);
+                write_ctic(localnode(), CTIC_R_VALID, (unsigned char*)(&LOW), 0);
             }
             break;
         }
@@ -329,8 +329,8 @@ static void timer_callback() {
             if(get_time_ms() - request_start_time_ms >= REQUEST_TIMEOUT_DURATION_ms) {
                 log("NPL request", "Timeout");
                 server_state = SS_IDLE;
-                write_ctic(localnode(), CTIC_NPL_REQUEST, (unsigned char*)(&LOW), sizeof(LOW));
-                write_ctic(localnode(), CTIC_NP_VALID, (unsigned char*)(&LOW), sizeof(LOW));
+                write_ctic(localnode(), CTIC_NPL_REQUEST, (unsigned char*)(&LOW), 0);
+                write_ctic(localnode(), CTIC_NP_VALID, (unsigned char*)(&LOW), 0);
             }
             break;
         }
@@ -340,7 +340,12 @@ static void timer_callback() {
 
     db_update_current_ride_end_time();
 
-    // TODO: update phone on gopro connection status
+    if(gopro_isConnected()) {
+        write_ctic(localnode(), CTIC_GOPRO_STATUS, (unsigned char*)(&HIGH), 0);
+    }
+    else {
+        write_ctic(localnode(), CTIC_GOPRO_STATUS, (unsigned char*)(&LOW), 0);
+    }
 }
 
 static int server_callback(int client_node, int operation, int ctic_index) {
