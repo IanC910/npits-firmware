@@ -83,6 +83,26 @@ int db_create_near_pass_table() {
     return SQLITE_OK;
 }
 
+int db_open_and_make_tables(const std::string db_name) {
+    int result = 0;
+    result = db_open(db_name);
+    if(result != SQLITE_OK) {
+        return result;
+    }
+
+    result = db_create_rides_table();
+    if(result != SQLITE_OK) {
+        return result;
+    }
+
+    result = db_create_near_pass_table();
+    if(result != SQLITE_OK) {
+        return result;
+    }
+
+    return SQLITE_OK;
+}
+
 int db_start_ride() {
     if(near_pass_db == nullptr) {
         log("near_pass_db", "Couldn't start ride, db not open");
@@ -203,7 +223,7 @@ static int get_rides_callback(void* data, int argc, char** argv, char** colNames
     ride.rideId     = atoi(argv[0]);
     ride.startTime  = strtol(argv[1], nullptr, 10);
     ride.endTime    = 0;
-    if(argc >= 3) {
+    if(argv[2] != NULL) {
         ride.endTime = strtol(argv[2], nullptr, 10);
     }
 

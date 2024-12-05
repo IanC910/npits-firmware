@@ -21,6 +21,9 @@ int db_create_rides_table();
 // Returns SQLITE_OK on success
 int db_create_near_pass_table();
 
+// Calls db_open, db_create_rides_tables, and db_create_near_pass_table
+int db_open_and_make_tables(const std::string db_name);
+
 // Function to start a new ride
 // Returns Ride ID on success, -1 on fail
 int db_start_ride();
