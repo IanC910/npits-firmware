@@ -40,7 +40,7 @@ string http_get(const string &url)
 // Function to check if the GoPro is recording
 bool gopro_is_recording()
 {
-    if(!gopro_isConnected()) {
+    if(!gopro_is_connected()) {
         return false;
     }
 
@@ -61,7 +61,7 @@ bool gopro_is_recording()
 // Function to start recording
 void gopro_start_recording()
 {
-    if(gopro_isConnected()) {
+    if(gopro_is_connected()) {
         string start_url = "http://" + gopro_ip + "/gp/gpControl/command/shutter?p=1";
         http_get(start_url);
         cout << "GoPro recording started." << endl;
@@ -71,7 +71,7 @@ void gopro_start_recording()
 // Function to stop recording
 void gopro_stop_recording()
 {
-    if(gopro_isConnected()) {
+    if(gopro_is_connected()) {
 
         string stop_url = "http://" + gopro_ip + "/gp/gpControl/command/shutter?p=0";
         http_get(stop_url);
@@ -82,7 +82,7 @@ void gopro_stop_recording()
 // Function to add a HiLight tag
 void gopro_add_hilight_tag()
 {
-    if(gopro_isConnected()) {
+    if(gopro_is_connected()) {
         string hilight_url = "http://" + gopro_ip + "/gp/gpControl/command/storage/tag_moment";
         http_get(hilight_url);
         cout << "HiLight tag added." << endl;
@@ -216,7 +216,7 @@ void gopro_process_hilight_clips(const string &folder, const string &filename)
 
 // Function to handle all post-processing after a ride ends
 void gopro_post_process_ride() {
-    if(gopro_isConnected()) {
+    if(gopro_is_connected()) {
         // Retrieve the latest media file
         Json::Value latest_media = gopro_get_latest_media();
         if (!latest_media.isNull()) {
@@ -234,6 +234,6 @@ void gopro_post_process_ride() {
     }
 }
 
-bool gopro_isConnected() {
+bool gopro_is_connected() {
     return getWiFiSSID() == GOPRO_SSID;
 }

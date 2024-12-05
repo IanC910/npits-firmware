@@ -259,7 +259,7 @@ static void write_callback(int ctic_index) {
 
                     db_start_ride();
 
-                    if(gopro_isConnected()) {
+                    if(gopro_is_connected()) {
                         log("LE Server", "GoPro is connected");
                         gopro_start_recording();
                     }
@@ -340,7 +340,7 @@ static void timer_callback() {
 
     db_update_current_ride_end_time();
 
-    if(gopro_isConnected()) {
+    if(gopro_is_connected()) {
         write_ctic(localnode(), CTIC_GOPRO_STATUS, (unsigned char*)(&HIGH), 0);
     }
     else {

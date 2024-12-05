@@ -14,6 +14,6 @@ void gopro_add_hilight_tag();
 Json::Value gopro_get_latest_media();
 void gopro_process_hilight_clips(const std::string& folder, const std::string& filename);
 void gopro_post_process_ride();
-bool gopro_isConnected();
+bool gopro_is_connected();
 
 #endif // GOPRO_H

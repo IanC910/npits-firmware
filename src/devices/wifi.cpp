@@ -42,7 +42,7 @@ string getWiFiSSID() {
 //         cout << "Not connected to any Wi-Fi network or unable to retrieve SSID." << endl;
 //     }
 
-//     if(gopro_isConnected()) {
+//     if(gopro_is_connected()) {
 //         cout << "true";
 //     }
 //     else {
