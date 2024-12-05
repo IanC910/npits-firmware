@@ -28,7 +28,7 @@ OPS243::OPS243(const std::string serial_port) {
     // Read in existing settings, and handle any error
     if(tcgetattr(serial_file, &tty) != 0) {
         printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
-        exit(1);
+        return;
     }
 
     tty.c_cflag &= ~PARENB; // Clear parity bit, disabling parity (most common)

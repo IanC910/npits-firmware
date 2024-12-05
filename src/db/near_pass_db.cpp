@@ -112,7 +112,7 @@ int db_start_ride() {
     long startTime = get_time_s();
     const char* insertSQL =
         "INSERT INTO Rides (startTime, endTime) "
-        "VALUES (?, NULL);";  // endTime is NULL initially
+        "VALUES (?, ?);";  // endTime is NULL initially
 
     sqlite3_stmt* stmt;
     int rc = sqlite3_prepare_v2(near_pass_db, insertSQL, -1, &stmt, nullptr);
@@ -123,6 +123,7 @@ int db_start_ride() {
 
     // Bind the start time
     sqlite3_bind_int64(stmt, 1, startTime);
+    sqlite3_bind_int64(stmt, 2, startTime);
 
     // Execute the statement
     rc = sqlite3_step(stmt);
@@ -138,6 +139,39 @@ int db_start_ride() {
 
     sqlite3_finalize(stmt);
     return current_ride_id;
+}
+
+int db_update_current_ride_end_time() {
+    if(near_pass_db == nullptr) {
+        log("near_pass_db", "Couldn't update ride, db not open");
+        return SQLITE_ERROR;
+    }
+
+    long currTime = get_time_s();
+    const char* insertSQL =
+        "UPDATE Rides SET endTime = ? WHERE rideId = ?";
+
+    sqlite3_stmt* stmt;
+    int rc = sqlite3_prepare_v2(near_pass_db, insertSQL, -1, &stmt, nullptr);
+    if (rc != SQLITE_OK) {
+        std::cout << "Failed to prepare statement (Update time): " << sqlite3_errmsg(near_pass_db) << std::endl;
+        return -1;
+    }
+
+    // Bind the start time
+    sqlite3_bind_int64(stmt, 1, currTime);
+    sqlite3_bind_int(stmt, 2, current_ride_id);
+
+    // Execute the statement
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_DONE) {
+        std::cout << "Execution failed (Start Ride): " << sqlite3_errmsg(near_pass_db) << std::endl;
+        sqlite3_finalize(stmt);
+        return -1;
+    }
+
+    sqlite3_finalize(stmt);
+    return SQLITE_OK;
 }
 
 int db_end_ride() {

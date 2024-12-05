@@ -28,6 +28,8 @@ int db_open_and_make_tables(const std::string db_name);
 // Returns Ride ID on success, -1 on fail
 int db_start_ride();
 
+int db_update_current_ride_end_time();
+
 // Function to end a ride
 // Returns SQLITE_OK on success
 int db_end_ride();
