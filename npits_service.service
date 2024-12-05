@@ -1,0 +1,14 @@
+[Unit]
+Description=NPITS systemd service.
+
+[Service]
+Type=simple
+ExecStart=/bin/bash ./home/rishi/npits-main/src/npits.exe
+
+[Install]
+WantedBy=multi-user.target
+
+#sudo cp npits_service.service /etc/systemd/system/npits_service.service
+#sudo chmod 644 /etc/systemd/system/npits_service.service
+
+#sudo systemctl enable npits_service
