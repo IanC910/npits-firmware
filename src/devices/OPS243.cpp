@@ -18,8 +18,16 @@
 #include "OPS243.h"
 
 OPS243::OPS243(const std::string serial_port) {
-    /* Constructor: Mainly initializes the serial port for
-    communication with the OPS243*/
+    connect_to_port(serial_port);
+}
+
+OPS243::~OPS243() {
+    close(serial_file);
+}
+
+
+bool OPS243::connect_to_port(const std::string serial_port) {
+    if_connected_local = false;
 
     serial_file = open(serial_port.c_str(), O_RDWR);
 
@@ -28,7 +36,7 @@ OPS243::OPS243(const std::string serial_port) {
     // Read in existing settings, and handle any error
     if(tcgetattr(serial_file, &tty) != 0) {
         printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
-        return;
+        return false;
     }
 
     tty.c_cflag &= ~PARENB; // Clear parity bit, disabling parity (most common)
@@ -60,12 +68,15 @@ OPS243::OPS243(const std::string serial_port) {
     // Save tty settings, also checking for error
     if (tcsetattr(serial_file, TCSANOW, &tty) != 0) {
         printf("Error %i from tcsetattr: %s\n", errno, strerror(errno));
-        exit(1);
+        return false;
     }
+
+    is_connected_local = true;
+    return true;
 }
 
-OPS243::~OPS243() {
-    close(serial_file);
+bool OPS243::is_connected() {
+    return is_connected_local;
 }
 
 void OPS243::output_current_speed_settings() {
