@@ -31,4 +31,8 @@ DEVICE = NPITS      TYPE = MESH     NODE = 1    ADDRESS = B8:27:EB:36:C5:9E
 
     ; Ride Control
     PRIMARY_SERVICE = 2200
-        LECHAR = RC Cmd             PERMIT = 16     SIZE = 04   UUID = 2201 ; Both write
+        LECHAR = RC Cmd             PERMIT = 16     SIZE = 04   UUID = 2201 ; Phone writes
+
+    ; GoPro Status
+    PRIMARY_SERVICE = 2300
+        LECHAR = GoPro Status       PERMIT = 16     SIZE = 04   UUID = 2301 ; Phone writes

@@ -30,7 +30,10 @@ enum ctic_t {
     CTIC_GPS_TIME,
 
     // Ride Control Service
-    CTIC_RC_CMD
+    CTIC_RC_CMD,
+
+    // GoPro Status Service
+    CTIC_GOPRO_STATUS
 };
 
 enum rc_cmd_t {

@@ -13,6 +13,9 @@
 #include "near_pass_detection_types.h"
 #include "NearPassDetector.h"
 
+#include "../devices/gopro.h"
+#include "../devices/wifi.h"
+
 
 
 NearPassDetector::NearPassDetector(MB1242* ultrasonic, bool use_predictor) {
@@ -158,6 +161,7 @@ void NearPassDetector::run() {
                                 near_pass.rideId        = db_get_current_ride_id();
 
                                 db_insert_near_pass(near_pass);
+                                gopro_add_hilight_tag();
                             }
                             else if(use_predictor) {
                                 log("NearPassDetector", "Not logging near pass, near pass wasn't predicted");
