@@ -74,3 +74,12 @@ mkdir /home/pi/Desktop/Object_Detection_Files
 ```
 
 Copy the files in the zip file in this tutorial (https://core-electronics.com.au/guides/object-identify-raspberry-pi/#Set) into the above newly created directory
+
+
+### NPITS systemd service
+To install the service,run the following commands
+```bash
+sudo cp npits_service.service /etc/systemd/system/npits_service.service
+sudo chmod 644 /etc/systemd/system/npits_service.service
+sudo systemctl enable npits_service
+```
