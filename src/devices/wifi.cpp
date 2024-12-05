@@ -39,21 +39,21 @@ bool gopro_isConnected() {
     return gopro_getWiFiSSID() == SSID;
 }
 
-int main() {
-    string ssid = gopro_getWiFiSSID();
+// int main() {
+//     string ssid = gopro_getWiFiSSID();
 
-    if (!ssid.empty()) {
-        cout << "Connected to Wi-Fi network: " << ssid << endl;
-    } else {
-        cout << "Not connected to any Wi-Fi network or unable to retrieve SSID." << endl;
-    }
+//     if (!ssid.empty()) {
+//         cout << "Connected to Wi-Fi network: " << ssid << endl;
+//     } else {
+//         cout << "Not connected to any Wi-Fi network or unable to retrieve SSID." << endl;
+//     }
 
-    if(gopro_isConnected()) {
-        cout << "true";
-    }
-    else {
-        cout << "false";
-    }
+//     if(gopro_isConnected()) {
+//         cout << "true";
+//     }
+//     else {
+//         cout << "false";
+//     }
 
-    return 0;
-}
+//     return 0;
+// }

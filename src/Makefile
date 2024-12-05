@@ -14,7 +14,7 @@ GPIO_FLAGS = -lgpiod
 SQLITE_FLAGS = -lsqlite3
 GOPRO_FLAGS = -lcurl -ljsoncpp
 
-LIB_FLAGS = $(GPIO_FLAGS) $(SQLITE_FLAGS) # $(GOPRO_FLAGS)
+LIB_FLAGS = $(GPIO_FLAGS) $(SQLITE_FLAGS) $(GOPRO_FLAGS)
 
 TARGET = npits.exe
 

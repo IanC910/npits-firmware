@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "../common/time_tools.h"
+#include "../common/log.h"
 #include "../connection_params.h"
 #include "../db/near_pass_db.h"
 #include "../near_pass_detection/near_pass_detection_types.h"
@@ -253,6 +254,14 @@ static void write_callback(int ctic_index) {
                     printf("LE Server: Start ride\n");
 
                     db_start_ride();
+
+                    if(gopro_isConnected()) {
+                        log("LE Server", "GoPro is connected");
+                    }
+                    else {
+                        log("LE Server", "No GoPro connected");
+                    }
+
                     start_recording();
 
                     if(s_near_pass_predictor != nullptr) {
