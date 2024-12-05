@@ -18,6 +18,9 @@
 
 #include "npits_ble_server.h"
 
+#include "../devices/gopro.h"
+#include "../devices/wifi.h"
+
 
 
 static bool initialized = false;
@@ -256,6 +259,15 @@ static void write_callback(int ctic_index) {
 
                     db_start_ride();
 
+                    if(gopro_isConnected()) {
+                        log("LE Server", "GoPro is connected");
+                    }
+                    else {
+                        log("LE Server", "No GoPro connected");
+                    }
+
+                    start_recording();
+
                     if(s_near_pass_predictor != nullptr) {
                         s_near_pass_predictor->start();
                     }
@@ -282,6 +294,8 @@ static void write_callback(int ctic_index) {
                     }
 
                     db_end_ride();
+                    stop_recording();
+                    post_process_ride();
 
                     break;
 
