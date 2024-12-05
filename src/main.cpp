@@ -1,5 +1,9 @@
 
+#include <stdlib.h>
+
 #include "connection_params.h"
+
+#include "common/log.h"
 
 #include "devices/MB1242.h"
 #include "devices/OPS243.h"
@@ -13,9 +17,18 @@
 
 int main() {
     MB1242 ultrasonic(ULTRASONIC_I2C_DEVICE, ULTRASONIC_STATUS_GPIO_NUM);
-    OPS243 radar(RADAR_SERIAL_PORT);
+    OPS243 radar(POSSIBLE_RADAR_SERIAL_PORTS[0]);
 
-    NearPassDetector near_pass_detector(&ultrasonic, true);
+    long unsigned port_index = 0;
+    while(!radar.is_connected() && port_index < POSSIBLE_RADAR_SERIAL_PORTS.size()) {
+        radar.connect_to_port(POSSIBLE_RADAR_SERIAL_PORTS[port_index]);
+        port_index++;
+    }
+
+    bool radar_is_connected = radar.is_connected();
+    log("NPITS", "Radar connected status: " + std::to_string((int)radar_is_connected));
+
+    NearPassDetector near_pass_detector(&ultrasonic, radar_is_connected);
     NearPassPredictor near_pass_predictor(&radar, &near_pass_detector);
 
     db_open_and_make_tables(NEAR_PASS_DB_FILE);

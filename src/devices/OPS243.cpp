@@ -27,7 +27,7 @@ OPS243::~OPS243() {
 
 
 bool OPS243::connect_to_port(const std::string serial_port) {
-    if_connected_local = false;
+    is_connected_local = false;
 
     serial_file = open(serial_port.c_str(), O_RDWR);
 

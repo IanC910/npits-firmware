@@ -22,11 +22,14 @@ NearPassPredictor::NearPassPredictor(OPS243* radar, NearPassDetector* near_pass_
     this->near_pass_detector = near_pass_detector;
 
     if(radar == nullptr) {
-        log("NearPassPredictor", "Warning, radar is nullptr");
+        log("NearPassPredictor", "Warning: Radar is nullptr");
+    }
+    else if(!radar->is_connected()) {
+        log("NearPassPredictor", "Warning: Radar is not connected");
     }
 
     if(near_pass_detector == nullptr) {
-        log("NearPassPredictor", "Warning, near pass detector is nullptr");
+        log("NearPassPredictor", "Warning: Near pass detector is nullptr");
     }
 }
 
@@ -38,6 +41,11 @@ NearPassPredictor::~NearPassPredictor() {
 
 int NearPassPredictor::start() {
     if(radar == nullptr) {
+        log("NearPassPredictor", "Couldn't start predictor, radar is nullptr");
+        return 1;
+    }
+    if(!radar->is_connected()) {
+        log("NearPassPredictor", "Couldn't start predictor, radar is not connected");
         return 1;
     }
 
@@ -70,6 +78,10 @@ int NearPassPredictor::stop() {
 void NearPassPredictor::run() {
     if(radar == nullptr) {
         log("NearPassPredictor", "Couldn't run, radar is nullptr");
+        return;
+    }
+    if(!radar->is_connected()) {
+        log("NearPassPredictor", "Couldn't run, radar is not connected");
         return;
     }
 
@@ -160,8 +172,11 @@ bool NearPassPredictor::is_active() {
 
 void NearPassPredictor::config_radar() {
     if(radar == nullptr) {
-        log("NearPassPredictor", "Coudn't initialize radar, radar is nullptr");
+        log("NearPassPredictor", "Coudn't config radar, radar is nullptr");
         return;
+    }
+    if(!radar->is_connected()) {
+        log("NearPassPredictor", "Couldn't config radar, radar is not connected");
     }
 
     radar->set_num_range_reports(OPS243::MAX_REPORTS);
@@ -182,6 +197,9 @@ void NearPassPredictor::config_radar() {
 int NearPassPredictor::update_speeds_or_ranges() {
     if(radar == nullptr) {
         log("NearPassPredictor", "Couldn't update, radar is nullptr");
+    }
+    if(!radar->is_connected()) {
+        log("NearPassPredictor", "Couldn't update, radar is not connected");
     }
 
     return radar->read_new_data_line(range_reports, speed_reports);
